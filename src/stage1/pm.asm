@@ -15,4 +15,4 @@ protectedMain:
     mov esp, ebp
 
     ; Give control to the second stage boot loader
-    jmp CODE_SEG:STAGE2_OFFSET
+    call STAGE2_OFFSET

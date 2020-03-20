@@ -37,8 +37,7 @@ $(CHUNK_STAGE1): $(SRC_STAGE1)
 
 # --- Stage 2 --- #
 $(CHUNK_STAGE2): $(SRC_STAGE2_ASM) $(SRC_STAGE2_C)
-	# python3 -c "print('A' * (512 * 3 - 4) + 'BOOT', end='')" > $@
-
+# python3 -c "print('A' * (512 * 3 - 4) + 'BOOT', end='')" > $@
 # TODO : Auto
 	$(TOOL_ASM) -f elf32 -i src/stage2 -o obj/stage2/sections.o src/stage2/sections.asm
 	$(TOOL_C) $(C_FLAGS) -c -I src/stage2 -o obj/stage2/main.o src/stage2/main.c

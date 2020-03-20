@@ -4,7 +4,7 @@ extern main
 
 ; This section is always before other sections in the second stage bootloader
 section .entry
-    jmp main
+    call main
 
 ; This section is after other sections
 section .end

@@ -5,7 +5,7 @@
 %define STAGE1_STACK_TOP 0x8000
 
 ; Top of the stack of the kernel
-%define KERNEL_STACK_TOP 0xF000000
+%define KERNEL_STACK_TOP 0x2000000
 
 ; To stop loading we look at this magic dword (BOOT)
 %define END_OF_STAGE2_LOW 0x4F42
