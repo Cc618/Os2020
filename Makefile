@@ -1,10 +1,15 @@
 # Files
 BIN = bin/os
-CHUNK_BOOT = obj/chunks/boot
+CHUNK_STAGE1 = obj/chunks/stage1
+CHUNK_STAGE2 = obj/chunks/stage2
 CHUNK_KERNEL = obj/chunks/kernel
-SRC_BOOT = $(wildcard src/boot/*)
+DIR_STAGE1 = src/stage1
+DIR_STAGE2 = src/stage2
+DIR_KERNEL = src/kernel
+SRC_STAGE1 = $(wildcard $(DIR_STAGE1)/*)
+
 # TODO : Update
-OBJ_DIRS = obj/kernel obj/boot obj/chunks
+OBJ_DIRS = obj/kernel obj/stage1 obj/stage2 obj/chunks
 
 # Tools
 TOOL_ASM = nasm
@@ -19,18 +24,21 @@ TOOL_VM = qemu-system-i386
 
 all: $(BIN)
 
-$(BIN): mkdirs $(CHUNK_BOOT) $(CHUNK_KERNEL)
-	cat $(CHUNK_BOOT) $(CHUNK_KERNEL) > $@
+$(BIN): mkdirs $(CHUNK_STAGE1) # $(CHUNK_KERNEL)
+# TODO : Update
+# cat $(CHUNK_STAGE1) $(CHUNK_KERNEL) > $@
+	cat $(CHUNK_STAGE1) > $@
 
-# --- Boot --- #
-$(CHUNK_BOOT): $(SRC_BOOT)
-	$(TOOL_ASM) -f bin -o $(CHUNK_BOOT) -i src/boot src/boot/bootloader.asm
+
+# --- Stage 1 --- #
+$(CHUNK_STAGE1): $(SRC_STAGE1)
+	$(TOOL_ASM) -f bin -o $(CHUNK_STAGE1) -i src/stage1 src/stage1/bootloader.asm
 
 
 # --- Kernel --- #
-$(CHUNK_KERNEL):
 # TODO : Update
-	touch $@
+# $(CHUNK_KERNEL):
+# touch $@
 
 # --- Utils --- #
 run: $(BIN)
