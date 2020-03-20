@@ -24,10 +24,9 @@ TOOL_VM = qemu-system-i386
 
 all: $(BIN)
 
-$(BIN): mkdirs $(CHUNK_STAGE1) # $(CHUNK_KERNEL)
-# TODO : Update
-# cat $(CHUNK_STAGE1) $(CHUNK_KERNEL) > $@
-	cat $(CHUNK_STAGE1) > $@
+$(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_KERNEL)
+# TODO : Update (stage 2)
+	cat $(CHUNK_STAGE1) $(CHUNK_KERNEL) > $@
 
 
 # --- Stage 1 --- #
@@ -37,8 +36,8 @@ $(CHUNK_STAGE1): $(SRC_STAGE1)
 
 # --- Kernel --- #
 # TODO : Update
-# $(CHUNK_KERNEL):
-# touch $@
+$(CHUNK_KERNEL):
+	echo "KERNEL" > $@
 
 # --- Utils --- #
 run: $(BIN)
