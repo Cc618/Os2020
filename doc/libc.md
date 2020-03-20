@@ -26,3 +26,19 @@ In addition, there is some definitions like NULL or int types.
 - putchar
 - printf (partially, see implemented flags in stdio.h)
 
+## ctype.h
+
+- isalnum
+- isalpha
+- isblank
+- iscntrl
+- isdigit
+- isgraph
+- islower
+- isprint
+- ispunct
+- isspace
+- isupper
+- isxdigit
+- tolower
+- toupper
