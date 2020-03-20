@@ -7,10 +7,14 @@
 
 bootloader_begin:
 
+; Os entry
 %include "boot.asm"
 
-; We are at offset 0x7E00
+; Loads the second stage bootloader
 %include "loader.asm"
+
+; Functions used by boot and loader
+%include "utils.asm"
 
 ; Pad and add the magic number
 times 0x200 - 2 - ($ - bootloader_begin) db 0
