@@ -8,29 +8,66 @@ entry:
 	mov bp, BOOT_STACK_HIGH
 	mov sp, bp
 
-
 	; Loader
-	; TODO : mv in loader.asm
+	; TODO : mv in loader.asm ???
+loadStage2:
+	; bx is the start offset of the chunk we load
+	mov bx, 0
 
-	mov bx, 0x0
+	; cx is the sector we read
 	mov cx, 2
+
+loadStage2.loadCurrentSector:
+	; Load the current sector
+	push cx
+	push bx
 	call loadSector
+	pop bx
+	pop cx
 
-	; mov ax, [0x7E00]
-	; cmp ax, 0
-	; je end
+	; Load possible end of stage2
+	push es
 
-    ; mov bx, OK
-	mov bx, 0x8000
+	add bx, 508
+	mov ax, 0x0800
+	mov es, ax
+	mov ax, [es:bx]
+	add bx, 2
+	mov dx, [es:bx]
+
+	pop es
+
+	; Check end of stage 2 magic dword
+	cmp ax, END_OF_STAGE2_LOW
+	jne stage2NotLoaded
+	cmp dx, END_OF_STAGE2_HIGH
+	je stage2Loaded
+
+stage2NotLoaded:
+	; The start offset must be incremented of 512 = 508 + 2 + 2
+	add bx, 2
+	inc cx
+	
+	jmp loadStage2.loadCurrentSector
+
+stage2Loaded:
+	; TODO
+    mov bx, OK
     call print
+
+	; TODO
+	jmp $
+
 
 	; TODO : Change
 end:
 	; TODO : Error function
-	; mov bx, ERR_LOAD
-	; call error
+	mov bx, ERR_LOAD
+	call error
 
     jmp $
+
+
 
 
 ; Loads a sector from the disk
@@ -51,7 +88,6 @@ loadSector:
 
 	; Read sectors command
 	mov ah, 2
-
 
 	; 1 sector to read
 	mov al, 1
@@ -82,13 +118,10 @@ loadSector.noError:
 	ret
 
 
-
-
-
-
 ; --- Variables --- ;
 defaultDrive: db 0
 
 ; --- Constants --- ;
 OK: db 'OK !', 0
+OK2: db 'OK2 !', 0
 ERR_LOAD: db "Can't read disk", 0
