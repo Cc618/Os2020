@@ -1,6 +1,5 @@
-/* Entry point */
-/* TODO : Boot / Real / Protected */
-kernel_entry = 1M;
+/* Entry point physical address */
+offset = 0x8000;
 sector_size = 512;
 
 OUTPUT_FORMAT("elf32-i386")
@@ -9,36 +8,14 @@ ENTRY(entry)
 
 SECTIONS
 {
-	.text kernel_entry :
+	/* --- Entry --- */
+	.entry offset :
 	{
-		*(.text)
+		*(.entry)
 	}
 
-	.rodata :
-	{
-		*(.rodata*)
-	}
-	
-	/*
-		obj/boot/*(.rodata*)
-		obj/kernel/*(.rodata*)
-	*/
-
-	.bss :
-	{
-		*(.bss)
-	}
-
-	.data :
-	{
-		*(.data)
-	}
-
-
-	/* --- Real Mode (boot) --- */
-
-	/*
-	.text real_entry :
+	/* --- Stage 2 --- */
+	.text :
 	{
 		*(.text)
 	}
@@ -57,18 +34,13 @@ SECTIONS
 	{
 		*(.data)
 	}
-	*/
 
-	/* --- Protected Mode (kernel) --- */
-
-	/* --- End Of Kernel (magic number) --- */
-	/*
+	/* --- End Of Stage 2 (magic number) --- */
 	. = ALIGN(sector_size);
 
-	.custom : {
-		*(.custom)
+	.end : {
+		*(.end)
 	}
 
 	. = ALIGN(sector_size);
-	*/
 }

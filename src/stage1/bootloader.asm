@@ -26,9 +26,3 @@ times 0x200 - 2 - ($ - bootloader_begin) db 0
 
 ; Boot magic number
 dw 0xAA55
-
-STAGE2_OFFSET:
-    mov [0xB8000], word 0xF041
-    jmp $
-
-    align 512
