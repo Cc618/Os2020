@@ -37,7 +37,7 @@ $(CHUNK_STAGE1): $(SRC_STAGE1)
 # --- Kernel --- #
 # TODO : Update
 $(CHUNK_KERNEL):
-	echo "KERNEL" > $@
+	python3 -c "print('A' * 508 + 'BOOT', end='')" > $@
 
 # --- Utils --- #
 run: $(BIN)
