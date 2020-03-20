@@ -1,3 +1,4 @@
+; Loads the second stage bootloader, switch to protected mode
 
 ; Os entry
 entry:
@@ -5,11 +6,17 @@ entry:
 	mov byte [defaultDrive], dl
 
 	; Setup stack
-	mov bp, BOOT_STACK_HIGH
+	mov bp, STAGE1_STACK_TOP
 	mov sp, bp
 
-	; Loader
-	; TODO : mv in loader.asm ???
+	; Load stage 2 with BIOS
+	call loadStage2
+
+	; Go to Protected Mode
+	call switchPm
+
+
+; Procedure which loads the second stage bootloader
 loadStage2:
 	; bx is the start offset of the chunk we load
 	mov bx, 0
@@ -29,8 +36,10 @@ loadStage2.loadCurrentSector:
 	push es
 
 	add bx, 508
-	mov ax, 0x0800
+
+	mov ax, STAGE2_OFFSET >> 4
 	mov es, ax
+	
 	mov ax, [es:bx]
 	add bx, 2
 	mov dx, [es:bx]
@@ -39,83 +48,37 @@ loadStage2.loadCurrentSector:
 
 	; Check end of stage 2 magic dword
 	cmp ax, END_OF_STAGE2_LOW
-	jne stage2NotLoaded
+	jne loadStage2.notLoaded
 	cmp dx, END_OF_STAGE2_HIGH
-	je stage2Loaded
+	je loadStage2.loaded
 
-stage2NotLoaded:
+loadStage2.notLoaded:
 	; The start offset must be incremented of 512 = 508 + 2 + 2
 	add bx, 2
 	inc cx
-	
+
 	jmp loadStage2.loadCurrentSector
 
-stage2Loaded:
-	; TODO
-    mov bx, OK
-    call print
-
-	; TODO
-	jmp $
-
-
-	; TODO : Change
-end:
-	; TODO : Error function
-	mov bx, ERR_LOAD
-	call error
-
-    jmp $
-
-
-
-
-; Loads a sector from the disk
-; - writeShift, short : Where to write the sector, from 0x8000 (Write offset = 0x8000 + writeShift)
-; - readSector, byte : Which sector to read from disk (Boot is sector 1)
-loadSector:
-	pusha
-
-	; Clear carry flag (set to no error)
-	clc
-
-	; Write address (es:bx)
-	; The stage 2 is loaded at 0x8000
-	mov ax, 0x0800
-	mov es, ax
-
-	; Which sector to read is cl
-
-	; Read sectors command
-	mov ah, 2
-
-	; 1 sector to read
-	mov al, 1
-
-	; Cylinder = 0
-	mov dh, 0
-
-	; Head = 0
-	mov ch, 0
-
-	; Drive
-	mov dl, [defaultDrive]
-
-	int 13h
-
-	; Check errors
-	; Carry flag error = can't read
-	jnc .noError
-
-	; Cannot load kernel
-	mov bx, ERR_LOAD
-	call error
-
-loadSector.noError:
-
-	popa
+loadStage2.loaded:
 
 	ret
+
+
+; Procedure to switch to the 32 bits protected mode
+switchPm:
+	; Disable interrupts
+	cli
+
+	; Load the GDT
+    lgdt [gdt_descriptor]
+
+	; Set the protected mode bit
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+
+	; Far jump with the code segment to 32 bits
+    jmp CODE_SEG:protectedMain
 
 
 ; --- Variables --- ;
@@ -123,5 +86,4 @@ defaultDrive: db 0
 
 ; --- Constants --- ;
 OK: db 'OK !', 0
-OK2: db 'OK2 !', 0
 ERR_LOAD: db "Can't read disk", 0
