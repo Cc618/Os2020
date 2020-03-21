@@ -1,21 +1,15 @@
-#include "dep.h"
-
-const char *hw = "Hello world !!!";
+#include "io.h"
 
 void main()
 {
-    // TODO : Change
-    // Fill screen
-    for (int i = 0xB8000; i < 0xB8000 + 80 * 25 * 2; i += 2)
-		*((short*)i) = (int)0x0F << 8;
+    // Clear screen
+    flush();
 
-    const char *s = hw;
-    for (short *c = (short*)0xB8000; *s != '\0'; ++c)
-    {
-        *c = *s | (0x9F << 8);
-        ++s;
-    }
+    // Print hello world
+    puts("Hello world !");
+    puts("Booting...");
 
+    // TODO : jmp to kernel
     while (1);
 }
 
