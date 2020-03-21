@@ -1,3 +1,4 @@
+#include "dep.h"
 
 const char *hw = "Hello world !!!";
 

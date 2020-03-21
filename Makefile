@@ -1,3 +1,5 @@
+# TODO : Remove dir stage1 (useless)
+
 # Files
 BIN = bin/os
 CHUNK_STAGE1 = obj/chunks/stage1
@@ -9,6 +11,9 @@ DIR_KERNEL = src/kernel
 SRC_STAGE1 = $(wildcard $(DIR_STAGE1)/*)
 SRC_STAGE2_C = $(wildcard $(DIR_STAGE2)/*.c)
 SRC_STAGE2_ASM = $(wildcard $(DIR_STAGE2)/*.asm)
+OBJ_STAGE2_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_C)))
+OBJ_STAGE2_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_ASM)))
+DEP_STAGE2 = $(OBJ_STAGE2_C:.o=.d)
 
 # TODO : Update
 OBJ_DIRS = obj/kernel obj/stage1 obj/stage2 obj/chunks
@@ -20,8 +25,7 @@ TOOL_C = /media/data/donnees/linux/logiciels/i386-elf-9.1.0/bin/i386-elf-gcc
 TOOL_LINK = /media/data/donnees/linux/logiciels/i386-elf-9.1.0/bin/i386-elf-ld
 
 # Flags
-FLAGS_C = -Wall -Wextra -std=c99 -nostdinc -ffreestanding -nostdlib -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -lgcc -D__is_kernel -m32
-# FLAG_C = -Wall -Wextra -nostdinc -ffreestanding -nostdlib -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -lgcc -lk -D__is_kernel -fno-exceptions -fno-rtti -m32 -MMD -fno-use-cxa-atexit
+FLAGS_C = -Wall -Wextra -std=c99 -nostdinc -ffreestanding -nostdlib -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -lgcc -D__is_kernel -m32 -MMD
 
 
 all: $(BIN)
@@ -35,13 +39,18 @@ $(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_STAGE2)
 $(CHUNK_STAGE1): $(SRC_STAGE1)
 	$(TOOL_ASM) -f bin -o $(CHUNK_STAGE1) -i src/stage1 src/stage1/bootloader.asm
 
+
 # --- Stage 2 --- #
-$(CHUNK_STAGE2): $(SRC_STAGE2_ASM) $(SRC_STAGE2_C)
-# python3 -c "print('A' * (512 * 3 - 4) + 'BOOT', end='')" > $@
-# TODO : Auto
-	$(TOOL_ASM) -f elf32 -i src/stage2 -o obj/stage2/sections.o src/stage2/sections.asm
-	$(TOOL_C) $(C_FLAGS) -c -I src/stage2 -o obj/stage2/main.o src/stage2/main.c
-	$(TOOL_LINK) -T stage2.ld -e main --oformat binary -o $@ obj/stage2/*.o
+$(CHUNK_STAGE2): $(OBJ_STAGE2_ASM) $(OBJ_STAGE2_C)
+# TODO : Auto (+deps)
+	@echo $(DEP_STAGE2)
+	$(TOOL_LINK) -T stage2.ld -e main --oformat binary -o $@ $^
+
+obj/stage2/%.c.o: src/stage2/%.c
+	$(TOOL_C) $(FLAGS_C) -c -I src/stage2 -o $@ $<
+
+obj/stage2/%.asm.o: src/stage2/%.asm
+	$(TOOL_ASM) -f elf32 -i src/stage2 -o $@ $<
 
 
 # --- Kernel --- #
@@ -63,9 +72,9 @@ clean:
 
 
 
-# TODO
+# TODO : Other deps
 # Include depedencies
-# -include $(DEP)
+-include $(DEP_STAGE2)
 
 # TODO
 # .PHONY: tst
