@@ -9,6 +9,8 @@ void main()
     puts("Hello world !");
     puts("Booting...");
 
+    fatal("ho ho");
+
     // TODO : jmp to kernel
     while (1);
 }

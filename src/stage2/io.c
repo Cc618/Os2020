@@ -8,13 +8,14 @@
 
 // Default display format
 #define FMT_DEFAULT 0x07
+#define FMT_BLUE_SCREEN 0x9F
 
 unsigned int cursorPos = 0;
 
-void flush()
+void fill(int error)
 {
     for (int i = VIDEO_MEMORY; i < VIDEO_MEMORY_END; i += 2)
-        *((short*)i) = (short)FMT_DEFAULT << 8;
+        *((short*)i) = (short)(error ? FMT_BLUE_SCREEN : FMT_DEFAULT) << 8;
 }
 
 void puts(const char *s)
@@ -23,6 +24,17 @@ void puts(const char *s)
         putchar(*s++);
     
     newLine();
+}
+
+void fatal(const char *s)
+{
+    fill(1);
+
+    cursorPos = 0;
+
+    puts(s);
+
+    halt();
 }
 
 void newLine()
@@ -44,7 +56,7 @@ void putchar(char c)
         newLine();
     else
     {
-        ((short*)VIDEO_MEMORY)[cursorPos++] = c | (FMT_DEFAULT << 8);
+        ((char*)VIDEO_MEMORY)[2 * cursorPos++] = c;
 
         updateCursor();
     }
@@ -53,4 +65,9 @@ void putchar(char c)
 void updateCursor()
 {
     // TODO :
+}
+
+void halt()
+{
+    while (1);
 }
