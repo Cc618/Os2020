@@ -76,6 +76,23 @@ inb:
 	ret
 
 
+; Receives a word from a port
+global inw
+inw:
+	push ebp
+	mov ebp, esp
+
+	push dx
+
+	; dx = port, al = value
+	mov dx, word [ebp + 8]
+	in ax, dx
+
+	pop dx
+
+	leave
+	ret
+
 
 
 
