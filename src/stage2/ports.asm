@@ -58,24 +58,6 @@ inb:
 	ret
 
 
-; Receives a byte from a port
-global inb
-inb:
-	push ebp
-	mov ebp, esp
-
-	push dx
-
-	; dx = port, al = value
-	mov dx, word [ebp + 8]
-	in al, dx
-
-	pop dx
-
-	leave
-	ret
-
-
 ; Receives a word from a port
 global inw
 inw:
