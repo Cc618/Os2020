@@ -10,3 +10,7 @@
 ; To stop loading we look at this magic dword (BOOT)
 %define END_OF_STAGE2_LOW 0x4F42
 %define END_OF_STAGE2_HIGH 0x544F
+
+; In stage2/sections.asm
+; Shift in bytes from the start of the chunk of this variable
+%define SHIFT_KERNEL_SECTOR_BEGIN 16

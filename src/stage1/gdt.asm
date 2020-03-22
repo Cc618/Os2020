@@ -4,7 +4,7 @@ gdt_start:
 	; Null 8 bytes
 	dq 0x0
 
-; Code segment, executable unlike the data segment.
+; Code segment, executable unlike the data segment
 ; Base = 0x00000000, Limit = 0xFFFFF
 gdt_kernel_code: 
 	; Limit (0:15)

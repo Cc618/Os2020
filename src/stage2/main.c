@@ -2,8 +2,8 @@
 #include "io.h"
 #include "ports.h"
 
-// TODO : auto
-#define STAGE2_SECTOR 5
+// The number of sectors before the kernel
+extern short KERNEL_SECTOR_BEGIN;
 
 void loadKernel()
 {
@@ -13,7 +13,7 @@ void loadKernel()
     do
     {
         // Load a sector
-        readDisk(loadedSectors + STAGE2_SECTOR, loadDestination);
+        readDisk(KERNEL_SECTOR_BEGIN + loadedSectors, loadDestination);
 
         ++loadedSectors;
 

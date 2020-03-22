@@ -4,7 +4,17 @@ extern main
 
 ; This section is always before other sections in the second stage bootloader
 section .entry
+jmp entry
+
+; Ensure that we are 16 bytes after the begining of the file
+align 16
+
+global KERNEL_SECTOR_BEGIN
+KERNEL_SECTOR_BEGIN: dw 0
+
+entry:
     call main
+
 
 ; This section is after other sections
 section .end

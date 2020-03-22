@@ -14,5 +14,9 @@ protectedMain:
     mov ebp, KERNEL_STACK_TOP
     mov esp, ebp
 
+    ; Move variables in stage2 memory
+    mov ax, [loadedSectors]
+	mov [STAGE2_OFFSET + SHIFT_KERNEL_SECTOR_BEGIN], ax
+
     ; Give control to the second stage boot loader
     call STAGE2_OFFSET

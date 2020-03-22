@@ -32,6 +32,8 @@ loadStage2.loadCurrentSector:
 	pop bx
 	pop cx
 
+	inc word [loadedSectors]
+
 	; Load possible end of stage2
 	push es
 
@@ -83,6 +85,7 @@ switchPm:
 
 ; --- Variables --- ;
 defaultDrive: db 0
+loadedSectors: dw 0
 
 ; --- Constants --- ;
 OK: db 'OK !', 0
