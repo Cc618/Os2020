@@ -55,18 +55,12 @@ obj/stage2/%.asm.o: src/stage2/%.asm
 # --- Kernel --- #
 # TODO : Update
 $(CHUNK_KERNEL):
-	python3 -c "print('KERNEL' + 'A' * (512 - 6 - 4) + 'CORE', end='')" > $@
+	python3 -c "print('KERNEL' + 'A' * (512 * 3 - 6 - 4) + 'CORE', end='')" > $@
 
 
 # --- Utils --- #
 run: $(BIN)
 	$(TOOL_VM) -drive format=raw,if=ide,index=0,file=$(BIN)
-	# $(TOOL_VM) $(BIN)
-	# qemu-system-x86_64 -hda $(BIN)
-	# qemu-system-i386 -hda $(BIN)
-	# $(TOOL_VM) -drive id=disk,file=$(BIN),if=none -device ahci,id=ahci -device ide-drive,drive=disk,bus=ahci.0
-	# $(TOOL_VM) -drive format=raw,id=disk,file=$(BIN),if=none -device ahci,id=ahci -device ide-drive,drive=disk,bus=ahci.0
-	# $(TOOL_VM) -hda $(BIN)
 
 .PHONY: mkdirs
 mkdirs:
@@ -76,22 +70,6 @@ mkdirs:
 clean:
 	rm -rf obj bin
 
-
-
 # TODO : Other deps
 # Include depedencies
 -include $(DEP_STAGE2)
-
-# TODO
-# .PHONY: tst
-# tst:
-# # nasm -f elf32 -o tst.asm.o tst.asm
-
-# # $(CC) $(CFLAGS) -c -o obj/b.o src/boot/b.c
-# # $(CC) $(CFLAGS) -c -o obj/k.o src/kernel/k.c
-
-# 	$(LD) -T linker.ld -e pmMain --oformat binary -o tst obj/boot/b.o obj/kernel/k.o
-
-
-
-
