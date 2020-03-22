@@ -25,3 +25,9 @@ void updateCursor();
 void halt();
 
 // --- HDD --- //
+// Specs for ATA disks IO : https://wiki.osdev.org/ATA_PIO_Mode
+// Identifies the disk and verify that the disk is ATA
+void identifyDisk();
+
+// Reads the ATA disk (LBA28)
+void readDisk(int sector, void *dst);

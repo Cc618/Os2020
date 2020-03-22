@@ -30,9 +30,8 @@ FLAGS_C = -Wall -Wextra -std=c99 -nostdinc -ffreestanding -nostdlib -fno-builtin
 
 all: $(BIN)
 
-$(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_STAGE2)
-# TODO : Update (kernel)
-	cat $(CHUNK_STAGE1) $(CHUNK_STAGE2) > $@
+$(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL)
+	cat $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL) > $@
 
 
 # --- Stage 1 --- #
@@ -56,11 +55,18 @@ obj/stage2/%.asm.o: src/stage2/%.asm
 # --- Kernel --- #
 # TODO : Update
 $(CHUNK_KERNEL):
-	python3 -c "print('A' * (512 * 3 - 4) + 'BOOT', end='')" > $@
+	python3 -c "print('KERNEL' + 'A' * (512 - 6 - 4) + 'CORE', end='')" > $@
+
 
 # --- Utils --- #
 run: $(BIN)
-	$(TOOL_VM) $(BIN)
+	$(TOOL_VM) -drive format=raw,if=ide,index=0,file=$(BIN)
+	# $(TOOL_VM) $(BIN)
+	# qemu-system-x86_64 -hda $(BIN)
+	# qemu-system-i386 -hda $(BIN)
+	# $(TOOL_VM) -drive id=disk,file=$(BIN),if=none -device ahci,id=ahci -device ide-drive,drive=disk,bus=ahci.0
+	# $(TOOL_VM) -drive format=raw,id=disk,file=$(BIN),if=none -device ahci,id=ahci -device ide-drive,drive=disk,bus=ahci.0
+	# $(TOOL_VM) -hda $(BIN)
 
 .PHONY: mkdirs
 mkdirs:
