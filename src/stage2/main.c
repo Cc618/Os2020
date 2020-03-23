@@ -33,15 +33,11 @@ void main()
     // Clear screen
     flush();
 
-    // Print hello world
-    puts("Hello world !");
-
     // Check for disk IO errors
     identifyDisk();
 
+    // Load kernel from disk to memory
     loadKernel();
-    
-    puts("Kernel loaded");
 
     // Jump to kernel
     goto *(void*)KERNEL_OFFSET;
