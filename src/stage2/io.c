@@ -126,19 +126,17 @@ void identifyDisk()
     while ((status = inb(ATA_CMD) & 8) == 0 && (status & 1) == 0);
 
     // Receive information
-    short data[256];
+    // short data[256];
     for(int i = 0; i < 256; i++)
-        data[i] = inw(ATA_DATA);
+        /* data[i] = */ inw(ATA_DATA);
 
-    int handle48 = data[83];
+    // int handle48 = data[83];
     // Addressable sectors
-    int maxSectors = data[60] | (data[61] << 8);
+    // int maxSectors = data[60] | (data[61] << 8);
 }
 
 void readDisk(int sector, void *dst)
 {
-    int count = 20;
-
     // Read 1 sector number "sector" command
     outb(0xE0 | ((sector & 0x0F000000) >> 24), ATA_DEVICE);
     outb(0, ATA_ERROR);
@@ -149,7 +147,6 @@ void readDisk(int sector, void *dst)
     outb(0x20, ATA_CMD);
 
     char status = inb(ATA_CMD);
-    // unsigned char status = inb(ATA_CMD);
     while((status & 0x80) == 0x80 && (status & 0x01) == 0)
         status = inb(ATA_CMD);
 
