@@ -7,9 +7,11 @@
 // Entry from stage2
 void main()
 {
-    putchar('A');
+    fillScreen(' ', 0x07);
 
-    // TODO : Fill
+    setChar(10, 10, 'A', 0x07);
+    setCaret(10, 10);
+    // putchar('A');
 
     // sys_putc('!', FD_STDOUT);
 

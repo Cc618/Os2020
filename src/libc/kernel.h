@@ -3,4 +3,5 @@
 
 #include "../kernel/syscalls/syscalls.h"
 
+// TODO : libc / kernel shared constants ?
 #include "../kernel/constants/fd.h"
