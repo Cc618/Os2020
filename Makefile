@@ -1,5 +1,3 @@
-# TODO : Remove dir stage1 (useless)
-
 # Files
 BIN = bin/os
 CHUNK_STAGE1 = obj/chunks/stage1
@@ -29,7 +27,7 @@ OBJ_LIBC_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_LIBC_C)))
 OBJ_LIBC_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_LIBC_ASM)))
 DEP_LIBC = $(OBJ_LIBC_C:.o=.d)
 
-OBJ_DIRS = obj/kernel obj/libc obj/stage1 obj/stage2 obj/chunks
+OBJ_DIRS = obj/kernel obj/libc obj/stage2 obj/chunks
 OBJ_DIRS += $(dir $(OBJ_KERNEL_C))
 OBJ_DIRS += $(dir $(OBJ_LIBC_C))
 
