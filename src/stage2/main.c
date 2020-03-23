@@ -3,6 +3,7 @@
 #include "ports.h"
 
 // The number of sectors before the kernel
+// Defined in sections.asm
 extern short KERNEL_SECTOR_BEGIN;
 
 void loadKernel()

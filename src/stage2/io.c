@@ -1,4 +1,5 @@
 #include "io.h"
+#include "ports.h"
 
 // Screen constants
 #define TTY_WIDTH 80

@@ -14,6 +14,11 @@ SRC_STAGE2_ASM = $(wildcard $(DIR_STAGE2)/*.asm)
 OBJ_STAGE2_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_C)))
 OBJ_STAGE2_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_ASM)))
 DEP_STAGE2 = $(OBJ_STAGE2_C:.o=.d)
+SRC_KERNEL_C = $(wildcard $(DIR_KERNEL)/*.c)
+SRC_KERNEL_ASM = $(wildcard $(DIR_KERNEL)/*.asm)
+OBJ_KERNEL_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_KERNEL_C)))
+OBJ_KERNEL_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_KERNEL_ASM)))
+DEP_KERNEL = $(OBJ_KERNEL_C:.o=.d)
 
 # TODO : Update
 OBJ_DIRS = obj/kernel obj/stage1 obj/stage2 obj/chunks
@@ -28,6 +33,7 @@ TOOL_LINK = /media/data/donnees/linux/logiciels/i386-elf-9.1.0/bin/i386-elf-ld
 FLAGS_C = -Wall -Wextra -std=c99 -nostdinc -ffreestanding -nostdlib -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -lgcc -D__is_kernel -m32 -MMD
 
 
+# --- Main --- #
 all: $(BIN)
 
 $(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL)
@@ -41,8 +47,6 @@ $(CHUNK_STAGE1): $(SRC_STAGE1)
 
 # --- Stage 2 --- #
 $(CHUNK_STAGE2): $(OBJ_STAGE2_ASM) $(OBJ_STAGE2_C)
-# TODO : Auto (+deps)
-	@echo $(DEP_STAGE2)
 	$(TOOL_LINK) -T stage2.ld -e main --oformat binary -o $@ $^
 
 obj/stage2/%.c.o: src/stage2/%.c
@@ -53,9 +57,14 @@ obj/stage2/%.asm.o: src/stage2/%.asm
 
 
 # --- Kernel --- #
-# TODO : Update
-$(CHUNK_KERNEL):
-	python3 -c "print('KERNEL' + 'A' * (512 * 3 - 6 - 4) + 'CORE', end='')" > $@
+$(CHUNK_KERNEL): $(OBJ_KERNEL_ASM) $(OBJ_KERNEL_C)
+	$(TOOL_LINK) -T kernel.ld -e main --oformat binary -o $@ $^
+
+obj/kernel/%.c.o: src/kernel/%.c
+	$(TOOL_C) $(FLAGS_C) -c -I src/kernel -o $@ $<
+
+obj/kernel/%.asm.o: src/kernel/%.asm
+	$(TOOL_ASM) -f elf32 -i src/kernel -o $@ $<
 
 
 # --- Utils --- #
@@ -70,6 +79,7 @@ mkdirs:
 clean:
 	rm -rf obj bin
 
-# TODO : Other deps
-# Include depedencies
+
+# --- Depedencies --- #
 -include $(DEP_STAGE2)
+-include $(DEP_KERNEL)
