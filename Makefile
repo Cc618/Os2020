@@ -15,13 +15,14 @@ OBJ_STAGE2_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_C)))
 OBJ_STAGE2_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_STAGE2_ASM)))
 DEP_STAGE2 = $(OBJ_STAGE2_C:.o=.d)
 SRC_KERNEL_C = $(wildcard $(DIR_KERNEL)/*.c)
+SRC_KERNEL_C += $(wildcard $(DIR_KERNEL)/*/*.c)
 SRC_KERNEL_ASM = $(wildcard $(DIR_KERNEL)/*.asm)
 OBJ_KERNEL_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_KERNEL_C)))
 OBJ_KERNEL_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_KERNEL_ASM)))
 DEP_KERNEL = $(OBJ_KERNEL_C:.o=.d)
 
-# TODO : Update
 OBJ_DIRS = obj/kernel obj/stage1 obj/stage2 obj/chunks
+OBJ_DIRS += $(dir $(OBJ_KERNEL_C))
 
 # Tools
 TOOL_ASM = nasm
