@@ -1,11 +1,13 @@
 #include "syscalls.h"
 
 #include "constants/fd.h"
+#include "drivers/screen.h"
 
 void sys_putc(char c, int fd)
 {
     // TODO : rm
-    *(short*)0xB8000 = c | 0x0700;
+    setChar(0, 0, c, 0x0F);
+
 
     switch (fd)
     {
