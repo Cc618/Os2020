@@ -43,6 +43,6 @@ void main()
     
     puts("Kernel loaded");
 
-    // TODO : jmp to kernel
-    while (1);
+    // Jump to kernel
+    goto *(void*)KERNEL_OFFSET;
 }
