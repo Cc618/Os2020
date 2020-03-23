@@ -96,17 +96,10 @@ void halt()
 
 void identifyDisk()
 {
-    // TODO :
+    // Select master drive
     outb(0xA0, ATA_DEVICE);
-    outb(0x0, ATA_CTRL);
-
-    outb(0xA0, ATA_DEVICE);
-    unsigned char status = inb(ATA_CMD);
-    if (status == 0xFF)
-        fatal("DISK"); // TODO :
 
     // Identify command
-    outb(0xA0, ATA_DEVICE);
     outb(0, ATA_SECTOR_COUNT);
     outb(0, ATA_LBA_LOW);
     outb(0, ATA_LBA_MID);
@@ -118,6 +111,7 @@ void identifyDisk()
         fatal("Drive doesn't exist");
 
     // Test SATA drive
+    unsigned char status;
     if (((status = inb(ATA_CMD)) & 0x80) != 0)
         if (inb(ATA_LBA_MID) != 0 || inb(ATA_LBA_HI) != 0)
             fatal("Not a SATA drive");
@@ -137,7 +131,7 @@ void identifyDisk()
 
 void readDisk(int sector, void *dst)
 {
-    // Read 1 sector number "sector" command
+    // Read 1 sector, number "sector" command
     outb(0xE0 | ((sector & 0x0F000000) >> 24), ATA_DEVICE);
     outb(0, ATA_ERROR);
     outb(1, ATA_SECTOR_COUNT);
@@ -146,7 +140,7 @@ void readDisk(int sector, void *dst)
     outb((sector & 0xFF0000) >> 16, ATA_LBA_HI);
     outb(0x20, ATA_CMD);
 
-    char status = inb(ATA_CMD);
+    unsigned char status = inb(ATA_CMD);
     while((status & 0x80) == 0x80 && (status & 0x01) == 0)
         status = inb(ATA_CMD);
 

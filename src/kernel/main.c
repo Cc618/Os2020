@@ -5,6 +5,8 @@
 // Entry from stage2
 void main()
 {
+    // TODO : Fill
+
     sys_putc('!', FD_STDOUT);
 
     while (1);
