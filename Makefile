@@ -46,7 +46,7 @@ TOOL_DBG = gdb
 # Flags
 FLAGS_C = -Wall -Wextra -std=c99 -nostdinc -ffreestanding -nostdlib -fno-builtin -fno-stack-protector -nostartfiles -nodefaultlibs -lgcc -D__is_kernel -m32 -MMD
 FLAGS_RUN =
-DEBUG ?= 1
+DEBUG ?= 0
 
 ifeq ($(DEBUG), 1)
 FLAGS_C += -ggdb
@@ -54,10 +54,7 @@ FLAGS_RUN += -s -S
 endif
 
 # Commands
-# CMD_GDB = target remote localhost:1234\nsymbol-file $(SYM_KERNEL)\nb *main\ncontinue\n
 CMD_EXEC_GDB = cd $(PWD) && ((cat $(DBG_CMD); cat) | $(TOOL_DBG) $(BIN)); exec bash
-# CMD_EXEC_GDB = cd $(PWD) && ((cat) | $(TOOL_DEBUG) bin/os); exec bash
-# cd $(PWD) && export CC_DISABLE_FISH=1 && echo 'printf "pwd"' | bash
 
 
 # --- Main --- #

@@ -8,7 +8,6 @@
 // extern void stdoutPush(Stream *stream, uint8_t *data, size_t count);
 // Entry from stage2
 
-int x = 3;
 
 void main()
 {
@@ -29,12 +28,18 @@ void main()
     // setChar(0, 1, '!', 0x0F);
     // setChar(1, 0, 'B', 0x0F);
 
-    // consolePut('B');
-    // consolePut('3');
-    // consolePut('B');
-    // consolePut('B');
+    for (int i = 0; i < 40; ++i)
+    {
+        consolePut('O');
+        consolePut('S');
+    }
+    
+    consolePut('2');
+    consolePut('0');
+    consolePut('2');
+    consolePut('0');
 
-    setChar(x, 0, 'A', 0x0F);
+    // setChar(x, 0, 'A', 0x0F);
     // setChar(x++, 0, 'B', 0x0F);
     // setChar(x++, 0, 'C', 0x0F);
     // setChar(x++, 0, 'D', 0x0F);
