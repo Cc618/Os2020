@@ -85,7 +85,8 @@ switchPm:
 
 ; --- Variables --- ;
 defaultDrive: db 0
-loadedSectors: dw 0
+; 1 because the boot is already loaded
+loadedSectors: dw 1
 
 ; --- Constants --- ;
 OK: db 'OK !', 0

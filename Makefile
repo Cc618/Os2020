@@ -30,6 +30,7 @@ SRC_LIBC_ASM = $(wildcard $(DIR_LIBC)/*.asm)
 OBJ_LIBC_C = $(addsuffix .o, $(subst src/,obj/, $(SRC_LIBC_C)))
 OBJ_LIBC_ASM = $(addsuffix .o, $(subst src/,obj/, $(SRC_LIBC_ASM)))
 DEP_LIBC = $(OBJ_LIBC_C:.o=.d)
+DBG_CMD = scripts/debug
 
 OBJ_DIRS = obj/kernel obj/libc obj/stage2 obj/chunks
 OBJ_DIRS += $(dir $(OBJ_KERNEL_C))
@@ -54,7 +55,7 @@ endif
 
 # Commands
 # CMD_GDB = target remote localhost:1234\nsymbol-file $(SYM_KERNEL)\nb *main\ncontinue\n
-CMD_EXEC_GDB = cd $(PWD) && ((cat cmd; cat) | $(TOOL_DBG) $(BIN)); exec bash
+CMD_EXEC_GDB = cd $(PWD) && ((cat $(DBG_CMD); cat) | $(TOOL_DBG) $(BIN)); exec bash
 # CMD_EXEC_GDB = cd $(PWD) && ((cat) | $(TOOL_DEBUG) bin/os); exec bash
 # cd $(PWD) && export CC_DISABLE_FISH=1 && echo 'printf "pwd"' | bash
 
