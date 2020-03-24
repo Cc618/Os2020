@@ -54,8 +54,7 @@ endif
 
 # Commands
 # CMD_GDB = target remote localhost:1234\nsymbol-file $(SYM_KERNEL)\nb *main\ncontinue\n
-CMD_GDB = gdb
-CMD_EXEC_GDB = cd $(PWD) && cat | $(TOOL_DBG) $(BIN); exec bash
+CMD_EXEC_GDB = cd $(PWD) && ((cat cmd; cat) | $(TOOL_DBG) $(BIN)); exec bash
 # CMD_EXEC_GDB = cd $(PWD) && ((cat) | $(TOOL_DEBUG) bin/os); exec bash
 # cd $(PWD) && export CC_DISABLE_FISH=1 && echo 'printf "pwd"' | bash
 
@@ -86,7 +85,7 @@ obj/stage2/%.asm.o: src/stage2/%.asm
 # --- Kernel --- #
 $(CHUNK_KERNEL): $(OBJ_KERNEL_ASM) $(OBJ_KERNEL_C) $(OBJ_LIBC_ASM) $(OBJ_LIBC_C)
 ifeq ($(DEBUG), 1)
-	$(TOOL_LINK) -T kernel.ld -e main --oformat binary -o $(DBG_KERNEL) $^
+	$(TOOL_LINK) -T kernel.ld -e main -o $(DBG_KERNEL) $^
 
 	objcopy --only-keep-debug $(DBG_KERNEL) $(SYM_KERNEL)
 	objcopy --strip-debug $(DBG_KERNEL)
