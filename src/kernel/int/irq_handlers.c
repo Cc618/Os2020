@@ -2,6 +2,7 @@
 
 #include "drivers/ports.h"
 #include "drivers/keyboard.h"
+#include "syscalls/syscalls.h"
 
 #define INT_END() outb(0x20, 0x20)
 #define INT_END_SLAVE() outb(0xA0, 0x20); outb(0x20, 0x20)
@@ -23,6 +24,7 @@ void irq1Handler()
 
 void irq2Handler()
 {
+    consolePut('?');
     INT_END();
 }
 

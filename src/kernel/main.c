@@ -4,6 +4,7 @@
 #include "io/stdstream.h"
 #include "constants/fd.h"
 #include "int/interrupts.h"
+#include "syscalls/syscalls.h"
 
 #include <stdio.h>
 
@@ -18,6 +19,8 @@ void main()
     puts("Hello");
     puts("World");
     puts("Os2020");
+
+    SYSC0(42);
 
     while (1);
 }

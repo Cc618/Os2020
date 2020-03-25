@@ -223,8 +223,6 @@ void onKeyPressed()
     {
         // TODO : Command
         consoleNewLine();
+        return;
     }
-
-    // TODO : rm
-    // consolePut('?');
 }

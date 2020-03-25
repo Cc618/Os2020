@@ -1,5 +1,7 @@
 ; The interrupt descriptor table
 
+extern onSyscall
+
 global irq0
 global irq1
 global irq2
@@ -16,6 +18,7 @@ global irq12
 global irq13
 global irq14
 global irq15
+global irq128
  
 extern irq0Handler
 extern irq1Handler
@@ -136,5 +139,14 @@ irq14:
 irq15:
 	pusha
 	call irq15Handler
+	popa
+	iret
+
+; Syscall
+irq128:
+	pusha
+	
+	call onSyscall
+
 	popa
 	iret

@@ -18,6 +18,8 @@
 #define PIC_MASTER_OFFSET   0x20
 #define PIC_SLAVE_OFFSET    0x28
 
+#define CODE_SEGMENT_OFFSET 8
+
 // Io wait, can be fragile
 #define PIC_WAIT() \
 	do { \
@@ -48,6 +50,7 @@ extern void irq12();
 extern void irq13();
 extern void irq14();
 extern void irq15();
+extern void irq128();
 
 // An entry in the IDT
 typedef struct IDTEntry_t
@@ -66,7 +69,7 @@ IDTEntry IDT[256];
 uint32_t idtDescriptor[2];
 
 // All IRQs
-void (*IRQ_TABLE[16])() = {
+void (*IRQ_TABLE[256])() = {
 	irq0,
 	irq1,
 	irq2,
@@ -82,7 +85,9 @@ void (*IRQ_TABLE[16])() = {
 	irq12,
 	irq13,
 	irq14,
-	irq15
+	irq15,
+
+	[128] = irq128,
 };
 
 // Sets up the PIC
@@ -119,8 +124,6 @@ void initPIC()
 
 void initInterruptEntry(IDTEntry *entry, const uint32_t IRQ_ADDRESS)
 {
-#define CODE_SEGMENT_OFFSET 8
-
 	entry->offsetLow = IRQ_ADDRESS & 0xFFFF;
 	entry->selector = CODE_SEGMENT_OFFSET;
 	entry->zero = 0;
@@ -138,6 +141,8 @@ void initInterrupts()
 	const size_t IRQ_START = 32;
 	for (size_t i = IRQ_START; i < IRQ_START + 16; ++i)
 		initInterruptEntry(&IDT[i], (uint32_t)IRQ_TABLE[i - IRQ_START]);
+
+	initInterruptEntry(&IDT[128], (uint32_t)IRQ_TABLE[128]);
 
 	// Setup descriptor
 	const uint32_t IDT_ADDRESS = (uint32_t)IDT;
