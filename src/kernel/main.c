@@ -26,6 +26,7 @@ void main()
 
     puts("Hello");
     puts("World");
+    sys_exit();
     puts("Os2020");
 
     while (1);
