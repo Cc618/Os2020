@@ -1,20 +1,19 @@
 #include "syscalls.h"
 
 #include "constants/fd.h"
-#include "drivers/screen.h"
+#include "io/stdstream.h"
 
 void sys_putc(char c, int fd)
 {
-    // TODO : rm
-    setChar(0, 0, c, 0x0F);
-
-
     switch (fd)
     {
     case FD_STDOUT:
         // TODO : Change for stderr
     case FD_STDERR:
         // TODO : Implement
+
+        // TODO : Buffered io
+        stdoutStream.push(&stdoutStream, &c, 1);
         break;
     
     default:
