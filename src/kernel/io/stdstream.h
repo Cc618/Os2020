@@ -10,5 +10,6 @@ typedef struct stream_t {
     void (*push)(struct stream_t *stream, uint8_t *data, size_t count);
 } Stream;
 
-// --- stdout --- //
+// --- stdouts --- //
 extern Stream stdoutStream;
+extern Stream stderrStream;
