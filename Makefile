@@ -113,7 +113,6 @@ ifeq ($(DEBUG), 1)
 	xterm -hold -e 'bash -c "$(CMD_EXEC_GDB)"' &
 endif
 
-	# TODO :
 	$(TOOL_VM) $(FLAGS_RUN) -drive format=raw,if=ide,index=0,file=$(BIN)
 
 .PHONY: mkdirs
