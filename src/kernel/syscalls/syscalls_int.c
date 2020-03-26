@@ -12,7 +12,7 @@ uint32_t syscallArg4 = 0;
 
 // The table that gathers syscalls
 void (*syscalls[256])() = {
-    [SYS_EXIT] = sys_exit,
+    [SYS_FATAL] = sys_fatal,
     [SYS_PUTC] = sys_putc,
 };
 

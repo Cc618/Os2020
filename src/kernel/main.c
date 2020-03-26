@@ -12,15 +12,15 @@ void main()
 {
     initInterrupts();
 
-    fillScreen('\0', 0x07);
+    // Init display
+    fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
+    setCaret(0, 0);
 
+    // Some messages...
     puts("Hello");
     puts("World");
     puts("Os2020");
 
-    // SYSC0(SYS_PUTC);
-    // SYSC0(SYS_EXIT);
-    // SYSC0(SYS_PUTC);
 
     while (1);
 }

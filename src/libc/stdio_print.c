@@ -5,8 +5,6 @@
 int putchar(int c)
 {
     // TODO : Syscall
-    // sys_putc(c, FD_STDOUT);
-
     SYSC2(SYS_PUTC, c, stdout);
 
     return 0;
