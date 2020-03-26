@@ -1,15 +1,21 @@
 #include "syscalls.h"
 
-#include "constants/fd.h"
+#include <stdio.h>
+
 #include "io/stdstream.h"
 
-void sys_putc(char c, int fd)
+void sys_putc()
 {
+    uint8_t c = syscallArg1;
+    int fd = syscallArg2;
+
+
+    // TODO : Use table
     switch (fd)
     {
-    case FD_STDOUT:
+    case stdout:
         // TODO : Change for stderr
-    case FD_STDERR:
+    case stderr:
         // TODO : Implement
 
         // TODO : Buffered io

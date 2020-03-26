@@ -7,7 +7,7 @@ This explains where all sections are in memory
 A chunk is a part of the os, there is 3 chunks :
 
 - Stage1 : The first 512 bytes of the os, loads the stage 2 bootloader in memory and switchs to protected mode (Asm, 16 -> 32 bits)
-- Stage2 : Prepares kernel entry ( IDT...) and loads the kernel and memory (Asm / C, 32 bits)
+- Stage2 : Loads the kernel and memory (Asm / C, 32 bits)
 - Kernel : Contains everything except the bootloaders : core, libc, apps... (Asm / C, 32 bits) 
 
 ## Memory Map

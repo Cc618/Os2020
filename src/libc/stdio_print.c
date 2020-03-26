@@ -1,11 +1,13 @@
 #include "stdio.h"
 
-#include <kernel.h>
+#include "syscall.h"
 
 int putchar(int c)
 {
     // TODO : Syscall
-    sys_putc(c, FD_STDOUT);
+    // sys_putc(c, FD_STDOUT);
+
+    SYSC2(SYS_PUTC, c, stdout);
 
     return 0;
 }
@@ -17,7 +19,7 @@ int puts(const char *s)
     while (*s != '\0')
     {
         int status;
-        if (status = putchar(*s))
+        if ((status = putchar(*s)))
             return status;
 
         ++s;
