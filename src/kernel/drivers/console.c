@@ -1,13 +1,12 @@
 #include "console.h"
 
 #include "screen.h"
-#include <stdint.h>
 
 // The char cursor
 static unsigned int caret = 0;
 
 // Color format
-static uint8_t consoleFmt = FMT_DEFAULT;
+uint8_t consoleFmt = FMT_DEFAULT;
 
 // Update the caret (display)
 static void updateCaret()
@@ -45,4 +44,3 @@ void consoleNewLine()
 
     updateCaret();
 }
-

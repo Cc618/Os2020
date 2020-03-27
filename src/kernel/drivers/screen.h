@@ -22,6 +22,8 @@
 
 // Gray on black
 #define FMT_DEFAULT ((FMT_BLACK << 4) | FMT_GRAY)
+// Red on black
+#define FMT_ERROR ((FMT_BLACK << 4) | FMT_RED)
 
 // Sets the char c at pos (x, y) with format fmt
 // - Returns non zero if the position is invalid
