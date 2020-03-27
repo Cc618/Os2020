@@ -1,6 +1,7 @@
 #include "screen.h"
 
 #include "ports.h"
+#include <string.h>
 
 // Video memory addresses
 #define VIDEO_MEMORY 0xB8000
@@ -64,4 +65,14 @@ int setCaret(unsigned int x, unsigned int y)
     outb(cursorPos & 0xFF, VGA_DATA);
 
     return 0;
+}
+
+void screenScroll(size_t pixels)
+{
+    // TODO : assert(pixels < SCREEN_WIDTH * SCREEN_HEIGHT && pixels != 0);
+
+    memmove((void*)VIDEO_MEMORY, (void*)(VIDEO_MEMORY + 2 * pixels), 2 * SCREEN_WIDTH * SCREEN_HEIGHT * pixels);
+
+    for (size_t px = SCREEN_WIDTH * SCREEN_HEIGHT; px >= pixels; ++px)
+        ((short*) VIDEO_MEMORY)[px] = 0;
 }

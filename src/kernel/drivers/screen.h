@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stddef.h>
+
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
 
@@ -35,3 +37,6 @@ void fillScreen(char c, char fmt);
 // Sets the caret position
 // - Returns non zero if the position is invalid
 int setCaret(unsigned int x, unsigned int y);
+
+// Moves "pixels" characters to the top left corner
+void screenScroll(size_t pixels);
