@@ -56,15 +56,20 @@ int setCaret(unsigned int x, unsigned int y)
 
     int cursorPos = y * SCREEN_WIDTH + x;
 
+    setCaretOffset(cursorPos);
+
+    return 0;
+}
+
+void setCaretOffset(unsigned int i)
+{
     // High
     outb(0x0E, VGA_SELECT);
-    outb((cursorPos & 0xFF00) >> 8, VGA_DATA);
+    outb((i & 0xFF00) >> 8, VGA_DATA);
 
     // Low
     outb(0x0F, VGA_SELECT);
-    outb(cursorPos & 0xFF, VGA_DATA);
-
-    return 0;
+    outb(i & 0xFF, VGA_DATA);
 }
 
 void screenScroll(size_t pixels)
@@ -73,6 +78,6 @@ void screenScroll(size_t pixels)
 
     memmove((void*)VIDEO_MEMORY, (void*)(VIDEO_MEMORY + 2 * pixels), 2 * SCREEN_WIDTH * SCREEN_HEIGHT * pixels);
 
-    for (size_t px = SCREEN_WIDTH * SCREEN_HEIGHT; px >= pixels; ++px)
+    for (size_t px = SCREEN_WIDTH * SCREEN_HEIGHT; px >= SCREEN_WIDTH * SCREEN_HEIGHT - pixels; --px)
         ((short*) VIDEO_MEMORY)[px] = 0;
 }

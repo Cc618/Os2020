@@ -11,16 +11,16 @@ uint8_t consoleFmt = FMT_DEFAULT;
 // Update the caret (display)
 static void updateCaret()
 {
-    unsigned int x = caret % SCREEN_WIDTH;
-    unsigned int y = caret / SCREEN_WIDTH;
-    setCaret(x, y);
+    setCaretOffset(caret);
 }
 
 void consolePut(char c)
 {
     // TODO : FMT
-    // TODO : CRLF...
-    // TODO : End of screen
+    
+    // Scroll if necessary
+    if (caret == SCREEN_WIDTH * SCREEN_HEIGHT)
+        consoleScroll();
 
     if (c == '\n')
     {
@@ -38,9 +38,24 @@ void consolePut(char c)
 
 void consoleNewLine()
 {
-    // TODO : Scroll
     caret += SCREEN_WIDTH;
     caret -= caret % SCREEN_WIDTH;
+
+    // Scroll if necessary
+    if (caret == SCREEN_WIDTH * SCREEN_HEIGHT)
+        consoleScroll();
+
+    updateCaret();
+}
+
+void consoleScroll()
+{
+    screenScroll(SCREEN_WIDTH);
+
+    if (caret > SCREEN_WIDTH)
+        caret -= SCREEN_WIDTH;
+    else
+        caret = 0;
 
     updateCaret();
 }

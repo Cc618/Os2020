@@ -10,3 +10,6 @@ void consolePut(char c);
 
 // consolePut('\n')
 void consoleNewLine();
+
+// Scrolls one line
+void consoleScroll();

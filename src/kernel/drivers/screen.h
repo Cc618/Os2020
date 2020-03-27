@@ -37,6 +37,8 @@ void fillScreen(char c, char fmt);
 // Sets the caret position
 // - Returns non zero if the position is invalid
 int setCaret(unsigned int x, unsigned int y);
+// !!! The position is assumed valid
+void setCaretOffset(unsigned int i);
 
 // Moves "pixels" characters to the top left corner
 void screenScroll(size_t pixels);
