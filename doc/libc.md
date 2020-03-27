@@ -1,9 +1,5 @@
 # Libc
 
-<!-- TODO : Update WIP -->
-
-__This section is not yet online because it is in WIP__
-
 The libc doesn't contain all functions, here is the list of implemented functions.
 
 ## Notes
@@ -13,6 +9,7 @@ In addition, there is some definitions like NULL or int types.
 ## string.h
 
 - memcpy
+- memmove
 - memset
 - strcat
 - strdup
