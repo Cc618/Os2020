@@ -14,17 +14,23 @@ void sys_putc()
     switch (fd)
     {
     case stdout:
-        // TODO : Change for stderr
-    case stderr:
         // TODO : Implement
-
-        // TODO : Buffered io
         stdoutStream.push(&stdoutStream, &c, 1);
+        break;
+
+    case stderr:
+        stderrStream.push(&stderrStream, &c, 1);
+        break;
+
+    case stdin:
+        stdinStream.push(&stdinStream, &c, 1);
         break;
     
     default:
         // TODO : When fs, write to file
-        // TODO : fatal
+        
+        // TODO : Fatal message
+        sys_fatal();
         break;
     }
 }

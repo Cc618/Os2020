@@ -21,7 +21,7 @@ void main()
     puts("World");
     puts("Os2020");
 
-    stderrStream.push(NULL, "This is an error", 16);
+    stderrStream.push(NULL, "This is an error\n", 17);
 
     while (1);
 }

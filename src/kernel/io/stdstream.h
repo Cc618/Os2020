@@ -13,4 +13,4 @@ typedef struct stream_t {
 // --- stdouts --- //
 extern Stream stdoutStream;
 extern Stream stderrStream;
-// extern Stream stdinStream;
+extern Stream stdinStream;

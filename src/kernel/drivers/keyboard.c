@@ -2,6 +2,9 @@
 
 #include "drivers/ports.h"
 #include "drivers/console.h"
+#include "io/stdstream.h"
+#include "syscall.h"
+#include <stdio.h>
 
 #define KBD_DATA 0x60
 
@@ -213,8 +216,10 @@ void onKeyPressed()
     // Displayable char (letter, digit...)
     if (isDisplayable(data))
     {
-        // TODO : push to stdin
-        consolePut((shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data]);
+        uint8_t key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
+
+        SYSC2(SYS_PUTC, key, stdin);
+
         return;
     }
 
