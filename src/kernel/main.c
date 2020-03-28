@@ -6,6 +6,7 @@
 
 #include "syscall.h"
 #include <stdio.h>
+#include <stdarg.h>
 
 // Entry from stage2
 void main()
@@ -17,9 +18,11 @@ void main()
     setCaret(0, 0);
 
     // Some messages...
-    puts("Hello");
-    puts("World");
-    puts("Os2020");
+    // puts("Hello");
+    // puts("World");
+    // puts("Os2020");
+
+    printf("This %x is %d a %s ", 0xA0, -42, "test");
 
     stderrStream.push(NULL, "This is an error\n", 17);
 

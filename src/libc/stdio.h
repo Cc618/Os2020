@@ -8,3 +8,14 @@
 int putchar(int c);
 
 int puts(const char *s);
+
+// Implemented flags :
+// - %%
+// - %d
+// - %i
+// - %u
+// - %c
+// - %x
+// - %X
+// - %p
+int printf(const char *fmt, ...);
