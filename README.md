@@ -4,6 +4,10 @@ Os 2020 is a 32 bits OS.
 
 Written in C and assembly (NASM), it provides a custom bootloader and a libc.
 
+## Some screenshots
+
+![Os 2020](res/main.png "Main screen")
+
 ## Features
 
 This OS aims to improve an older OS I made named '[OctOs](https://github.com/Cc618/OctOs)'.
