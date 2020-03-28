@@ -1,3 +1,6 @@
+# make run -> Builds and launches the OS on Qemu
+# Set DEBUG to 1 to enable debug mode, scripts/debug is executed in gdb
+
 # Files
 BIN = bin/os
 CHUNK_STAGE1 = obj/chunks/stage1

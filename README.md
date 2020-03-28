@@ -37,3 +37,4 @@ Here is the list of improvements :
 - qemu-system-i386 (optional, to test)
 - objcopy (optional, to debug)
 - gdb (optional, to debug)
+- xterm (optional, to debug)
