@@ -22,7 +22,7 @@ void main()
     puts("World");
     printf("Os%d\n", 2020);
 
-    stderrStream.push(NULL, "I am an error message\n", 17);
+    stderrStream.push(NULL, "I am an error message\n", 22);
 
     while (1);
 }

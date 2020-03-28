@@ -39,3 +39,17 @@ void* memmove(void *dest, const void *src, size_t count)
 
     return dest;
 }
+
+void *_memset(void *str, int c, size_t n)
+{
+    while (n != 0)
+    {
+        --n;
+
+        // Set memory
+        ((char*)str)[n] = (char)c;
+    }
+
+    return str;
+}
+
