@@ -18,13 +18,11 @@ void main()
     setCaret(0, 0);
 
     // Some messages...
-    // puts("Hello");
-    // puts("World");
-    // puts("Os2020");
+    puts("Hello");
+    puts("World");
+    printf("Os%d\n", 2020);
 
-    printf("This %x is %d a %s ", 0xA0, -42, "test");
-
-    stderrStream.push(NULL, "This is an error\n", 17);
+    stderrStream.push(NULL, "I am an error message\n", 17);
 
     while (1);
 }

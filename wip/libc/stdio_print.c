@@ -90,7 +90,7 @@ int print_hex(uint32_t n, bool upper, bool allowLeading0)
 }
 
 // %d flag
-int print_int32(int n)
+int printf_int32(int n)
 {
     // Negative
     if (n < 0)
@@ -103,7 +103,7 @@ int print_int32(int n)
 }
 
 // %s flag
-int print_string(char *s)
+int printf_string(char *s)
 {
     int i = 0;
     while (s[i] != '\0')
@@ -138,12 +138,12 @@ int _printf(const char *fmt, ...)
                 break;
 
             case 's':
-                written += print_string(va_arg(args, char*));
+                written += printf_string(va_arg(args, char*));
                 break;
 
             case 'd':
             case 'i':
-                written += print_int32(va_arg(args, int32_t));
+                written += printf_int32(va_arg(args, int32_t));
                 break;
 
             case 'c':

@@ -13,7 +13,7 @@
 // --- Flags --- //
 // Flags return the number of characters written
 // %u flag
-int print_uint32(uint32_t n)
+int printf_uint32(uint32_t n)
 {
     int written = 0;
     uint32_t mod = UINT32_10POW_MAX;
@@ -46,7 +46,7 @@ int print_uint32(uint32_t n)
 }
 
 // %x / %X / %p flag
-int print_hex(uint32_t n, bool upper, bool allowLeading0)
+int printf_hex(uint32_t n, bool upper, bool allowLeading0)
 {
     int written = 0;
     // Whether we already have written digits (avoid leading 0s)
@@ -88,20 +88,20 @@ int print_hex(uint32_t n, bool upper, bool allowLeading0)
 }
 
 // %d flag
-int print_int32(int n)
+int printf_int32(int n)
 {
     // Negative
     if (n < 0)
     {
         putchar('-');
-        return 1 + print_uint32(-n);
+        return 1 + printf_uint32(-n);
     }
 
-    return print_uint32(n);
+    return printf_uint32(n);
 }
 
 // %s flag
-int print_string(char *s)
+int printf_string(char *s)
 {
     int i = 0;
     while (s[i] != '\0')
@@ -136,12 +136,12 @@ int printf(const char *fmt, ...)
                 break;
 
             case 's':
-                written += print_string(va_arg(args, char*));
+                written += printf_string(va_arg(args, char*));
                 break;
 
             case 'd':
             case 'i':
-                written += print_int32(va_arg(args, int32_t));
+                written += printf_int32(va_arg(args, int32_t));
                 break;
 
             case 'c':
@@ -150,13 +150,13 @@ int printf(const char *fmt, ...)
                 break;
 
             case 'u':
-                written += print_uint32(va_arg(args, uint32_t));
+                written += printf_uint32(va_arg(args, uint32_t));
                 break;
 
             case 'x':
             case 'X':
             case 'p':
-                written += print_hex(va_arg(args, uint32_t), next == 'X', next == 'p');
+                written += printf_hex(va_arg(args, uint32_t), next == 'X', next == 'p');
                 break;
 
             default:
