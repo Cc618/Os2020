@@ -1,4 +1,4 @@
-#include <_ctype.h>
+#include "ctype.h"
 
 int isalnum(char c)
 {
