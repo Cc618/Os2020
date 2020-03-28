@@ -34,4 +34,6 @@ Here is the list of improvements :
 
 - gcc cross compiler (for i386)
 - nasm
-- qemu-system-i386 (optional, used to test)
+- qemu-system-i386 (optional, to test)
+- objcopy (optional, to debug)
+- gdb (optional, to debug)
