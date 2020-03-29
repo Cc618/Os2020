@@ -15,6 +15,10 @@
 // See doc/syscalls.md for specs
 #define SYS_FATAL       0x02
 #define SYS_PUTC        0x10
+// TODO : GETC ????
+#define SYS_GETC        0x11
+// Stream connect
+#define SYS_STRCON      0x20
 
 // To raise a syscall
-void syscall(uint32_t id, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);
+uint32_t syscall(uint32_t id, uint32_t arg1, uint32_t arg2, uint32_t arg3, uint32_t arg4);

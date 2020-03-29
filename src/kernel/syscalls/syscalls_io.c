@@ -1,6 +1,7 @@
 #include "syscalls.h"
 
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "io/stdstream.h"
 
@@ -30,6 +31,32 @@ void sys_putc()
         // TODO : When fs, write to file
         
         // TODO : Fatal message
+        sys_fatal();
+        break;
+    }
+}
+
+void sys_strcon()
+{
+    int fd = syscallArg1;
+    void (*cb)(Stream*, uint8_t*, size_t) = syscallArg2;
+
+    // TODO : Table
+    switch (fd)
+    {
+    case stdin:
+        stdinStream.push = cb;
+        break;
+    
+    case stdout:
+        stdoutStream.push = cb;
+        break;
+
+    case stderr:
+        stderrStream.push = cb;
+        break;
+    
+    default:
         sys_fatal();
         break;
     }

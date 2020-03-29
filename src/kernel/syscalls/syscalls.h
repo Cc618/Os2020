@@ -8,6 +8,7 @@
 // --- Args --- //
 // To pass args between syscalls
 extern uint32_t syscallId;
+extern uint32_t syscallRet;
 extern uint32_t syscallArg1;
 extern uint32_t syscallArg2;
 extern uint32_t syscallArg3;
@@ -26,3 +27,8 @@ void sys_fatal();
 // - arg1 = c : char
 // - arg2 = fd : File descriptor
 void sys_putc();
+
+// Connects the stream to the callback cb
+// - arg1 = fd : File descriptor 
+// - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)
+void sys_strcon();

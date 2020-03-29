@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 // Streams related functions, a stream is almost like a file in linux
 
@@ -14,3 +15,5 @@ typedef struct stream_t {
 extern Stream stdoutStream;
 extern Stream stderrStream;
 extern Stream stdinStream;
+
+extern bool stdinBusy;

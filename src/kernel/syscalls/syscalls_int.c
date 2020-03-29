@@ -9,20 +9,22 @@ uint32_t syscallArg1 = 0;
 uint32_t syscallArg2 = 0;
 uint32_t syscallArg3 = 0;
 uint32_t syscallArg4 = 0;
+uint32_t syscallRet = 0;
 
 // The table that gathers syscalls
 void (*syscalls[256])() = {
     [SYS_FATAL] = sys_fatal,
     [SYS_PUTC] = sys_putc,
+    [SYS_STRCON] = sys_strcon,
 };
 
 void onSyscall()
 {
     void (*sysc)() = syscalls[syscallId];
 
-    // TODO : Fatal
+    // Invalid syscall id
     if (sysc == NULL)
-        return;
+        sys_fatal();
 
     sysc();
 }

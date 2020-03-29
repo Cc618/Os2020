@@ -24,7 +24,6 @@ void irq1Handler()
 
 void irq2Handler()
 {
-    consolePut('?');
     INT_END();
 }
 

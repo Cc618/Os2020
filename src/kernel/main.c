@@ -8,6 +8,12 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+
+void cb(void*_, uint8_t *buf, size_t n)
+{
+    consolePut(buf[0] + 1);
+}
+
 // Entry from stage2
 void main()
 {
@@ -21,6 +27,11 @@ void main()
     puts("Hello");
     puts("World");
     printf("Os%d\n", 2020);
+
+    // syscallArg1 = stdin;
+    // syscallArg2 = cb;
+    // sys_strcon();
+    SYSC2(SYS_STRCON, stdin, cb);
 
     stderrStream.push(NULL, "I am an error message\n", 22);
 
