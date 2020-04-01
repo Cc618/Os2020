@@ -24,15 +24,19 @@ void main()
 
     // Some messages...
     puts("Hello");
+
+    char a[20];
+    gets(a);
+    
+    char s[20];
+    gets(s);
+    
     puts("World");
     printf("Os%d\n", 2020);
-
-    // syscallArg1 = stdin;
-    // syscallArg2 = cb;
-    // sys_strcon();
-    // SYSC2(SYS_STRCON, stdin, cb);
-
-    // stderrStream.push(NULL, "I am an error message\n", 22);
+    
+    printf("|");
+    printf("%s", s);
+    printf("|");
 
     while (1);
 }

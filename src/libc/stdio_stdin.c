@@ -2,6 +2,7 @@
 
 #include "_libc.h"
 #include <stddef.h>
+#include <string.h>
 
 // Size of stdinBuffer
 #define STDIN_BUFFER_SIZE 512
@@ -42,11 +43,59 @@ void __libc_stdinPut(char c)
 char __libc_stdinGet()
 {
     char c = stdinBuffer[stdinBufferStart];
-    ++stdinBufferStart;
 
-    // Prevent overflows
+    // Reset char
+    stdinBuffer[stdinBufferStart] = '\0';
+
+    // Update start
+    ++stdinBufferStart;
     if (stdinBufferStart >= STDIN_BUFFER_SIZE)
         stdinBufferStart = 0;
 
     return c;
+}
+
+int getchar()
+{
+    // Wait for input
+    while (stdinBufferStart == stdinBufferEnd);
+
+    return (int)__libc_stdinGet();
+}
+
+char *gets(char *s)
+{
+    // End of string (without crlf)
+    size_t end = STDIN_BUFFER_SIZE + 1;
+
+    // Check for lines before buffer end
+    for (size_t i = stdinBufferStart; i != stdinBufferEnd; i = (i + 1) % STDIN_BUFFER_SIZE)
+        if (stdinBuffer[i] == '\n')
+            end = i - 1;
+
+    // We haven't found line end in the current buffer
+    // Wait for end of line
+    if (end == STDIN_BUFFER_SIZE + 1)
+    {
+        while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
+
+        end = stdinBufferEnd - 1;
+    }
+
+    size_t length = end - stdinBufferStart;
+
+    // Start is after end so update
+    if (stdinBufferStart > end)
+        length += STDIN_BUFFER_SIZE;
+
+    // Copy string
+    size_t j = 0;
+    for (size_t i = stdinBufferStart; i != end; i = (i + 1) % STDIN_BUFFER_SIZE)
+        s[j++] = stdinBuffer[i];
+
+    // Remove crlf and update buffer start
+    stdinBuffer[end] = '\0';
+    stdinBufferStart = end + 1;
+
+    return s;
 }

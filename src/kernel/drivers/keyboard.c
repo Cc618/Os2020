@@ -214,9 +214,14 @@ void onKeyPressed()
     }
 
     // Displayable char (letter, digit...)
-    if (isDisplayable(data))
+    if (isDisplayable(data) || data == KEY_PRESSED_ENTER)
     {
-        uint8_t key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
+        uint8_t key;
+        
+        if (data == KEY_PRESSED_ENTER)
+            key = '\n';
+        else
+            key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
 
         // Display char
         consolePut(key);
@@ -224,14 +229,6 @@ void onKeyPressed()
         // Output this char to stdin
         SYSC2(SYS_PUTC, key, stdin);
 
-        return;
-    }
-
-    // Enter
-    if (data == KEY_PRESSED_ENTER)
-    {
-        // TODO : Command
-        consoleNewLine();
         return;
     }
 }

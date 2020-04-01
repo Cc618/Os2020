@@ -5,6 +5,10 @@
 #define stdout 2
 #define stderr 3
 
+int getchar();
+
+char *gets(char *s);
+
 int putchar(int c);
 
 int puts(const char *s);
