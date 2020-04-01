@@ -218,6 +218,10 @@ void onKeyPressed()
     {
         uint8_t key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
 
+        // Display char
+        consolePut(key);
+
+        // Output this char to stdin
         SYSC2(SYS_PUTC, key, stdin);
 
         return;

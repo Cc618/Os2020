@@ -3,6 +3,11 @@
 #include "drivers/console.h"
 #include "drivers/screen.h"
 
+extern void Stream_pushDummy(__attribute__((unused)) Stream *stream,
+                            __attribute__((unused)) uint8_t *data,
+                            __attribute__((unused)) size_t count)
+{}
+
 static void stdoutPush(__attribute__((unused)) Stream *_, uint8_t *data, size_t count)
 {
     for (size_t i = 0; i < count; ++i)

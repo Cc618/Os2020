@@ -16,4 +16,9 @@ extern Stream stdoutStream;
 extern Stream stderrStream;
 extern Stream stdinStream;
 
-extern bool stdinBusy;
+// extern bool stdinBusy;
+
+// Does nothing, used to stop streams
+// Defined in stdstream_stdout.c
+extern void Stream_pushDummy(__attribute__((unused)) Stream *stream, uint8_t *data, size_t count);
+
