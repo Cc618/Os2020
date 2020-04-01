@@ -24,7 +24,6 @@ void __libc_stdinCallback(__attribute__((unused)) void *stdinStream, uint8_t *bu
     __libc_stdinPut((char)*buf);
 }
 
-
 // Adds a new char to stdin's buffer
 void __libc_stdinPut(char c)
 {
