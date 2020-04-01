@@ -8,6 +8,7 @@
 #include "_libc.h"
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 
 // Entry from stage2
 void main()
@@ -22,21 +23,32 @@ void main()
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
     setCaret(0, 0);
 
-    // Some messages...
-    puts("Hello");
 
-    char a[20];
-    gets(a);
+
+    puts("Welcome to Os2020, type a message :");
+    printf("> ");
+
+    char msg[128];
+    gets(msg);
+
+    printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
+
+
+    // // Some messages...
+    // puts("Hello");
+
+    // char a[20];
+    // gets(a);
     
-    char s[20];
-    gets(s);
+    // char s[20];
+    // gets(s);
     
-    puts("World");
-    printf("Os%d\n", 2020);
+    // puts("World");
+    // printf("Os%d\n", 2020);
     
-    printf("|");
-    printf("%s", s);
-    printf("|");
+    // printf("|");
+    // printf("%s", s);
+    // printf("|");
 
     while (1);
 }
