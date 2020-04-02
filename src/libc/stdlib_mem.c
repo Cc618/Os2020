@@ -4,7 +4,8 @@
 
 // Addresses of the heap
 #define HEAP_START  0x1500000
-#define HEAP_END    0x1900000
+// TODO :
+#define HEAP_END    (0x1500000 + (16 + 4) * 3)
 
 // The header before a dynamically allocated
 // memory block
@@ -38,6 +39,10 @@ void free(void *ptr)
 
     // The header associated to the data
     MallocHeader *header = (MallocHeader*)((size_t)ptr - sizeof(MallocHeader));
+
+    // Update last block
+    if (header == lastBlock)
+        lastBlock = header->previous;
 
     // Update first block
     if (header == firstBlock)
@@ -74,7 +79,46 @@ void *malloc(size_t size)
         // Compute from previous
         headerOffset = (MallocHeader*)((size_t)lastBlock + sizeof(MallocHeader) + lastBlock->size);
 
-        // TODO : Find another block when heap overflow
+        // Find another block at the start of the heap
+        if (headerOffset >= HEAP_END)
+        {
+            puts("OK");
+
+            // We can allocate memory at HEAP_START offset
+            if (HEAP_START + sizeof(MallocHeader) + size <= firstBlock)
+                headerOffset = (MallocHeader*)HEAP_START;
+            else
+            {
+                // Iterate through all blocks until it
+                // finds enough free space
+                MallocHeader *block = firstBlock;
+                
+                // Find a good place
+                while (1)
+                {
+                    if (!block->next)
+                    {
+                        // TODO : msg = Not enough space in heap to allocate data
+                        SYSC0(SYS_FATAL);
+                    }
+
+                    // End of the current block
+                    size_t blockEnd = (size_t)block + sizeof(MallocHeader) + block->size;
+
+                    // Space between both blocks
+                    size_t freeSpace = (size_t)block->next - blockEnd;
+
+                    if (freeSpace > size)
+                    {
+                        headerOffset = (MallocHeader*)blockEnd;
+                        break;
+                    }
+
+                    // Not enough space, continue
+                    block = block->next;
+                }
+            }
+        }
     }
 
     // Prepare header

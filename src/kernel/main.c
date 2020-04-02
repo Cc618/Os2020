@@ -43,6 +43,7 @@ void main()
 
     int *a = malloc(sizeof(int));
     *a = 0x42424242;
+    int *c = malloc(sizeof(int));
 
     // free(a);
 
@@ -51,6 +52,11 @@ void main()
 
     *myNb = 0xAABBCCDD;
 
+    free(c);
+
+    int *b = malloc(sizeof(int));
+
+    puts("!");
 
     // printf("a           = 0x%X\n", *a);
     // printf("a next      = 0x%p\n", *(a - 2));
@@ -65,18 +71,18 @@ void main()
     // printf("n prev   = 0x%p\n", *(myNb - 3));
     // printf("n        = 0x%X\n", *myNb);
 
-    puts("A :");
-    dbgHead(a);
-    puts("N :");
-    dbgHead(myNb);
 
-
-    free(a);
-
-    puts("A :");
+    // puts("A :");
     // dbgHead(a);
-    puts("N :");
-    dbgHead(myNb);
+    // puts("N :");
+    // dbgHead(myNb);
+
+    // free(a);
+
+    // puts("A :");
+    // // dbgHead(a);
+    // puts("N :");
+    // dbgHead(myNb);
 
     while (1);
 }
