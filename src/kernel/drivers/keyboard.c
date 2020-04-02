@@ -12,6 +12,9 @@
 
 typedef char key_t;
 
+// For strings
+#define KEY_SPECIAL             0xE0
+
 // Pressed //
 // Special
 #define KEY_PRESSED_SPACE       0x39
@@ -20,6 +23,7 @@ typedef char key_t;
 #define KEY_PRESSED_TAB         0x0F
 #define KEY_PRESSED_LSHIFT      0x2A
 #define KEY_PRESSED_RSHIFT      0x36
+#define KEY_PRESSED_MOD         0x5B
 
 // Digits
 #define KEY_PRESSED_DIGIT_0 0x0B
@@ -113,17 +117,17 @@ key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '1', '2', '3', '4', '5', '6',
     // 0x08
-    '7', '8', '9', '0', 0, 0, 0, 0,
+    '7', '8', '9', '0', '-', '=', 0, 0,
     // 0x10
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
     // 0x18
-    'o', 'p', 0, 0, 0, 0, 'a', 's', 
+    'o', 'p', '[', ']', 0, 0, 'a', 's', 
     // 0x20
-    'd', 'f', 'g', 'h', 'j', 'k', 'l', 0,
+    'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
     // 0x28
-    0, 0, 0, 0, 'z', 'x', 'c', 'v',
+    '\'', '`', 0, '\\', 'z', 'x', 'c', 'v',
     // 0x30
-    'b', 'n', 'm', ',', 0, 0, 0, 0,
+    'b', 'n', 'm', ',', '.', '/', 0, 0,
     // 0x38
     0, ' ', 0, 0, 0, 0, 0, 0,
     // 0x40
@@ -131,7 +135,7 @@ key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
     // 0x48
     0, 0, 0, 0, 0, 0, 0, 0,
     // 0x50
-    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, '<', 0,
     // 0x58
     0, 0, 0, 0, 0, 0, 0, 0,
     // 0x60
@@ -149,17 +153,17 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '!', '@', '#', '$', '%', '^',
     // 0x08
-    '&', '*', '(', ')', 0, 0, 0, 0,
+    '&', '*', '(', ')', '_', '+', 0, 0,
     // 0x10
     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I',
     // 0x18
-    'O', 'P', 0, 0, 0, 0, 'A', 'S', 
+    'O', 'P', '{', '}', 0, 0, 'A', 'S', 
     // 0x20
-    'D', 'F', 'G', 'H', 'J', 'K', 'L', 0,
+    'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
     // 0x28
-    0, 0, 0, 0, 'Z', 'X', 'C', 'V',
+    '"', '~', 0, '|', 'Z', 'X', 'C', 'V',
     // 0x30
-    'B', 'N', 'M', 0, 0, 0, 0, 0,
+    'B', 'N', 'M', '<', '>', '?', 0, 0,
     // 0x38
     0, ' ', 0, 0, 0, 0, 0, 0,
     // 0x40
@@ -167,7 +171,7 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     // 0x48
     0, 0, 0, 0, 0, 0, 0, 0,
     // 0x50
-    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, '>', 0,
     // 0x58
     0, 0, 0, 0, 0, 0, 0, 0,
     // 0x60
@@ -182,11 +186,34 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
 
 void onKeyPressed()
 {
+    static bool wasString = false;
+
     unsigned char data = inb(KBD_DATA);
+
+    // String
+    if (wasString)
+    {
+        switch (data)
+        {
+        case KEY_PRESSED_MOD:
+            // TODO : Remove print when backspace
+            printf("<MOD>");
+            // TODO : On mod pressed ()
+            break;
+        }
+
+        wasString = false;
+
+        return;
+    }
 
     // Test controls
     switch (data)
     {
+    case KEY_PRESSED_BACKSPACE:
+        // TODO : Backspace
+        return;
+
     case KEY_PRESSED_LSHIFT:
     case KEY_PRESSED_RSHIFT:
         shiftPressed = true;
@@ -195,6 +222,10 @@ void onKeyPressed()
     case KEY_RELEASED_LSHIFT:
     case KEY_RELEASED_RSHIFT:
         shiftPressed = false;
+        return;
+
+    case KEY_SPECIAL:
+        wasString = true;
         return;
     }
 
