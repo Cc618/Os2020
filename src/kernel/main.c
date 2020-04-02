@@ -25,27 +25,21 @@ void main()
     setCaret(0, 0);
 
 
-    // // --- Example --- //
-    // puts("Welcome to Os2020, type a message :");
-    // printf("> ");
+    // --- Example --- //
+    puts("Welcome to Os2020, type a message :");
+    printf("> ");
 
-    // char msg[128];
-    // gets(msg);
+    char msg[128];
+    gets(msg);
 
-    // printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
-
-
-    // TODO : Multiple delimiters
+    printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
 
 
-    const char *_s = "Hello world   ! I'   m Cc";
-    char *s = strdup(_s);
+    const char *delim = " ,'.;";
 
-    puts(s);
-
-    char *p = strtok(s, " '");
+    char *p = strtok(msg, delim);
     puts(p);
-    while (p = strtok(NULL, " '"))
+    while (p = strtok(NULL, delim))
         puts(p);
 
 

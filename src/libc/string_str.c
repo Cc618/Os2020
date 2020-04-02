@@ -139,12 +139,15 @@ char *strtok(char *str, const char *delim)
             last = NULL;
             return s;
         }
-        
+
         for (size_t i = 0; i < delimLen; ++i)
             if (*str == delim[i])
             {
                 // Cut
                 *str = '\0';
+
+                // Save str
+                last = str;
 
                 inToken = true;
             }
@@ -152,9 +155,6 @@ char *strtok(char *str, const char *delim)
         // Next char
         ++str;
     }
-
-    // Save str
-    last = str + 1;
 
     return s;
 }
