@@ -1,7 +1,6 @@
 #include "string.h"
 
-// TODO :
-// #include <stdlib.h>
+#include <stdlib.h>
 
 char *strcat(char *dest, const char *src)
 {
@@ -16,20 +15,20 @@ char *strcat(char *dest, const char *src)
     return dst;
 }
 
-// char *strdup(const char *s)
-// {
-//     size_t len = strlen(s) + 1;
-//     char *dup = malloc(len);
+char *strdup(const char *s)
+{
+    size_t len = strlen(s) + 1;
+    char *dup = malloc(len);
 
-//     // Can't allocate
-//     if (!dup)
-//         return NULL;
+    // Can't allocate
+    if (!dup)
+        return NULL;
 
-//     // Set data
-//     strcpy(dup, s);
+    // Set data
+    strcpy(dup, s);
 
-//     return dup;
-// }
+    return dup;
+}
 
 int strcmp(const char *a, const char *b)
 {

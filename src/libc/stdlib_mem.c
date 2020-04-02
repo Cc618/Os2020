@@ -4,8 +4,7 @@
 
 // Addresses of the heap
 #define HEAP_START  0x1500000
-// TODO :
-#define HEAP_END    (0x1500000 + (16 + 4) * 3)
+#define HEAP_END    0x1D00000
 
 // The header before a dynamically allocated
 // memory block
@@ -82,8 +81,6 @@ void *malloc(size_t size)
         // Find another block at the start of the heap
         if (headerOffset >= HEAP_END)
         {
-            puts("OK");
-
             // We can allocate memory at HEAP_START offset
             if (HEAP_START + sizeof(MallocHeader) + size <= firstBlock)
                 headerOffset = (MallocHeader*)HEAP_START;
@@ -97,10 +94,8 @@ void *malloc(size_t size)
                 while (1)
                 {
                     if (!block->next)
-                    {
-                        // TODO : msg = Not enough space in heap to allocate data
-                        SYSC0(SYS_FATAL);
-                    }
+                        // Not enough space in heap to allocate data
+                        return NULL;
 
                     // End of the current block
                     size_t blockEnd = (size_t)block + sizeof(MallocHeader) + block->size;

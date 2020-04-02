@@ -40,23 +40,33 @@ void main()
 
 
 
-
-    int *a = malloc(sizeof(int));
-    *a = 0x42424242;
-    int *c = malloc(sizeof(int));
-
-    // free(a);
+    const char *s = "Hello world";
 
 
-    int *myNb = malloc(sizeof(int));
+    char *s2 = strdup(s);
+    s2[0] = 'h';
+    puts(s);
+    puts(s2);
 
-    *myNb = 0xAABBCCDD;
 
-    free(c);
+    free(s2);
 
-    int *b = malloc(sizeof(int));
+    // int *a = malloc(sizeof(int));
+    // *a = 0x42424242;
+    // int *c = malloc(sizeof(int));
 
-    puts("!");
+    // // free(a);
+
+
+    // int *myNb = malloc(sizeof(int));
+
+    // *myNb = 0xAABBCCDD;
+
+    // free(c);
+
+    // int *b = malloc(sizeof(int));
+
+    // puts("!");
 
     // printf("a           = 0x%X\n", *a);
     // printf("a next      = 0x%p\n", *(a - 2));

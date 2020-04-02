@@ -24,7 +24,7 @@ Kernel memory map :
 | -------            | -----     |
 | Kernel + Libc code | 0x1000000 |
 | Heap               | 0x1500000 |
-| Stack / Heap limit | 0x1900000 |
+| Stack / Heap limit | 0x1D00000 |
 | Stack (Top)        | 0x2000000 |
 
 ## Specs
