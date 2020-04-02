@@ -5,9 +5,9 @@
 #define stdout 2
 #define stderr 3
 
-int getchar();
-
 char *gets(char *s);
+
+int getchar();
 
 int putchar(int c);
 
