@@ -8,8 +8,9 @@
 
 #define KBD_DATA 0x60
 
-typedef char key_t;
+#define KEY_MAP_SIZE 128
 
+typedef char key_t;
 
 // Pressed //
 // Special
@@ -108,7 +109,7 @@ typedef char key_t;
 bool shiftPressed = false;
 
 // All displayable keys (without shift pressed)
-key_t DISPLAYABLE_PRESSED_MAP[128] = {
+key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '1', '2', '3', '4', '5', '6',
     // 0x08
@@ -122,7 +123,7 @@ key_t DISPLAYABLE_PRESSED_MAP[128] = {
     // 0x28
     0, 0, 0, 0, 'z', 'x', 'c', 'v',
     // 0x30
-    'b', 'n', 'm', 0, 0, 0, 0, 0,
+    'b', 'n', 'm', ',', 0, 0, 0, 0,
     // 0x38
     0, ' ', 0, 0, 0, 0, 0, 0,
     // 0x40
@@ -144,7 +145,7 @@ key_t DISPLAYABLE_PRESSED_MAP[128] = {
 };
 
 // When shift is pressed
-key_t DISPLAYABLE_PRESSED_MAP_UPPER[128] = {
+key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '!', '@', '#', '$', '%', '^',
     // 0x08
@@ -179,22 +180,6 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[128] = {
     0, 0, 0, 0, 0, 0, 0, 0,
 };
 
-// Whether we can send c to the console
-// * Only for key pressed
-bool isDisplayable(char c)
-{
-	return
-		// Digit
-		(c >= KEY_PRESSED_DIGIT_1 && c <= KEY_PRESSED_DIGIT_0) ||
-		// Letter		
-		(c >= KEY_PRESSED_LETTER_Q && c <= KEY_PRESSED_LETTER_P) ||
-		(c >= KEY_PRESSED_LETTER_A && c <= KEY_PRESSED_LETTER_L) ||
-		(c >= KEY_PRESSED_LETTER_Z && c <= KEY_PRESSED_LETTER_M) ||
-		// Special
-		c == KEY_PRESSED_SPACE
-		;
-}
-
 void onKeyPressed()
 {
     unsigned char data = inb(KBD_DATA);
@@ -213,17 +198,18 @@ void onKeyPressed()
         return;
     }
 
-    // Displayable char (letter, digit...)
-    if (isDisplayable(data) || data == KEY_PRESSED_ENTER)
-    {
-        uint8_t key;
-        
-        if (data == KEY_PRESSED_ENTER)
-            key = '\n';
-        else
-            key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
+    key_t key = 0;
 
-        // Display char
+    if (data == KEY_PRESSED_ENTER)
+        key = '\n';
+    else if (data < KEY_MAP_SIZE)
+        // Key may be 0
+        key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
+
+    // The key can be displayed
+    if (key)
+    {
+        // Display key
         consolePut(key);
 
         // Output this char to stdin
