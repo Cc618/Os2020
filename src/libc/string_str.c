@@ -147,7 +147,7 @@ char *strtok(char *str, const char *delim)
                 *str = '\0';
 
                 // Save str
-                last = str;
+                last = str + 1;
 
                 inToken = true;
             }

@@ -35,28 +35,13 @@ void main()
     printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
 
 
+    // --- Test --- //
     const char *delim = " ,'.;";
 
     char *p = strtok(msg, delim);
     puts(p);
     while (p = strtok(NULL, delim))
         puts(p);
-
-
-    // puts(p);
-
-    // p = strtok(NULL, " ");
-    // puts(p);
-
-    // p = strtok(NULL, " ");
-    // puts(p);
-
-    // p = strtok(NULL, " ");
-    // printf("0x%p\n", p);
-
-
-
-
 
     while (1);
 }
