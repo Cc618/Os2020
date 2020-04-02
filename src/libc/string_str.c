@@ -1,6 +1,8 @@
 #include "string.h"
 
+#include "syscall.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 char *strcat(char *dest, const char *src)
 {
@@ -95,4 +97,64 @@ char *strncpy(char *dest, const char *src, size_t n)
     }
 
     return dest;
+}
+
+char *strtok(char *str, const char *delim)
+{
+    // Start of the token if str is NULL
+    static char *last;
+
+    if (!str)
+    {
+        if (!last)
+            return NULL;
+
+        str = last;
+    }
+
+    // End of token
+    if (*str == '\0')
+    {
+        last = NULL;
+        return NULL;
+    }
+
+    // Save str
+    char *s = str;
+
+    // Delimit
+    size_t delimLen = strlen(delim);
+
+    // To cut multiple tokens in a row
+    bool wasInToken = false;
+    bool inToken = false;
+    while (!(wasInToken && !inToken))
+    {
+        wasInToken = inToken;
+        inToken = false;
+
+        // Last token
+        if (*str == '\0')
+        {
+            last = NULL;
+            return s;
+        }
+        
+        for (size_t i = 0; i < delimLen; ++i)
+            if (*str == delim[i])
+            {
+                // Cut
+                *str = '\0';
+
+                inToken = true;
+            }
+
+        // Next char
+        ++str;
+    }
+
+    // Save str
+    last = str + 1;
+
+    return s;
 }

@@ -35,23 +35,30 @@ void main()
     // printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
 
 
+    // TODO : Multiple delimiters
 
 
-
-    const char *_s = "Hello world !";
+    const char *_s = "Hello world   ! I'   m Cc";
     char *s = strdup(_s);
 
-    char *p = strtok(s, " ");
-    puts(p);
+    puts(s);
 
-    p = strtok(NULL, " ");
+    char *p = strtok(s, " '");
     puts(p);
+    while (p = strtok(NULL, " '"))
+        puts(p);
 
-    p = strtok(NULL, " ");
-    puts(p);
 
-    p = strtok(NULL, " ");
-    printf("%p\n", p);
+    // puts(p);
+
+    // p = strtok(NULL, " ");
+    // puts(p);
+
+    // p = strtok(NULL, " ");
+    // puts(p);
+
+    // p = strtok(NULL, " ");
+    // printf("0x%p\n", p);
 
 
 
