@@ -211,7 +211,14 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
-        // TODO : Backspace
+        // TODO : Only if possible (call the shell)
+
+        // Delete the char in the console
+        consoleDel();
+
+        // Delete the char in stdin
+        // TODO : fseek(stdin, -1, SEEK_CUR);
+
         return;
 
     case KEY_PRESSED_LSHIFT:

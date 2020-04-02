@@ -11,14 +11,12 @@
 #define VGA_SELECT 0x3D4
 #define VGA_DATA 0x3D5
 
-// Like setChar but with offset instead of position
-// !!! offset is supposed to be within screen bounds
-void setCharOffset(unsigned int offset, char c, char fmt)
+uint16_t getScreenData(unsigned int offset)
 {
-    char *px = (char*)(VIDEO_MEMORY + offset * 2);
-
-    *px = c;
-    *++px = fmt;
+    if (offset >= SCREEN_HEIGHT * SCREEN_WIDTH)
+        return 0;
+    
+    return *(uint16_t*)(VIDEO_MEMORY + 2 * offset);
 }
 
 // Sets the char c at pos (x, y) with format fmt
@@ -33,6 +31,16 @@ int setChar(unsigned int x, unsigned int y, char c, char fmt)
     setCharOffset(y * SCREEN_WIDTH + x, c, fmt);
 
     return 0;
+}
+
+// Like setChar but with offset instead of position
+// !!! offset is supposed to be within screen bounds
+void setCharOffset(unsigned int offset, char c, char fmt)
+{
+    char *px = (char*)(VIDEO_MEMORY + offset * 2);
+
+    *px = c;
+    *++px = fmt;
 }
 
 // Fills the screen

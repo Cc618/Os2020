@@ -28,10 +28,22 @@ void consolePut(char c)
         return;
     }
 
-    unsigned int x = caret % SCREEN_WIDTH;
-    setChar(x, caret / SCREEN_WIDTH, c, consoleFmt);
+    setCharOffset(caret, c, consoleFmt);
 
     ++caret;
+
+    updateCaret();
+}
+
+void consoleDel()
+{
+    if (caret % SCREEN_WIDTH == 0)
+        return;
+
+    --caret;
+
+    uint8_t fmt = getScreenData(caret) >> 8;
+    setCharOffset(caret, '\0', fmt);
 
     updateCaret();
 }

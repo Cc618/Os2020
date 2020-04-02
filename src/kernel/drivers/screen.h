@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <stdint.h>
 
 #define SCREEN_WIDTH 80
 #define SCREEN_HEIGHT 25
@@ -27,9 +28,17 @@
 // Red on black
 #define FMT_ERROR ((FMT_BLACK << 4) | FMT_RED)
 
+// Returns the pixel at offset position
+// The pixel is : | Format | Char |
+uint16_t getScreenData(unsigned int offset);
+
 // Sets the char c at pos (x, y) with format fmt
 // - Returns non zero if the position is invalid
 int setChar(unsigned int x, unsigned int y, char c, char fmt);
+
+// Like setChar but with offset instead of position
+// !!! offset is supposed to be within screen bounds
+void setCharOffset(unsigned int offset, char c, char fmt);
 
 // Fills the screen
 void fillScreen(char c, char fmt);
