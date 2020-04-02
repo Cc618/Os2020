@@ -46,11 +46,28 @@ int printf_uint32(uint32_t n)
 }
 
 // %x / %X / %p flag
-int printf_hex(uint32_t n, bool upper, bool allowLeading0)
+int printf_hex(uint32_t n, bool upper, bool isP)
 {
+    if (n == 0)
+    {
+        if (isP)
+        {
+            putchar('('); putchar('n'); putchar('i'); putchar('l'); putchar(')');
+
+            // Size of (nil) is 5
+            return 5;
+        }
+        else
+        {
+            putchar('0');
+
+            return 1;
+        }
+    }
+
     int written = 0;
     // Whether we already have written digits (avoid leading 0s)
-    bool started = false || allowLeading0;
+    bool started = false || isP;
 
     // Shift of n in bits
     unsigned int shift = 28;
@@ -106,7 +123,7 @@ int printf_string(char *s)
     int i = 0;
     while (s[i] != '\0')
         putchar(s[i++]);
-    
+
     return i;
 }
 

@@ -134,15 +134,3 @@ void *malloc(size_t size)
 
     return dataOffset;
 }
-
-
-void dbgHead(void *p)
-{
-    MallocHeader *h = (void*)((size_t)p - sizeof(MallocHeader));
-
-    printf("Size   0x%p\n", h->size);
-    printf("Prev   0x%p\n", h->previous);
-    printf("Next   0x%p\n", h->next);
-    printf("Pad    0x%p\n", h->padding);
-}
-
