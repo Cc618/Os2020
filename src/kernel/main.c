@@ -25,14 +25,37 @@ void main()
     setCaret(0, 0);
 
 
-    // --- Example --- //
-    puts("Welcome to Os2020, type a message :");
-    printf("> ");
+    // // --- Example --- //
+    // puts("Welcome to Os2020, type a message :");
+    // printf("> ");
 
-    char msg[128];
-    gets(msg);
+    // char msg[128];
+    // gets(msg);
 
-    printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
+    // printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
+
+
+
+
+
+    const char *_s = "Hello world !";
+    char *s = strdup(_s);
+
+    char *p = strtok(s, " ");
+    puts(p);
+
+    p = strtok(NULL, " ");
+    puts(p);
+
+    p = strtok(NULL, " ");
+    puts(p);
+
+    p = strtok(NULL, " ");
+    printf("%p\n", p);
+
+
+
+
 
     while (1);
 }

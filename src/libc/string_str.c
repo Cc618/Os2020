@@ -15,21 +15,6 @@ char *strcat(char *dest, const char *src)
     return dst;
 }
 
-char *strdup(const char *s)
-{
-    size_t len = strlen(s) + 1;
-    char *dup = malloc(len);
-
-    // Can't allocate
-    if (!dup)
-        return NULL;
-
-    // Set data
-    strcpy(dup, s);
-
-    return dup;
-}
-
 int strcmp(const char *a, const char *b)
 {
     while (*a != '\0' && *a == *b)
@@ -65,6 +50,21 @@ char *strcpy(char *dest, const char *src)
     *dest = '\0';
 
     return dst;
+}
+
+char *strdup(const char *s)
+{
+    size_t len = strlen(s) + 1;
+    char *dup = malloc(len);
+
+    // Can't allocate
+    if (!dup)
+        return NULL;
+
+    // Set data
+    strcpy(dup, s);
+
+    return dup;
 }
 
 size_t strlen(const char *s)
