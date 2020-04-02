@@ -18,6 +18,15 @@ A chunk is a part of the os, there is 3 chunks :
 | Stage2    | 0x7E00      |
 | Kernel    | 0x1000000   |
 
+Kernel memory map :
+
+| Section            | Start     |
+| -------            | -----     |
+| Kernel + Libc code | 0x1000000 |
+| Heap               | 0x1500000 |
+| Stack / Heap limit | 0x1900000 |
+| Stack (Top)        | 0x2000000 |
+
 ## Specs
 
 Each chunk contains a magic number at the end to be dynamically loaded.

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
+#include <stdlib.h>
 
 // Entry from stage2
 void main()
@@ -25,30 +26,57 @@ void main()
 
 
 
-    puts("Welcome to Os2020, type a message :");
-    printf("> ");
+    // puts("Welcome to Os2020, type a message :");
+    // printf("> ");
 
-    char msg[128];
-    gets(msg);
+    // char msg[128];
+    // gets(msg);
 
-    printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
+    // printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
 
 
-    // // Some messages...
-    // puts("Hello");
+    // TODO : printf %X disp 0 when 0 not nothing
+    // TODO : printf %p disp (nil) when 0
 
-    // char a[20];
-    // gets(a);
-    
-    // char s[20];
-    // gets(s);
-    
-    // puts("World");
-    // printf("Os%d\n", 2020);
-    
-    // printf("|");
-    // printf("%s", s);
-    // printf("|");
+
+
+
+    int *a = malloc(sizeof(int));
+    *a = 0x42424242;
+
+    // free(a);
+
+
+    int *myNb = malloc(sizeof(int));
+
+    *myNb = 0xAABBCCDD;
+
+
+    // printf("a           = 0x%X\n", *a);
+    // printf("a next      = 0x%p\n", *(a - 2));
+    // printf("&myNb       = 0x%p\n", myNb);
+    // printf("myNb        = 0x%X\n", *myNb);
+    // printf("Head size   = 0x%X\n", *(myNb - 4));
+    // printf("Head prev   = 0x%p\n", *(myNb - 3));
+    // printf("Head next   = 0x%p\n", *(myNb - 2));
+    // printf("Head pad    = 0x%X\n", *(myNb - 1));
+
+    // printf("a next   = 0x%p\n", *(a - 2));
+    // printf("n prev   = 0x%p\n", *(myNb - 3));
+    // printf("n        = 0x%X\n", *myNb);
+
+    puts("A :");
+    dbgHead(a);
+    puts("N :");
+    dbgHead(myNb);
+
+
+    free(a);
+
+    puts("A :");
+    // dbgHead(a);
+    puts("N :");
+    dbgHead(myNb);
 
     while (1);
 }
