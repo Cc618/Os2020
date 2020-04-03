@@ -21,7 +21,11 @@ size_t stdinBufferEnd = 0;
 // The size is always one
 void __libc_stdinCallback(__attribute__((unused)) void *stdinStream, uint8_t *buf, __attribute__((unused)) size_t n)
 {
-    __libc_stdinPut((char)*buf);
+    // Backspace
+    if (*buf == 0x08)
+        __libc_stdinDel();
+    else
+        __libc_stdinPut((char)*buf);
 }
 
 // Adds a new char to stdin's buffer
@@ -52,6 +56,12 @@ char __libc_stdinGet()
         stdinBufferStart = 0;
 
     return c;
+}
+
+void __libc_stdinDel()
+{
+    // Swallow char
+    stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;
 }
 
 int getchar()

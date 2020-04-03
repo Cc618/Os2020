@@ -20,3 +20,6 @@ void __libc_stdinPut(char c);
 // Pops the first char of stdin's buffer
 char __libc_stdinGet();
 
+// Removes the last char of the stdin buffer
+void __libc_stdinDel();
+

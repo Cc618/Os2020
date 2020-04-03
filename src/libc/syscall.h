@@ -11,6 +11,14 @@
 #define SYSC3(ID, arg1, arg2, arg3)         syscall((uint32_t)ID, (uint32_t)arg1, (uint32_t)arg2, (uint32_t)arg3, 0)
 #define SYSC4(ID, arg1, arg2, arg3, arg4)   syscall((uint32_t)ID, (uint32_t)arg1, (uint32_t)arg2, (uint32_t)arg3, (uint32_t)arg4)
 
+// Syscall args
+#define SYSA0(ID)                           { syscallId = (uint32_t)ID; }
+#define SYSA1(ID, arg1)                     { syscallId = (uint32_t)ID; syscallArg1 = (uint32_t)arg1; }
+#define SYSA2(ID, arg1, arg2)               { syscallId = (uint32_t)ID; syscallArg1 = (uint32_t)arg1; syscallArg2 = (uint32_t)arg2; }
+#define SYSA3(ID, arg1, arg2, arg3)         { syscallId = (uint32_t)ID; syscallArg1 = (uint32_t)arg1; syscallArg2 = (uint32_t)arg2; syscallArg3 = (uint32_t)arg3; }
+#define SYSA4(ID, arg1, arg2, arg3, arg4)   { syscallId = (uint32_t)ID; syscallArg1 = (uint32_t)arg1; syscallArg2 = (uint32_t)arg2; syscallArg3 = (uint32_t)arg3; syscallArg4 = (uint32_t)arg4; }
+
+
 // Syscalls ids
 // See doc/syscalls.md for specs
 #define SYS_FATAL       0x02
