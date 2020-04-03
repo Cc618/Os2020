@@ -79,10 +79,10 @@ void *malloc(size_t size)
         headerOffset = (MallocHeader*)((size_t)lastBlock + sizeof(MallocHeader) + lastBlock->size);
 
         // Find another block at the start of the heap
-        if (headerOffset >= HEAP_END)
+        if (headerOffset >= (MallocHeader*)HEAP_END)
         {
             // We can allocate memory at HEAP_START offset
-            if (HEAP_START + sizeof(MallocHeader) + size <= firstBlock)
+            if (HEAP_START + sizeof(MallocHeader) + size <= (size_t)firstBlock)
                 headerOffset = (MallocHeader*)HEAP_START;
             else
             {

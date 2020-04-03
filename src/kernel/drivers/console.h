@@ -17,3 +17,5 @@ void consoleNewLine();
 
 // Scrolls one line
 void consoleScroll();
+
+unsigned int getCaret();

@@ -3,6 +3,7 @@
 #include "drivers/ports.h"
 #include "drivers/console.h"
 #include "io/stdstream.h"
+#include "apps/shell.h"
 #include "syscall.h"
 #include <stdio.h>
 
@@ -211,14 +212,16 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
-        // TODO : Only if possible (call the shell)
-
         // Delete the char in the console
-        consoleDel();
+        shellDelete();
 
         // Delete the char in stdin
         // TODO : fseek(stdin, -1, SEEK_CUR);
 
+        return;
+    
+    case KEY_PRESSED_ENTER:
+        shellValidCommand();
         return;
 
     case KEY_PRESSED_LSHIFT:
@@ -238,9 +241,7 @@ void onKeyPressed()
 
     key_t key = 0;
 
-    if (data == KEY_PRESSED_ENTER)
-        key = '\n';
-    else if (data < KEY_MAP_SIZE)
+    if (data < KEY_MAP_SIZE)
         // Key may be 0
         key = (shiftPressed ? DISPLAYABLE_PRESSED_MAP_UPPER : DISPLAYABLE_PRESSED_MAP)[data];
 

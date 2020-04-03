@@ -71,3 +71,8 @@ void consoleScroll()
 
     updateCaret();
 }
+
+unsigned int getCaret()
+{
+    return caret;
+}

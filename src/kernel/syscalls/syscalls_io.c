@@ -39,7 +39,7 @@ void sys_putc()
 void sys_strcon()
 {
     int fd = syscallArg1;
-    void (*cb)(Stream*, uint8_t*, size_t) = syscallArg2;
+    void (*cb)(Stream*, uint8_t*, size_t) = (void (*)(Stream*, uint8_t*, size_t))syscallArg2;
 
     // TODO : Table
     switch (fd)
