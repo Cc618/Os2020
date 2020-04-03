@@ -212,15 +212,17 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
+        // Delete the char in stdin
+        SYSC2(SYS_PUTC, 0x08, stdin);
+
         // Delete the char in the console
         shellDelete();
-
-        // Delete the char in stdin
-        // TODO : fseek(stdin, -1, SEEK_CUR);
 
         return;
     
     case KEY_PRESSED_ENTER:
+        SYSC2(SYS_PUTC, '\n', stdin);
+
         shellValidCommand();
         return;
 
