@@ -23,26 +23,5 @@ void main()
     // Init shell
     shellInit();
 
-
-    // setCaretOffset(1920);
-
-    // // --- Example --- //
-    // puts("Welcome to Os2020, type a message :");
-    // printf("> ");
-
-    // char msg[128];
-    // gets(msg);
-
-    // printf("Your message of length %d was : <%s> !\n", strlen(msg), msg);
-
-
-    // // --- Test --- //
-    // const char *delim = " ,'.;";
-
-    // char *p = strtok(msg, delim);
-    // puts(p);
-    // while (p = strtok(NULL, delim))
-    //     puts(p);
-
     while (1);
 }

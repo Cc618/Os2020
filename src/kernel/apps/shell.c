@@ -24,6 +24,9 @@ void shellInit()
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
     setCaret(0, 0);
 
+    // Init message
+    puts("Os 2020");
+
     // PS1
     shellPS1();
 }
