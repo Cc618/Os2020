@@ -5,7 +5,7 @@
 #include <string.h>
 
 // Size of stdinBuffer
-#define STDIN_BUFFER_SIZE 512
+#define STDIN_BUFFER_SIZE 32
 
 // The buffer which gathers all
 // chars before an input
@@ -74,37 +74,73 @@ int getchar()
 
 char *gets(char *s)
 {
-    // End of string (without crlf)
-    size_t end = STDIN_BUFFER_SIZE + 1;
+    // Wait for CRLF in stdin
 
-    // Check for lines before buffer end
-    for (size_t i = stdinBufferStart; i != stdinBufferEnd; i = (i + 1) % STDIN_BUFFER_SIZE)
-        if (stdinBuffer[i] == '\n')
-            end = i - 1;
 
-    // We haven't found line end in the current buffer
-    // Wait for end of line
-    if (end == STDIN_BUFFER_SIZE + 1)
-    {
-        while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
+    while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
 
-        end = stdinBufferEnd - 1;
-    }
+    // Remove crlf
+    stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;
 
-    size_t length = end - stdinBufferStart;
-
-    // Start is after end so update
-    if (stdinBufferStart > end)
-        length += STDIN_BUFFER_SIZE;
+    size_t end = stdinBufferEnd;
 
     // Copy string
-    size_t j = 0;
-    for (size_t i = stdinBufferStart; i != end; i = (i + 1) % STDIN_BUFFER_SIZE)
-        s[j++] = stdinBuffer[i];
+    size_t i = 0;
+    while (stdinBufferStart != end)
+    {
+        s[i] = stdinBuffer[stdinBufferStart];
 
-    // Remove crlf and update buffer start
-    stdinBuffer[end] = '\0';
-    stdinBufferStart = end + 1;
+        ++i;
+
+        stdinBufferStart = (stdinBufferStart + 1) % STDIN_BUFFER_SIZE;
+    }
+
+    // Terminate string
+    s[i] = '\0';
+
+    // TODO :
+    // ++stdinBufferEnd;
 
     return s;
+
+
+
+
+    // // End of string (without crlf)
+    // size_t end = STDIN_BUFFER_SIZE + 1;
+
+    // // Check for lines before buffer end
+    // for (size_t i = stdinBufferStart; i != stdinBufferEnd; i = (i + 1) % STDIN_BUFFER_SIZE)
+    //     if (stdinBuffer[i] == '\n')
+    //         end = i;
+
+    // // We haven't found line end in the current buffer
+    // // Wait for end of line
+    // if (end == STDIN_BUFFER_SIZE + 1)
+    // {
+    //     while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
+
+    //     end = stdinBufferEnd;
+    // }
+
+    // size_t length = end - 1 - stdinBufferStart;
+
+    // // Start is after end so update
+    // if (stdinBufferStart > end)
+    //     length += STDIN_BUFFER_SIZE;
+
+    // // Copy string
+    // size_t j = 0;
+    // for (size_t i = stdinBufferStart; i != end; i = (i + 1) % STDIN_BUFFER_SIZE)
+    //     s[j++] = stdinBuffer[i];
+
+    // ////////////////////////////// TODO :
+    // // Terminate string
+    // // s[j] = '\0';
+
+    // // Remove crlf and update buffer start
+    // // stdinBuffer[end] = '\0';
+    // stdinBufferStart = end + 1;
+
+    // return s;
 }

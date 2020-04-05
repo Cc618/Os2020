@@ -18,15 +18,15 @@ void consolePut(char c)
 {
     // TODO : FMT
     
-    // Scroll if necessary
-    if (caret == SCREEN_WIDTH * SCREEN_HEIGHT)
-        consoleScroll();
-
     if (c == '\n')
     {
         consoleNewLine();
         return;
     }
+
+    // Scroll if necessary
+    if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
+        consoleScroll();
 
     setCharOffset(caret, c, consoleFmt);
 
@@ -54,17 +54,19 @@ void consoleNewLine()
     caret -= caret % SCREEN_WIDTH;
 
     // Scroll if necessary
-    if (caret == SCREEN_WIDTH * SCREEN_HEIGHT)
+    if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
         consoleScroll();
-
-    updateCaret();
+    else
+        updateCaret();
 }
 
 void consoleScroll()
 {
     screenScroll(SCREEN_WIDTH);
 
-    if (caret > SCREEN_WIDTH)
+    if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
+        caret = SCREEN_WIDTH * (SCREEN_HEIGHT - 1);
+    else if (caret > SCREEN_WIDTH)
         caret -= SCREEN_WIDTH;
     else
         caret = 0;

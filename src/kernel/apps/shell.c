@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
+
 static int userInputBegin;
 
 // Moves the begining of user input
@@ -32,24 +34,27 @@ void shellPS1()
     resetUserInput();
 }
 
-void shellDelete()
+bool shellDelete()
 {
     // Only if possible
-    if (getCaret() > userInputBegin)
+    bool possible = getCaret() > userInputBegin;
+
+    if (possible)
         // TODO : Remove stdin char
         consoleDel();
+
+    return possible;
 }
 
 void shellValidCommand()
 {
     // TODO : Parse command
-    char cmd[80];
-    
+    char cmd[CMD_MAX_SIZE];
+
     gets(cmd);
 
-    printf("Exec <%s>\n", cmd);
-    
     consoleNewLine();
+    printf("Exec <%s>\n", cmd);
 
     shellPS1();
 }

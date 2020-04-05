@@ -50,4 +50,5 @@ int setCaret(unsigned int x, unsigned int y);
 void setCaretOffset(unsigned int i);
 
 // Moves "pixels" characters to the top left corner
+// !!! The caret is not updated
 void screenScroll(size_t pixels);

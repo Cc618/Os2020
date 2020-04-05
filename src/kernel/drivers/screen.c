@@ -84,8 +84,10 @@ void screenScroll(size_t pixels)
 {
     // TODO : assert(pixels < SCREEN_WIDTH * SCREEN_HEIGHT && pixels != 0);
 
-    memmove((void*)VIDEO_MEMORY, (void*)(VIDEO_MEMORY + 2 * pixels), 2 * SCREEN_WIDTH * SCREEN_HEIGHT * pixels);
+    // Copy pixels
+    memmove((void*)VIDEO_MEMORY, (void*)(VIDEO_MEMORY + 2 * pixels), 2 * SCREEN_WIDTH * SCREEN_HEIGHT * pixels);    
 
-    for (size_t px = SCREEN_WIDTH * SCREEN_HEIGHT; px >= SCREEN_WIDTH * SCREEN_HEIGHT - pixels; --px)
-        ((short*) VIDEO_MEMORY)[px] = 0;
+    // Zero memory
+    for (char *data = (SCREEN_WIDTH * SCREEN_HEIGHT - pixels) * 2; data < 2 * SCREEN_WIDTH * SCREEN_HEIGHT; ++data)
+        *data = 0;
 }

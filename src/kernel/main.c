@@ -23,6 +23,9 @@ void main()
     // Init shell
     shellInit();
 
+
+    // setCaretOffset(1920);
+
     // // --- Example --- //
     // puts("Welcome to Os2020, type a message :");
     // printf("> ");

@@ -212,11 +212,10 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
-        // Delete the char in stdin
-        SYSC2(SYS_PUTC, 0x08, stdin);
-
-        // Delete the char in the console
-        shellDelete();
+        // Delete (may be) the char in the console
+        if (shellDelete())
+            // Delete the char in stdin
+            SYSC2(SYS_PUTC, 0x08, stdin);
 
         return;
     
