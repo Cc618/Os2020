@@ -63,8 +63,10 @@ void shellValidCommand()
     shellPS1();
 }
 
-void shellEval(const char *cmd)
+void shellEval(const char *CMD)
 {
+    char *cmd = strdup(CMD);
+
     // TODO : When fs, add cwd to argv and start argc to 1 in token loop
     char *argv[CMD_MAX_ARGS];
 
@@ -72,15 +74,16 @@ void shellEval(const char *cmd)
 
     // App name
     char *token = strtok(cmd, delim);
-
     char *appName = token;
 
+    // Retrieve arguments
     int argc = 0;
-    for ( ; token = strtok(NULL, delim); ++argc)
-    {
+    for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
-    }
 
-    // TODO : Change exec
-    exec(appName, argc, argv);
+    // Execute command
+    int ret = exec(appName, argc, argv);
+
+    if (ret != 0)
+        printf("App exits with code %d\n", ret);
 }
