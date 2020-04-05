@@ -2,6 +2,7 @@
 
 #include "drivers/screen.h"
 #include "drivers/console.h"
+#include "exec.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -60,18 +61,6 @@ void shellValidCommand()
     shellEval(cmd);
 
     shellPS1();
-}
-
-
-// TODO : Update
-void exec(const char *app, int argc, char **argv)
-{
-    if (strcmp(app, "echo") == 0)
-        echo(argc, argv);
-    else
-    {
-        printf("App <%s> is not recognized\n", app);
-    }
 }
 
 void shellEval(const char *cmd)
