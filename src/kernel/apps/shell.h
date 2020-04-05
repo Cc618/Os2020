@@ -12,3 +12,6 @@ bool shellDelete();
 
 // When pressing enter
 void shellValidCommand();
+
+// Evaluates a string as a command
+void shellEval(const char *cmd);

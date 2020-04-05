@@ -6,8 +6,9 @@
 #include <stdbool.h>
 
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
+#define CMD_MAX_ARGS 32
 
-static int userInputBegin;
+static unsigned int userInputBegin;
 
 // Moves the begining of user input
 static void resetUserInput()
@@ -40,7 +41,6 @@ bool shellDelete()
     bool possible = getCaret() > userInputBegin;
 
     if (possible)
-        // TODO : Remove stdin char
         consoleDel();
 
     return possible;
@@ -48,13 +48,50 @@ bool shellDelete()
 
 void shellValidCommand()
 {
-    // TODO : Parse command
     char cmd[CMD_MAX_SIZE];
-
     gets(cmd);
 
     consoleNewLine();
-    printf("Exec <%s>\n", cmd);
+
+    shellEval(cmd);
 
     shellPS1();
+}
+
+// TODO : Update
+void exec(const char *app, int argc, char **argv)
+{
+    printf("Execute <%s> with args { ", app);
+
+    for (int i = 0; i < argc; ++i)
+    {
+        printf("%s", argv[i]);
+
+        if (i != argc - 1)
+            printf(", ");
+    }
+
+    puts(" }");
+}
+
+void shellEval(const char *cmd)
+{
+    // TODO : When fs, add cwd to argv and start argc to 1 in token loop
+    char *argv[CMD_MAX_ARGS];
+
+    const char *delim = " ";
+
+    // App name
+    char *token = strtok(cmd, delim);
+
+    char *appName = token;
+
+    int argc = 0;
+    for ( ; token = strtok(NULL, delim); ++argc)
+    {
+        argv[argc] = token;
+    }
+
+    // TODO : Change exec
+    exec(appName, argc, argv);
 }
