@@ -3,6 +3,7 @@
 #include "drivers/screen.h"
 #include "drivers/console.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
@@ -61,20 +62,16 @@ void shellValidCommand()
     shellPS1();
 }
 
+
 // TODO : Update
 void exec(const char *app, int argc, char **argv)
 {
-    printf("Execute <%s> with args { ", app);
-
-    for (int i = 0; i < argc; ++i)
+    if (strcmp(app, "echo") == 0)
+        echo(argc, argv);
+    else
     {
-        printf("%s", argv[i]);
-
-        if (i != argc - 1)
-            printf(", ");
+        printf("App <%s> is not recognized\n", app);
     }
-
-    puts(" }");
 }
 
 void shellEval(const char *cmd)
