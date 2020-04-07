@@ -20,7 +20,7 @@ void main()
     __libc_init();
 
     // Launch the shell
-    shellMain();
+    shellMain(0, NULL);
 
     consoleNewLine();
     puts("No process running");

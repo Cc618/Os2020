@@ -3,6 +3,8 @@
 #include "drivers/screen.h"
 #include "drivers/console.h"
 #include "exec.h"
+#include "cat.h"
+#include "echo.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,7 +13,7 @@
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
 #define CMD_MAX_ARGS 32
 
-#define BUILTIN_NOT_FOUND 0xFF100001
+#define BUILTIN_NOT_FOUND 0x7F100001
 
 static unsigned int userInputBegin;
 static bool shellRunning;
@@ -34,6 +36,8 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
     // {
     //     // TODO : atoi to return code
     // }
+
+    return 0;
 }
 
 // Tries to executes a builtin command
@@ -53,7 +57,7 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
     return BUILTIN_NOT_FOUND;
 }
 
-void shellMain()
+int shellMain(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
 {
     shellRunning = true;
     shellExitCode = 0;
