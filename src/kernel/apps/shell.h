@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-void shellInit();
+void shellMain();
 
 // Displays the PS1
 void shellPS1();

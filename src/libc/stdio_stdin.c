@@ -47,9 +47,6 @@ char __libc_stdinGet()
 {
     char c = stdinBuffer[stdinBufferStart];
 
-    // Reset char
-    stdinBuffer[stdinBufferStart] = '\0';
-
     // Update start
     ++stdinBufferStart;
     if (stdinBufferStart >= STDIN_BUFFER_SIZE)
@@ -61,7 +58,8 @@ char __libc_stdinGet()
 void __libc_stdinDel()
 {
     // Swallow char
-    stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;
+    if (stdinBufferStart != stdinBufferEnd)
+        stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;
 }
 
 int getchar()
@@ -75,9 +73,8 @@ int getchar()
 char *gets(char *s)
 {
     // Wait for CRLF in stdin
-
-
-    while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
+    while (stdinBufferStart == stdinBufferEnd ||
+        stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
 
     // Remove crlf
     stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;

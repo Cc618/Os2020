@@ -11,6 +11,7 @@
 #define CMD_MAX_ARGS 32
 
 static unsigned int userInputBegin;
+static bool shellRunning;
 
 // Moves the begining of user input
 static void resetUserInput()
@@ -20,8 +21,10 @@ static void resetUserInput()
     // TODO : stdin flush
 }
 
-void shellInit()
+void shellMain()
 {
+    shellRunning = true;
+
     // Init display
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
     setCaret(0, 0);
@@ -29,8 +32,18 @@ void shellInit()
     // Init message
     puts("Os 2020");
 
-    // PS1
-    shellPS1();
+    // TODO : Can exit
+    char cmd[CMD_MAX_SIZE];
+    while (shellRunning)
+    {
+        // PS1
+        shellPS1();
+
+        // Get input
+        gets(cmd);
+
+        shellEval(cmd);
+    }
 }
 
 void shellPS1()

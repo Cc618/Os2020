@@ -221,8 +221,8 @@ void onKeyPressed()
     
     case KEY_PRESSED_ENTER:
         SYSC2(SYS_PUTC, '\n', stdin);
+        consoleNewLine();
 
-        shellValidCommand();
         return;
 
     case KEY_PRESSED_LSHIFT:

@@ -17,11 +17,10 @@ void main()
 {
     initInterrupts();
 
-    // Init libc
     __libc_init();
 
-    // Init shell
-    shellInit();
+    // Launch the shell
+    shellMain();
 
     while (1);
 }
