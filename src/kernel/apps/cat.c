@@ -14,7 +14,7 @@ int cat(int argc, __attribute__((unused)) char **argv)
         while (1)
         {
             gets(buf);
-            printf("%s", buf);
+            puts(buf);
         }
 
         return 0;

@@ -4,14 +4,18 @@
 #include "drivers/console.h"
 #include "exec.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
 #define CMD_MAX_ARGS 32
 
+#define BUILTIN_NOT_FOUND 0xFF100001
+
 static unsigned int userInputBegin;
 static bool shellRunning;
+static int shellExitCode;
 
 // Moves the begining of user input
 static void resetUserInput()
@@ -21,9 +25,38 @@ static void resetUserInput()
     // TODO : stdin flush
 }
 
+static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
+{
+    shellRunning = false;
+
+    // TODO : Change argc when fs
+    // if (argc == 1)
+    // {
+    //     // TODO : atoi to return code
+    // }
+}
+
+// Tries to executes a builtin command
+// Returns the exit code of the command
+// or BUILTIN_NOT_FOUND if no builtin found
+static int tryExecBuiltin(const char *app, int argc, char **argv)
+{
+    if (strcmp(app, "echo") == 0)
+        return echo(argc, argv);
+    
+    if (strcmp(app, "cat") == 0)
+        return cat(argc, argv);
+    
+    if (strcmp(app, "exit") == 0)
+        return shellExit(argc, argv);
+    
+    return BUILTIN_NOT_FOUND;
+}
+
 void shellMain()
 {
     shellRunning = true;
+    shellExitCode = 0;
 
     // Init display
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
@@ -32,7 +65,6 @@ void shellMain()
     // Init message
     puts("Os 2020");
 
-    // TODO : Can exit
     char cmd[CMD_MAX_SIZE];
     while (shellRunning)
     {
@@ -42,8 +74,11 @@ void shellMain()
         // Get input
         gets(cmd);
 
+        // Evaluate command
         shellEval(cmd);
     }
+
+    return shellExitCode;
 }
 
 void shellPS1()
@@ -62,18 +97,6 @@ bool shellDelete()
         consoleDel();
 
     return possible;
-}
-
-void shellValidCommand()
-{
-    char cmd[CMD_MAX_SIZE];
-    gets(cmd);
-
-    consoleNewLine();
-
-    shellEval(cmd);
-
-    shellPS1();
 }
 
 void shellEval(const char *CMD)
@@ -95,8 +118,13 @@ void shellEval(const char *CMD)
         argv[argc] = token;
 
     // Execute command
-    int ret = exec(appName, argc, argv);
+    int ret = tryExecBuiltin(appName, argc, argv);
 
-    if (ret != 0)
-        printf("App exits with code %d\n", ret);
+    if (ret == BUILTIN_NOT_FOUND)
+    {
+        ret = exec(appName, argc, argv);
+
+        if (ret != 0)
+            printf("App exits with code %d\n", ret);
+    }
 }

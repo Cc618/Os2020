@@ -22,5 +22,8 @@ void main()
     // Launch the shell
     shellMain();
 
+    consoleNewLine();
+    puts("No process running");
+
     while (1);
 }
