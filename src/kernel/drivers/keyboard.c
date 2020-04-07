@@ -4,6 +4,7 @@
 #include "drivers/console.h"
 #include "io/stdstream.h"
 #include "apps/shell.h"
+#include "apps/app.h"
 #include "syscall.h"
 #include <stdio.h>
 
@@ -24,6 +25,7 @@ typedef char key_t;
 #define KEY_PRESSED_TAB         0x0F
 #define KEY_PRESSED_LSHIFT      0x2A
 #define KEY_PRESSED_RSHIFT      0x36
+#define KEY_PRESSED_LCTRL       0x1D
 #define KEY_PRESSED_MOD         0x5B
 
 // Digits
@@ -70,6 +72,7 @@ typedef char key_t;
 // Special
 #define KEY_RELEASED_LSHIFT 0xAA
 #define KEY_RELEASED_RSHIFT 0xB6
+#define KEY_RELEASED_LCTRL  0x9D
 
 // Digits
 #define KEY_RELEASED_DIGIT_0 0x8B
@@ -112,6 +115,7 @@ typedef char key_t;
 #define KEY_RELEASED_LETTER_M 0xB2
 
 bool shiftPressed = false;
+bool ctrlPressed = false;
 
 // All displayable keys (without shift pressed)
 key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
@@ -234,6 +238,14 @@ void onKeyPressed()
     case KEY_RELEASED_RSHIFT:
         shiftPressed = false;
         return;
+    
+    case KEY_PRESSED_LCTRL:
+        ctrlPressed = true;
+        return;
+    
+    case KEY_RELEASED_LCTRL:
+        ctrlPressed = false;
+        return;
 
     case KEY_SPECIAL:
         wasString = true;
@@ -249,11 +261,28 @@ void onKeyPressed()
     // The key can be displayed
     if (key)
     {
-        // Display key
-        consolePut(key);
+        // Key strokes
+        if (ctrlPressed)
+        {
+            switch (key)
+            {
+            case 'c':
+                terminateApp();
 
-        // Output this char to stdin
-        SYSC2(SYS_PUTC, key, stdin);
+                consolePut('^');
+                consolePut('C');
+                consoleNewLine();
+                break;
+            }
+        }
+        else
+        {
+            // Display key
+            consolePut(key);
+
+            // Output this char to stdin
+            SYSC2(SYS_PUTC, key, stdin);
+        }
 
         return;
     }

@@ -2,7 +2,7 @@
 
 #include "drivers/screen.h"
 #include "drivers/console.h"
-#include "exec.h"
+#include "app.h"
 #include "cat.h"
 #include "echo.h"
 #include <stdio.h>
@@ -46,10 +46,10 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
 static int tryExecBuiltin(const char *app, int argc, char **argv)
 {
     if (strcmp(app, "echo") == 0)
-        return echo(argc, argv);
+        return execApp(echo, argc, argv);
     
     if (strcmp(app, "cat") == 0)
-        return cat(argc, argv);
+        return execApp(cat, argc, argv);
     
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
