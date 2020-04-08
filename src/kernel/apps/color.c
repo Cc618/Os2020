@@ -4,21 +4,21 @@
 #include "drivers/console.h"
 #include <stdio.h>
 
+// All colors by name
 static const char *colNames[] = {
     "red",
     "blue",
     "green",
     "yellow",
-    "white",
     "gray",
 };
 
+// Formats (default)
 static const uint8_t *colFmt[] = {
     FMT_RED,
     FMT_BLUE,
     FMT_GREEN,
     FMT_YELLOW,
-    FMT_WHITE,
     FMT_GRAY,
 };
 
@@ -81,8 +81,40 @@ int colorMain(int argc, char **argv)
             uint8_t color = colFmt[colId];
 
             // Set foreground color
-            consoleFmt = (consoleFmt & 0b11000000) | color;
+            consoleFmt = (consoleFmt & 0b11110000) | FMT_TO_LIGHT(color);
         }
+    }
+    else if (argc == 2)
+    {
+        // Foreground
+        size_t colId = findColor(argv[0]);
+
+        if (colId == nColors)
+        {
+            // TODO : stderr
+            printf("Color <%s> not found, use color list to show available colors\n", argv[0]);
+            return -1;
+        }
+        
+        uint8_t fg = FMT_TO_LIGHT(colFmt[colId]);
+
+        // Background
+        colId = findColor(argv[1]);
+
+        if (colId == nColors)
+        {
+            // TODO : stderr
+            printf("Color <%s> not found, use color list to show available colors\n", argv[1]);
+            return -1;
+        }
+        
+        uint8_t bg = colFmt[colId];
+
+        // TODO : LIGHT
+
+        // Set format
+        consoleFmt = (bg << 4) | fg;
+
     }
     else
     {

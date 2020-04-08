@@ -23,6 +23,8 @@
 #define FMT_YELLOW          14
 #define FMT_WHITE           15
 
+#define FMT_TO_LIGHT(FMT)   (FMT + 8)
+
 // Gray on black
 #define FMT_DEFAULT ((FMT_BLACK << 4) | FMT_GRAY)
 // Red on black
