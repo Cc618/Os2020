@@ -10,3 +10,7 @@
 // the hdd to address dst in ram
 void hddRead(size_t src, void *dst, size_t sectorCount);
 
+// Copies sectorCount sectors from address src in ram to
+// offset dst in the hdd
+void hddWrite(void *src, size_t dst, size_t sectorCount);
+

@@ -18,8 +18,12 @@ void main()
 
     // TODO :
     unsigned char buf[1024];
+    unsigned char wData[1024];
+    wData[512] = 42;
+    wData[511] = 0xCC;
 
-    hddRead(0, buf, 2);
+    hddWrite(wData, 46, 2);
+    hddRead(46, buf, 2);
 
     printf("%X %X %X %X\n", buf[0],   buf[1],   buf[2],   buf[3]);
     printf("%X %X %X %X\n", buf[508], buf[509], buf[510], buf[511]);

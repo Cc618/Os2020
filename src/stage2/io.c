@@ -148,7 +148,7 @@ void readDisk(int sector, void *dst)
         fatal("Disk can't be read");
 
     // Read data
-    for(int i = 0; i < 256; ++i)
+    for (int i = 0; i < 256; ++i)
     {
         // Receive word
         short word = inw(ATA_DATA);
