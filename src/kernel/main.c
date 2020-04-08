@@ -14,7 +14,7 @@ void main()
     __libc_init();
 
     // Launch the shell
-    shellMain(0, NULL);
+    execApp(shellMain, 0, NULL);
 
     consoleNewLine();
     puts("No process running");

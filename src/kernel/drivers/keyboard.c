@@ -267,7 +267,8 @@ void onKeyPressed()
             switch (key)
             {
             case 'c':
-                terminateApp();
+                // TODO :
+                // terminateApp();
 
                 consolePut('^');
                 consolePut('C');

@@ -1,6 +1,7 @@
 #include "cat.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #define CAT_STDIN_BUFFER_SIZE 512
 
@@ -10,10 +11,14 @@ int cat(int argc, __attribute__((unused)) char **argv)
     if (argc == 0)
     {
         char buf[CAT_STDIN_BUFFER_SIZE];
-        
+
         while (1)
         {
             gets(buf);
+
+            if (strcmp(buf, "q") == 0)
+                break;
+
             puts(buf);
         }
 
