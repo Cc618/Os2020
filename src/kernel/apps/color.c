@@ -44,10 +44,9 @@ int colorMain(int argc, char **argv)
 
     // TODO : To lower
 
-    // TODO : Change argc when fs
-    if (argc == 1)
+    if (argc == 2)
     {
-        if (strcmp(argv[0], "--help") == 0)
+        if (strcmp(argv[1], "--help") == 0)
         {
             puts("Usage :");
             puts("- color list : Lists all colors");
@@ -55,21 +54,15 @@ int colorMain(int argc, char **argv)
             puts("- color <color> : Sets foreground color");
             puts("- color <foreground> <background> : Sets foreground and background color");
         }
-        else if (strcmp(argv[0], "reset") == 0)
-        {
+        else if (strcmp(argv[1], "reset") == 0)
             consoleFmt = FMT_DEFAULT;
-        }
-        else if (strcmp(argv[0], "list") == 0)
-        {
-            consoleFmt = FMT_DEFAULT;
-
+        else if (strcmp(argv[1], "list") == 0)
             for (size_t i = 0; i < nColors; ++i)
                 puts(colNames[i]);
-        }
         else
         {
             // Foreground
-            size_t colId = findColor(argv[0]);
+            size_t colId = findColor(argv[1]);
 
             if (colId == nColors)
             {
@@ -84,10 +77,10 @@ int colorMain(int argc, char **argv)
             consoleFmt = (consoleFmt & 0b11110000) | FMT_TO_LIGHT(color);
         }
     }
-    else if (argc == 2)
+    else if (argc == 3)
     {
         // Foreground
-        size_t colId = findColor(argv[0]);
+        size_t colId = findColor(argv[1]);
 
         if (colId == nColors)
         {
@@ -99,7 +92,7 @@ int colorMain(int argc, char **argv)
         uint8_t fg = FMT_TO_LIGHT(colFmt[colId]);
 
         // Background
-        colId = findColor(argv[1]);
+        colId = findColor(argv[2]);
 
         if (colId == nColors)
         {

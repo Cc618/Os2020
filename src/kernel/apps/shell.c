@@ -20,6 +20,9 @@ static unsigned int userInputBegin;
 static bool shellRunning;
 static int shellExitCode;
 
+// Root by default
+static const char *shellCwd = "/";
+
 // Moves the begining of user input
 static void resetUserInput()
 {
@@ -32,8 +35,7 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
 {
     shellRunning = false;
 
-    // TODO : Change argc when fs
-    // if (argc == 1)
+    // if (argc == 2)
     // {
     //     // TODO : atoi to return code
     // }
@@ -91,7 +93,8 @@ int shellMain(__attribute__((unused)) int argc, __attribute__((unused)) char **a
 
 void shellPS1()
 {
-    printf("> ");
+    // TODO : Push / pop format to have console format
+    printf("@ %s > ", shellCwd);
 
     resetUserInput();
 }
@@ -111,8 +114,8 @@ void shellEval(const char *CMD)
 {
     char *cmd = strdup(CMD);
 
-    // TODO : When fs, add cwd to argv and start argc to 1 in token loop
     char *argv[CMD_MAX_ARGS];
+    argv[0] = shellCwd;
 
     const char *delim = " ";
 
@@ -121,7 +124,7 @@ void shellEval(const char *CMD)
     char *appName = token;
 
     // Retrieve arguments
-    int argc = 0;
+    int argc = 1;
     for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
 

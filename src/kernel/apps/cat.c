@@ -7,8 +7,7 @@
 
 int cat(int argc, __attribute__((unused)) char **argv)
 {
-    // TODO : When fs, test argc == 1
-    if (argc == 0)
+    if (argc == 1)
     {
         char buf[CAT_STDIN_BUFFER_SIZE];
 
