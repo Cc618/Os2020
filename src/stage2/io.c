@@ -141,7 +141,7 @@ void readDisk(int sector, void *dst)
     outb(0x20, ATA_CMD);
 
     unsigned char status = inb(ATA_CMD);
-    while((status & 0x80) == 0x80 && (status & 0x01) == 0)
+    while ((status & 0x80) == 0x80 && (status & 0x01) == 0)
         status = inb(ATA_CMD);
 
     if (status & 0x01)
