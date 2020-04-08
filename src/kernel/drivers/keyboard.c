@@ -202,7 +202,7 @@ void onKeyPressed()
         {
         case KEY_PRESSED_MOD:
             // TODO : Remove print when backspace
-            printf("<MOD>");
+            // printf("<MOD>");
             // TODO : On mod pressed ()
             break;
         }
