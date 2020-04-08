@@ -19,3 +19,5 @@ void consoleNewLine();
 void consoleScroll();
 
 unsigned int getCaret();
+
+// TODO : TABS

@@ -5,6 +5,7 @@
 #include "app.h"
 #include "cat.h"
 #include "echo.h"
+#include "color.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,6 +51,9 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
     
     if (strcmp(app, "cat") == 0)
         return execApp(cat, argc, argv);
+    
+    if (strcmp(app, "color") == 0)
+        return execApp(colorMain, argc, argv);
     
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
