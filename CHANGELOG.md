@@ -1,5 +1,9 @@
 # Changes
 
+## 0.2
+
+- Added color app to change the color of the tty
+
 ## 0.1
 
 This update is the first beta release of Os 2020.
