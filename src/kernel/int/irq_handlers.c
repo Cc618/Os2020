@@ -16,10 +16,10 @@ void irq0Handler()
 // Keyboard
 void irq1Handler()
 {
-    INT_END();
-
     // Dispatch event
     onKeyPressed();
+
+    INT_END();
 }
 
 void irq2Handler()

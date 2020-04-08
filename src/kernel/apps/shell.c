@@ -115,7 +115,7 @@ void shellEval(const char *CMD)
     char *cmd = strdup(CMD);
 
     char *argv[CMD_MAX_ARGS];
-    argv[0] = shellCwd;
+    argv[0] = strdup(shellCwd);
 
     const char *delim = " ";
 
@@ -138,4 +138,8 @@ void shellEval(const char *CMD)
         if (ret != 0)
             printf("App exits with code %d\n", ret);
     }
+
+    free(cmd);
+    for (size_t i = 0; i < (size_t)argc; ++i)
+        free(argv[i]);
 }

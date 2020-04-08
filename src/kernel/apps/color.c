@@ -3,6 +3,7 @@
 #include "drivers/screen.h"
 #include "drivers/console.h"
 #include <stdio.h>
+#include <string.h>
 
 // All colors by name
 static const char *colNames[] = {
@@ -14,7 +15,7 @@ static const char *colNames[] = {
 };
 
 // Formats (default)
-static const uint8_t *colFmt[] = {
+static const uint8_t colFmt[] = {
     FMT_RED,
     FMT_BLUE,
     FMT_GREEN,
