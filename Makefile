@@ -61,9 +61,9 @@ CMD_EXEC_GDB = cd $(PWD) && ((cat $(DBG_CMD); cat) | $(TOOL_DBG) $(BIN)); exec b
 
 
 # --- Main --- #
-all: $(BIN)
+all: $(BIN) mkdirs
 
-$(BIN): mkdirs $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL)
+$(BIN): $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL)
 	cat $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL) > $@
 
 

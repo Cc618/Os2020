@@ -38,7 +38,8 @@ SECTIONS
 	/* --- End Of Stage 2 (magic number) --- */
 	. = ALIGN(sector_size);
 
-	.end : {
+	.end :
+	{
 		*(.end)
 	}
 

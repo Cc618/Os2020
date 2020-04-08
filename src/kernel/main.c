@@ -7,7 +7,13 @@
 #include <stdio.h>
 
 // TODO :
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 #include "drivers/hdd.h"
+
+// TODO : Find with kernel end
+#define FS_BEGIN 48
 
 // Entry from stage2
 void main()
@@ -16,18 +22,31 @@ void main()
 
     __libc_init();
 
-    // TODO :
-    unsigned char buf[1024];
-    unsigned char wData[1024];
-    wData[512] = 42;
-    wData[511] = 0xCC;
+  
+    // TODO : Test
+    const char *data = "My data to save";
+    uint8_t sector[HDD_SECTOR_SIZE];
 
-    hddWrite(wData, 46, 2);
-    hddRead(46, buf, 2);
+    char input[20];
 
-    printf("%X %X %X %X\n", buf[0],   buf[1],   buf[2],   buf[3]);
-    printf("%X %X %X %X\n", buf[508], buf[509], buf[510], buf[511]);
-    printf("%X %X %X %X\n", buf[512], buf[513], buf[514], buf[515]);
+    puts("Write / Read ?");
+    gets(input);
+
+    // Write
+    if (strcmp(input, "w") == 0 || strcmp(input, "write") == 0)
+    {
+        strcpy(sector, data);
+        hddWrite(sector, FS_BEGIN, 1);
+
+        puts("Written");
+        puts(data);
+    }
+    else
+    {
+        // Read
+        hddRead(FS_BEGIN, sector, 1);
+        puts(sector);
+    }
 
     while (1);
 
