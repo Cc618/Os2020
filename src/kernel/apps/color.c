@@ -52,7 +52,7 @@ int colorMain(int argc, char **argv)
             puts("Usage :");
             puts("- color list : Lists all colors");
             puts("- color reset : Sets the format to default");
-            puts("- color <color> : Sets foregrounf color");
+            puts("- color <color> : Sets foreground color");
             puts("- color <foreground> <background> : Sets foreground and background color");
         }
         else if (strcmp(argv[0], "reset") == 0)
