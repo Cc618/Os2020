@@ -40,6 +40,7 @@ Here is the list of improvements :
 
 - gcc cross compiler (for i386)
 - nasm
+- mtools (add /sbin to your path, for fs)
 - qemu-system-i386 (optional, to test)
 - objcopy (optional, to debug)
 - gdb (optional, to debug)

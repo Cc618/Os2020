@@ -21,6 +21,10 @@
 #define HDD_CMD_WRITE       0x30
 #define HDD_CMD_FLUSH_CACHE 0xE7
 
+// Defined in sections.asm
+// See sections.asm for more details
+extern int FS_SECTOR;
+
 void hddRead(size_t src, void *dst, size_t sectorCount)
 {
     outb(0xE0 | ((src & 0x0F000000) >> 24), HDD_DEVICE);

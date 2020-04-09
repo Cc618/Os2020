@@ -3,6 +3,7 @@
 
 # Files
 BIN = bin/os
+FS = fs/fs
 CHUNK_STAGE1 = obj/chunks/stage1
 CHUNK_STAGE2 = obj/chunks/stage2
 CHUNK_KERNEL = obj/chunks/kernel
@@ -61,10 +62,10 @@ CMD_EXEC_GDB = cd $(PWD) && ((cat $(DBG_CMD); cat) | $(TOOL_DBG) $(BIN)); exec b
 
 
 # --- Main --- #
-all: $(BIN) mkdirs
+all: mkdirs $(BIN)
 
-$(BIN): $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL)
-	cat $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL) > $@
+$(BIN): $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL) $(FS)
+	cat $(CHUNK_STAGE1) $(CHUNK_STAGE2) $(CHUNK_KERNEL) $(FS) > $@
 
 
 # --- Stage 1 --- #
@@ -110,6 +111,11 @@ obj/libc/%.asm.o: src/libc/%.asm
 	$(TOOL_ASM) -f elf -i $(DIR_LIBC) -o $@ $<
 
 
+# --- Fs --- #
+$(FS):
+	@echo "--- Creating an empty file system (64 MiB) ---"
+	dd if=/dev/zero of=$@ bs=512 count=128K && mkfs.fat -s 1 -F 32 $@
+
 # --- Utils --- #
 run: $(BIN)
 ifeq ($(DEBUG), 1)
@@ -120,12 +126,15 @@ endif
 
 .PHONY: mkdirs
 mkdirs:
-	mkdir -p bin obj $(OBJ_DIRS)
+	mkdir -p bin obj fs $(OBJ_DIRS)
 
 .PHONY: clean
 clean:
 	rm -rf obj bin
 
+.PHONY: cleanfs
+cleanfs: clean
+	rm -rf fs
 
 # --- Depedencies --- #
 -include $(DEP_STAGE2)

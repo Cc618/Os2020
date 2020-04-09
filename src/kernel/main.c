@@ -13,7 +13,9 @@
 #include "drivers/hdd.h"
 
 // TODO : Find with kernel end
-#define FS_BEGIN 48
+
+// TODO :
+extern int FS_SECTOR;
 
 // Entry from stage2
 void main()
@@ -22,31 +24,14 @@ void main()
 
     __libc_init();
 
-  
-    // TODO : Test
-    const char *data = "My data to save";
     uint8_t sector[HDD_SECTOR_SIZE];
 
-    char input[20];
+    // Read the first fs sector
+    hddRead(FS_SECTOR, sector, 1);
 
-    puts("Write / Read ?");
-    gets(input);
+    puts(sector);
 
-    // Write
-    if (strcmp(input, "w") == 0 || strcmp(input, "write") == 0)
-    {
-        strcpy(sector, data);
-        hddWrite(sector, FS_BEGIN, 1);
 
-        puts("Written");
-        puts(data);
-    }
-    else
-    {
-        // Read
-        hddRead(FS_BEGIN, sector, 1);
-        puts(sector);
-    }
 
     while (1);
 

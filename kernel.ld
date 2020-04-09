@@ -1,8 +1,6 @@
 /* Entry point physical address */
 offset = 0x1000000;
 sector_size = 512;
-fs_size = sector_size * 16;
-fs_magic = 0xEEFF55DD;
 
 OUTPUT_FORMAT("elf32-i386")
 OUTPUT_ARCH(i386)
@@ -46,14 +44,4 @@ SECTIONS
 	}
 
 	. = ALIGN(sector_size);
-	
-	/* --- File System --- */
-	.fs :
-	{
-		. += fs_size;
-		. += sector_size - 4;
-
-		/* Add magic number */
-		LONG(fs_magic);
-	}
 }

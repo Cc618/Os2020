@@ -11,6 +11,14 @@ jmp entry
 align 16
 
     ; --- Variables --- ;
+; !!! Do NOT reorder these variables
+
+; . = KERNEL + 16
+; The first sector after the kernel
+; This variable is set 
+global FS_SECTOR
+FS_SECTOR:
+    dd 0
 
 entry:
     call main

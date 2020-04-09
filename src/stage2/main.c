@@ -2,6 +2,9 @@
 #include "io.h"
 #include "ports.h"
 
+// See kernel/sections for more details
+#define FS_SECTOR ((int*) (KERNEL_OFFSET + 16))
+
 // The number of sectors before the kernel
 // Defined in sections.asm
 extern short KERNEL_SECTOR_BEGIN;
@@ -26,6 +29,9 @@ void loadKernel()
 
     // Load until the magic number
     } while (loadDestination[-1] != END_OF_KERNEL);
+
+    // Set the last read sector
+    *FS_SECTOR = KERNEL_SECTOR_BEGIN + loadedSectors;
 }
 
 void main()
