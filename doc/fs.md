@@ -46,3 +46,7 @@ There is a script scripts/getfs.sh that can be runned from the root of this repo
 ## Notes
 
 The file system is 64MiB wide but this size is the minimal size, you can change the size in the makefile or just create another image of different size in fs/fs.
+
+## Specs of the driver
+
+The Fat32 driver handles only sectors of size 512 and clusters of 1 sector.
