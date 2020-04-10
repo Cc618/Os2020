@@ -114,7 +114,8 @@ obj/libc/%.asm.o: src/libc/%.asm
 # --- Fs --- #
 $(FS):
 	@echo "--- Creating an empty file system named 'OS2020FS' (64 MiB) ---"
-	dd if=/dev/zero of=$@ bs=512 count=128K && mkfs.fat -F 32 -s 1 -n OS2020FS $@
+	dd if=/dev/zero of=$@ bs=512 count=128K
+	mkfs.fat -F 32 -s 1 -n OS2020FS $@
 
 # --- Utils --- #
 run: $(BIN)
