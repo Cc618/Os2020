@@ -107,6 +107,12 @@ int printf_hex(uint32_t n, bool upper, bool isP)
 // %d flag
 int printf_int32(int n)
 {
+    if (n == 0)
+    {
+        putchar('0');
+        return 1;
+    }
+
     // Negative
     if (n < 0)
     {
