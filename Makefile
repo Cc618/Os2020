@@ -118,7 +118,7 @@ $(FS):
 	mkfs.fat -F 32 -s 1 -n OS2020FS $@
 
 # --- Utils --- #
-run: $(BIN)
+run: all
 ifeq ($(DEBUG), 1)
 	xterm -hold -e 'bash -c "$(CMD_EXEC_GDB)"' &
 endif

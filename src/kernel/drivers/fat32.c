@@ -204,10 +204,14 @@ static FSEntry *genEntry(size_t i)
                 28, 30
             };
 
+            // This semi byte tells the LFN entry number
+            size_t nameShift = (((char*)&lastEntry[i])[0] & 0xF) - 1;
             for (size_t j = 0; j < sizeof(charPos) / sizeof(size_t); ++j)
+            {
                 // Set the char by the char located at the index charPos[j]
                 // in the i entry
-                entry->name[i * 13 + j] = ((char*)&lastEntry[i])[charPos[j]];
+                entry->name[nameShift * 13 + j] = ((char*)&lastEntry[i])[charPos[j]];
+            }
         }
 
         rawEntry = lastEntry;
@@ -377,5 +381,5 @@ FSEntry *fatGenRoot()
     hddRead(rootSector, cluster, 1);
 
     // TMP : 0
-    return genEntry(1);
+    return genEntry(3);
 }
