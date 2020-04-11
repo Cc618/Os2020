@@ -177,15 +177,38 @@ static FSEntry *genEntry(size_t i)
     FSEntry *entry = malloc(sizeof(FSEntry));
 
     // Get name
+    // TODO : Test on very long file name
     if (rawEntry->flags == FAT_LONG_NAME)
     {
         // The entry where there are flags
         FatEntry *lastEntry = rawEntry;
 
+        // To retrieve the size of the string
         while (lastEntry->flags == FAT_LONG_NAME)
             ++lastEntry;
+        
+        // Number of entries of long file name
+        size_t count = ((size_t)lastEntry - (size_t)rawEntry) / sizeof(FatEntry);
 
-        entry->name = "LONG";
+        // Multiply by the number of chars within each entry
+        entry->name = malloc(count * 13);
+
+        // Iterate again to retrieve the name
+        lastEntry = rawEntry;
+        for (size_t i = 0; i < count; ++i)
+        {
+            // All indices of chars
+            size_t charPos[] = {
+                1, 3, 5, 7, 9,
+                14, 16, 18, 20, 22, 24,
+                28, 30
+            };
+
+            for (size_t j = 0; j < sizeof(charPos) / sizeof(size_t); ++j)
+                // Set the char by the char located at the index charPos[j]
+                // in the i entry
+                entry->name[i * 13 + j] = ((char*)&lastEntry[i])[charPos[j]];
+        }
 
         rawEntry = lastEntry;
     }
