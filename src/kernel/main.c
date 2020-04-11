@@ -1,6 +1,7 @@
 #include "int/interrupts.h"
 #include "drivers/console.h"
 #include "drivers/fat32.h"
+#include "fs/fs.h"
 #include "apps/shell.h"
 #include "apps/app.h"
 
@@ -20,6 +21,10 @@ void main()
 
     // File system init
     fatInit();
+    fsInit();
+
+
+    printEntry(root);
 
     // TODO :
     while (1);
@@ -33,6 +38,7 @@ void main()
     puts("Exiting");
 
     fatTerminate();
+    fsTerminate();
 
     while (1);
 }

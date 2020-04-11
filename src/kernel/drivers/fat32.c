@@ -3,11 +3,11 @@
 #include "hdd.h"
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
+// --- Constants --- //
 // Defined in sections.asm
 // See sections.asm for more details
 extern int FS_SECTOR;
@@ -15,13 +15,14 @@ extern int FS_SECTOR;
 #define FAT_CLUSTER_SIZE HDD_SECTOR_SIZE
 
 #define FAT_READ_ONLY 0x01
-#define FAT_HIDDEN    0x02
-#define FAT_SYSTEM    0x04
-#define FAT_ROOT      0x08
-#define FAT_DIR       0x10
-#define FAT_ARCHIVE   0x20
+#define FAT_HIDDEN 0x02
+#define FAT_SYSTEM 0x04
+#define FAT_ROOT 0x08
+#define FAT_DIR 0x10
+#define FAT_ARCHIVE 0x20
 #define FAT_LONG_NAME 0x0F
 
+// --- Structs --- //
 // The boot sector (extended)
 typedef struct FatBPB_t
 {
@@ -78,8 +79,22 @@ typedef struct FatEntry_t
     uint32_t fileSize;
 } __attribute__((packed)) FatEntry;
 
+// When a FatEntry has a long file name
+typedef struct FatEntryLFN_t
+{
+    u8 order;
+    u16 name1[5];
+    u8 flags;
+    u8 type;
+    u8 checksum;
+    u16 name2[6];
+    u16 zero;
+    u16 name3[2];
+} __attribute__((packed)) FatEntryLFN;
+
 // The FSInfo structure (512 bytes)
-typedef struct FSInfo_t {
+typedef struct FSInfo_t
+{
     uint32_t leadSignature;
     uint8_t reserved[480];
     uint32_t signature;
@@ -89,10 +104,12 @@ typedef struct FSInfo_t {
     uint32_t endSignature;
 } __attribute__((packed)) FSInfo;
 
+// --- Globals --- //
 static FatBPB *bpb;
 static FSInfo *fsInfo;
+// TMP :
 // root has type FatEntry but is a cluster (= 1 sector) wide
-static FatEntry *root;
+// static FatEntry *root;
 
 // The cluster we currently read
 // (when we have to read only one cluster)
@@ -102,13 +119,14 @@ static size_t fatSector;
 static size_t dataSector;
 static size_t rootSector;
 
+// --- Internal --- //
 // Allocates and retrieve the name of the entry
 // TODO : Test with long + extensions
 static char *entryName(FatEntry *entry)
 {
     if (entry->flags == FAT_LONG_NAME)
     {
-        // TODO : 
+        // TODO :
         return "LONG";
     }
     else
@@ -119,7 +137,7 @@ static char *entryName(FatEntry *entry)
         // Find the end
         while (nameLast > entry->name && *nameLast == 0x20)
             --nameLast;
-        
+
         // There is no extension
         if (nameLast < entry->ext)
         {
@@ -129,7 +147,7 @@ static char *entryName(FatEntry *entry)
             memcpy(name, entry->name, count);
             name[count] = '\0';
 
-            return (char*)name;
+            return (char *)name;
         }
         else
         {
@@ -146,9 +164,94 @@ static char *entryName(FatEntry *entry)
             name[8] = '.';
             name[count] = '\0';
 
-            return (char*)name;
+            return (char *)name;
         }
     }
+}
+
+// Generates the entry at index i in the current cluster
+// !!! Unsafe : i MUST be within the cluster
+static FSEntry *genEntry(size_t i)
+{
+    FatEntry *rawEntry = (FatEntry*)cluster + i;
+    FSEntry *entry = malloc(sizeof(FSEntry));
+
+    // Get name
+    if (rawEntry->flags == FAT_LONG_NAME)
+    {
+        // The entry where there are flags
+        FatEntry *lastEntry = rawEntry;
+
+        while (lastEntry->flags == FAT_LONG_NAME)
+            ++lastEntry;
+
+        entry->name = "LONG";
+
+        rawEntry = lastEntry;
+    }
+    else
+    {
+        // Last char of the name
+        char *nameLast = rawEntry->ext + 2;
+
+        // Find the end
+        while (nameLast > rawEntry->name && *nameLast == 0x20)
+            --nameLast;
+
+        // There is no extension
+        if (nameLast < rawEntry->ext)
+        {
+            size_t count = nameLast - rawEntry->name + 1;
+            char *name = malloc(count + 1);
+
+            memcpy(name, rawEntry->name, count);
+            name[count] = '\0';
+
+            entry->name = (char*)name;
+        }
+        else
+        {
+            size_t count = nameLast - entry->name + 2;
+            char *name = malloc(count + 1);
+
+            // Copy name
+            memcpy(name, rawEntry->name, 8);
+
+            // Copy extension
+            memcpy(&name[9], rawEntry->ext, 3);
+
+            // Add point
+            name[8] = '.';
+            name[count] = '\0';
+
+            entry->name = (char *)name;
+        }
+    }
+
+    // rawEntry is now where flags are valid (in case of long file name)
+
+
+
+
+
+
+
+
+
+    // Name
+    // entry->name = entryName(rawEntry);
+
+    // Flags
+    if (rawEntry->flags & FAT_DIR || rawEntry->flags & FAT_ROOT)
+        entry->flags |= FS_DIRECTORY;
+    
+    if (rawEntry->flags & FAT_HIDDEN)
+        entry->flags |= FS_HIDDEN;
+
+    // Data
+    entry->data = rawEntry;
+
+    return entry;
 }
 
 // Returns all entries within a directory
@@ -170,26 +273,27 @@ static FatEntry **enumDir(FatEntry *dir)
     // For each entry
     // TODO : Not the same with long names
     size_t i = 0;
-    for ( ; i < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++i)
+    for (; i < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++i)
     {
         // No more entries
         if (cluster[i * sizeof(FatEntry)] == 0)
             break;
-        
+
         // Copy entry
         entries[i] = malloc(sizeof(FatEntry));
-        memcpy(entries[i], &((FatEntry*) cluster)[i], sizeof(FatEntry));
+        memcpy(entries[i], &((FatEntry *)cluster)[i], sizeof(FatEntry));
     }
 
     // Copy entries
-    FatEntry **result = malloc((i + 1) * sizeof(FatEntry*));
-    memcpy(result, entries, i * sizeof(FatEntry*));
+    FatEntry **result = malloc((i + 1) * sizeof(FatEntry *));
+    memcpy(result, entries, i * sizeof(FatEntry *));
 
     result[i] = NULL;
 
     return result;
 }
 
+// --- Methods --- //
 void fatInit()
 {
     // Allocate the cluster
@@ -213,27 +317,27 @@ void fatInit()
     root = malloc(FAT_CLUSTER_SIZE);
     hddRead(rootSector, root, 1);
 
+    // TMP :
+    // // Test //
+    // // Get name
+    // char *rootName = entryName(root);
+    // printf("Name %s\n", rootName);
+    // free(rootName);
 
-    // Test //
-    // Get name
-    char *rootName = entryName(root);
-    printf("Name %s\n", rootName);
-    free(rootName);
+    // // Enum
+    // FatEntry **files = enumDir(root);
 
-    // Enum
-    FatEntry **files = enumDir(root);
+    // for (size_t i = 0; files[i] != NULL; ++i)
+    // {
+    //     char *name = entryName(files[i]);
+    //     printf("- %s\n", name);
+    //     free(name);
+    // }
 
-    for (size_t i = 0; files[i] != NULL; ++i)
-    {
-        char *name = entryName(files[i]);
-        printf("- %s\n", name);
-        free(name);
-    }
-
-    // Free files
-    while (*files != NULL)
-        free(*(files++));
-    free(files);
+    // // Free files
+    // while (*files != NULL)
+    //     free(*(files++));
+    // free(files);
 }
 
 void fatTerminate()
@@ -242,4 +346,13 @@ void fatTerminate()
     free(root);
     free(fsInfo);
     free(cluster);
+}
+
+FSEntry *fatGenRoot()
+{
+    // Read the root cluster
+    hddRead(rootSector, cluster, 1);
+
+    // TMP : 0
+    return genEntry(1);
 }
