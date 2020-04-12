@@ -143,8 +143,9 @@ static FSEntry *genEntry(size_t *entryIndex)
 
     FatEntry *rawEntry = (FatEntry*)cluster + *entryIndex;
 
-    FSEntry *entry = malloc(sizeof(FSEntry));
-    FatEntryData *data = malloc(sizeof(FatEntryData));
+    char *entryName;
+    u8 entryFlags = 0;
+    FatFSEntryData *entryData = malloc(sizeof(FatFSEntryData));
 
     // Get name
     if (rawEntry->flags == FAT_LONG_NAME)
@@ -164,7 +165,7 @@ static FSEntry *genEntry(size_t *entryIndex)
         size_t count = ((size_t)lastEntry - (size_t)rawEntry) / sizeof(FatEntry);
 
         // 13 is the number of chars within each entry
-        entry->name = malloc(count * 13);
+        entryName = malloc(count * 13);
 
         // Iterate again to retrieve the name
         lastEntry = rawEntry;
@@ -184,7 +185,7 @@ static FSEntry *genEntry(size_t *entryIndex)
             {
                 // Set the char by the char located at the index charPos[j]
                 // in the i entry
-                entry->name[nameShift * 13 + j] = ((char*)&lastEntry[i])[charPos[j]];
+                entryName[nameShift * 13 + j] = ((char*)&lastEntry[i])[charPos[j]];
             }
         }
 
@@ -208,11 +209,11 @@ static FSEntry *genEntry(size_t *entryIndex)
             memcpy(name, rawEntry->name, count);
             name[count] = '\0';
 
-            entry->name = (char*)name;
+            entryName = (char*)name;
         }
         else
         {
-            size_t count = nameLast - entry->name + 2;
+            size_t count = nameLast - entryName + 2;
             char *name = malloc(count + 1);
 
             // Copy name
@@ -225,7 +226,7 @@ static FSEntry *genEntry(size_t *entryIndex)
             name[8] = '.';
             name[count] = '\0';
 
-            entry->name = (char *)name;
+            entryName = (char *)name;
         }
 
         ++*entryIndex;
@@ -235,78 +236,17 @@ static FSEntry *genEntry(size_t *entryIndex)
 
     // Flags
     if (rawEntry->flags & FAT_DIR || rawEntry->flags & FAT_ROOT)
-        entry->flags |= FS_DIRECTORY;
+        entryFlags |= FS_DIRECTORY;
 
     if (rawEntry->flags & FAT_HIDDEN)
-        entry->flags |= FS_HIDDEN;
+        entryFlags |= FS_HIDDEN;
 
     // Data
-    data->cluster = (rawEntry->firstClusterHigh << 16) | rawEntry->firstClusterLow;
-    entry->data = data;
+    entryData->cluster = (rawEntry->firstClusterHigh << 16) | rawEntry->firstClusterLow;
+    entryData = entryData;
 
-    // // TMP
-    // printf("Cluster %x\n", data->cluster);
-    // printf("Flags %x\n", rawEntry->flags);
-    // printf("Index %x\n", *entryIndex);
-    // puts("-----");
-
-    return entry;
+    return fatFSEntry_new(entryName, entryFlags, entryData);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // Returns all entries within a directory
-// // Returns NULL if the directory is invalid
-// // * Reads a cluster
-// static FatEntry **enumDir(FatEntry *dir)
-// {
-//     // Not a directory
-//     if (!(dir->flags & FAT_DIR || dir->flags & FAT_ROOT))
-//         return NULL;
-
-//     // Read the cluster where there is all entries
-//     uint32_t dirCluster = (dir->firstClusterHigh << 16) | dir->firstClusterLow;
-//     hddRead(dataSector + dirCluster, cluster, 1);
-
-//     // Temporary buffer
-//     FatEntry *entries[FAT_CLUSTER_SIZE / sizeof(FatEntry)];
-
-//     // For each entry
-//     // TODO : Not the same with long names
-//     size_t i = 0;
-//     for (; i < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++i)
-//     {
-//         // No more entries
-//         if (cluster[i * sizeof(FatEntry)] == 0)
-//             break;
-
-//         // Copy entry
-//         entries[i] = malloc(sizeof(FatEntry));
-//         memcpy(entries[i], &((FatEntry *)cluster)[i], sizeof(FatEntry));
-//     }
-
-//     // Copy entries
-//     FatEntry **result = malloc((i + 1) * sizeof(FatEntry *));
-//     memcpy(result, entries, i * sizeof(FatEntry *));
-
-//     result[i] = NULL;
-
-//     return result;
-// }
 
 // --- Methods --- //
 void fatInit()
@@ -362,15 +302,9 @@ void fatTerminate()
 }
 
 // TODO : Useless ?
-FSEntry *fatFSEntry_new(const char *name, u8 flags, FatEntryData *data)
+FSEntry *fatFSEntry_new(const char *name, u8 flags, FatFSEntryData *data)
 {
-    FSEntry *entry = malloc(sizeof(FSEntry));
-
-    entry->name = name;
-    entry->flags = flags;
-    entry->data = data;
-
-    return entry;
+    return FSEntry_new(name, flags, data, fatGenFSEntryOps());
 }
 
 // TODO : rm when use FSEntryOps
@@ -383,7 +317,7 @@ void fatFSEntry_del(FSEntry *entry)
     FSEntry_del(entry);
 }
 
-void FatFSEntryData_del(FatEntryData *data)
+void FatFSEntryData_del(FatFSEntryData *data)
 {
     free(data);
 }
@@ -393,7 +327,7 @@ void FatFSEntryData_del(FatEntryData *data)
 FSEntry **fatEnumDir(FSEntry *dir)
 {
     // Load the good cluster
-    hddRead(dataSector + ((FatEntryData*) dir->data)->cluster, cluster, 1);
+    hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
 
     // TODO : Multiple clusters
     size_t maxCount = FAT_CLUSTER_SIZE / sizeof(FatEntry);
@@ -423,7 +357,21 @@ FSEntry *fatGenRoot()
     FSEntry *root = genEntry(&i);
 
     // Root is not at cluster 0
-    ((FatEntryData*) root->data)->cluster = rootSector - dataSector;
+    ((FatFSEntryData*) root->data)->cluster = rootSector - dataSector;
 
     return root;
 }
+
+FSEntryOps *fatGenFSEntryOps()
+{
+    FSEntryOps *ops = malloc(sizeof(FSEntryOps));
+
+    *ops = (FSEntryOps) {
+        .del = fatFSEntry_del,
+        // TODO : ren .list = fatFSEntry_list,
+        .list = fatEnumDir
+    };
+
+    return ops;
+}
+

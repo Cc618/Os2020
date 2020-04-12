@@ -12,6 +12,36 @@
 #include <string.h>
 #include <stdio.h>
 
+
+
+// TODO : rm
+void printEntries(FSEntry **entries)
+{
+    for (size_t i = 0; entries[i]; ++i)
+        printf("%s ", entries[i]->name);
+    puts("");
+}
+
+FSEntry *findEntry(FSEntry **entries, const char *name)
+{
+    for (size_t i = 0; entries[i]; ++i)
+        if (strcmp(name, entries[i]->name) == 0)
+            return entries[i];
+
+    return NULL;
+}
+
+void freeEntries(FSEntry **entries)
+{
+    for (size_t i = 0; entries[i]; ++i)
+        free(entries[i]);
+}
+
+
+
+
+
+
 // Entry from stage2
 void main()
 {
@@ -23,20 +53,19 @@ void main()
     fatInit();
     fsInit();
 
-    // printEntry(root);
 
-    FSEntry **entries = fatEnumDir(root);
+    puts("* ls root :");
+    FSEntry **entries = root->ops->list(root);
 
-    for (size_t i = 0; entries[i]; ++i)
-        printEntry(entries[i]);
-    puts("----");
-    FSEntry *dir = entries[2];
+    printEntries(entries);
+    FSEntry dir = *findEntry(entries, "dir");
 
-    FSEntry **dirEntries = fatEnumDir(dir);
-    for (size_t i = 0; dirEntries[i]; ++i)
-        printEntry(dirEntries[i]);
+    freeEntries(entries);
 
-
+    puts("* ls dir :");
+    FSEntry **dirEntries = dir.ops->list(&dir);
+    printEntries(dirEntries);
+    freeEntries(dirEntries);
 
     // TODO : FREE
     while (1);

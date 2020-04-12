@@ -7,6 +7,8 @@
 #define FS_DIRECTORY    0x1
 #define FS_HIDDEN       0x2
 
+struct FSEntryOps_t;
+
 // Describes a file, directory, root...
 // * Object
 typedef struct FSEntry_t
@@ -18,8 +20,22 @@ typedef struct FSEntry_t
     // Used by drivers
     void *data;
 
-    // TODO : Ops (delete)
+    // Methods
+    struct FSEntryOps_t *ops;
 } FSEntry;
+
+// All methods of FSEntry
+typedef struct FSEntryOps_t
+{
+    // Free
+    void (*del)(FSEntry *entry);
+
+    // Returns a null terminated
+    // array of entries within this
+    // directory, returns NULL if
+    // not a directory 
+    FSEntry **(*list)(FSEntry *entry);
+} FSEntryOps;
 
 extern FSEntry *root;
 
@@ -29,7 +45,7 @@ void fsInit();
 // !!! FS drivers MUST be terminated after
 void fsTerminate();
 
-FSEntry *FSEntry_new(const char *name, u8 flags, void *data);
+FSEntry *FSEntry_new(const char *name, u8 flags, void *data, FSEntryOps *ops);
 
 // !!! Doesn't frees data
 void FSEntry_del(FSEntry *entry);
