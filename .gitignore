@@ -1,8 +1,7 @@
 bin
 obj
+tst/*
 .vscode
-.TODO
-.TMP
 peda*
 .gdb_history
 fs/*

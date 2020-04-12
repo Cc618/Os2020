@@ -8,17 +8,17 @@
 #define FS_HIDDEN       0x2
 
 // Describes a file, directory, root...
+// * Object
 typedef struct FSEntry_t
 {
     // Name, not the path
     char *name;
     u8 flags;
 
-    // TODO : Useless
     // Used by drivers
     void *data;
 
-    // TODO : Ops (delete : free data)
+    // TODO : Ops (delete)
 } FSEntry;
 
 extern FSEntry *root;
@@ -29,6 +29,11 @@ void fsInit();
 // !!! FS drivers MUST be terminated after
 void fsTerminate();
 
+FSEntry *FSEntry_new(const char *name, u8 flags, void *data);
+
+// !!! Doesn't frees data
+void FSEntry_del(FSEntry *entry);
+
 // TMP :
 #include <stdio.h>
 static inline void printEntry(FSEntry *entry)
@@ -37,4 +42,5 @@ static inline void printEntry(FSEntry *entry)
     printf("Name         %s\n", entry->name);
     printf("Directory    %s\n", entry->flags & FS_DIRECTORY ? "true" : "false");
     printf("Hidden       %s\n", entry->flags & FS_HIDDEN ? "true" : "false");
+    // printf("Data         %x\n", *(u32*)entry->data);
 }

@@ -23,8 +23,23 @@ void main()
     fatInit();
     fsInit();
 
-
     printEntry(root);
+
+    FSEntry **entries = fatEnumDir(root);
+
+    printEntry(entries[0]);
+    printEntry(entries[1]);
+
+    FSEntry *dir = entries[1];
+
+    puts("");
+    printf("%x\n", ((FatFSEntryData*)dir->data)->cluster);
+
+    FSEntry **dirEntries = fatEnumDir(dir);
+    printEntry(dirEntries[0]);
+    printEntry(dirEntries[1]);
+    printEntry(dirEntries[2]);
+
 
     // TODO :
     while (1);
