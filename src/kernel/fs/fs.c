@@ -32,5 +32,6 @@ FSEntry *FSEntry_new(const char *name, u8 flags, void *data, FSEntryOps *ops)
 void FSEntry_del(FSEntry *entry)
 {
     free(entry->name);
+    free(entry);
 }
 

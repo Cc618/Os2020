@@ -34,7 +34,9 @@ FSEntry *findEntry(FSEntry **entries, const char *name)
 void freeEntries(FSEntry **entries)
 {
     for (size_t i = 0; entries[i]; ++i)
-        free(entries[i]);
+        entries[i]->ops->list(entries[i]);
+    
+    free(entries);
 }
 
 
@@ -55,19 +57,18 @@ void main()
 
 
     puts("* ls root :");
-    FSEntry **entries = root->ops->list(root);
+    FSEntry **rootEntries = root->ops->list(root);
+    printEntries(rootEntries);
 
-    printEntries(entries);
-    FSEntry dir = *findEntry(entries, "dir");
+    FSEntry dir = *findEntry(rootEntries, "dir");
 
-    freeEntries(entries);
+    freeEntries(rootEntries);
 
     puts("* ls dir :");
     FSEntry **dirEntries = dir.ops->list(&dir);
     printEntries(dirEntries);
     freeEntries(dirEntries);
 
-    // TODO : FREE
     while (1);
 
     // Launch the shell

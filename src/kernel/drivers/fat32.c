@@ -269,28 +269,6 @@ void fatInit()
     // We retrieve 2 since the 2 first clusters are special ones
     dataSector = fatSector + bpb->fats * bpb->fatSize - 2;
     rootSector = dataSector + bpb->rootCluster;
-
-    // TMP :
-    // // Test //
-    // // Get name
-    // char *rootName = entryName(root);
-    // printf("Name %s\n", rootName);
-    // free(rootName);
-
-    // // Enum
-    // FatEntry **files = enumDir(root);
-
-    // for (size_t i = 0; files[i] != NULL; ++i)
-    // {
-    //     char *name = entryName(files[i]);
-    //     printf("- %s\n", name);
-    //     free(name);
-    // }
-
-    // // Free files
-    // while (*files != NULL)
-    //     free(*(files++));
-    // free(files);
 }
 
 void fatTerminate()
