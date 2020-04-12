@@ -119,12 +119,32 @@ static size_t rootSector;
 // --- Internal --- //
 // Generates the entry at index i in the current cluster
 // !!! Unsafe : i MUST be within the cluster
-// entryIndex is modified such as it points to the next entry
+// * entryIndex is modified such as it points to the next entry
+// * May returns NULL if the entry is end of directory
 static FSEntry *genEntry(size_t *entryIndex)
 {
+    // Check end of listing
+    for (;; ++*entryIndex)
+    {
+        if (*entryIndex >= FAT_CLUSTER_SIZE / sizeof(FSEntry))
+            return NULL;
+
+        // Entry number 'entryIndex'
+        FatEntry *entry = &((FatEntry*)cluster)[*entryIndex];
+
+        // End of entries
+        if (((u8*) entry)[0] == 0)
+            return NULL;
+
+        // If not unused, continue
+        if (((u8*) entry)[0] != 0xE5)
+            break;
+    }
+
     FatEntry *rawEntry = (FatEntry*)cluster + *entryIndex;
+
     FSEntry *entry = malloc(sizeof(FSEntry));
-    FatFSEntryData *data = malloc(sizeof(FatFSEntryData));
+    FatEntryData *data = malloc(sizeof(FatEntryData));
 
     // Get name
     if (rawEntry->flags == FAT_LONG_NAME)
@@ -342,7 +362,7 @@ void fatTerminate()
 }
 
 // TODO : Useless ?
-FSEntry *fatFSEntry_new(const char *name, u8 flags, FatFSEntryData *data)
+FSEntry *fatFSEntry_new(const char *name, u8 flags, FatEntryData *data)
 {
     FSEntry *entry = malloc(sizeof(FSEntry));
 
@@ -363,29 +383,33 @@ void fatFSEntry_del(FSEntry *entry)
     FSEntry_del(entry);
 }
 
-void FatFSEntryData_del(FatFSEntryData *data)
+void FatFSEntryData_del(FatEntryData *data)
 {
     free(data);
 }
 
-// TODO : Multiple clusters
 // Returns an array of entry
 // The array is NULL terminated
 FSEntry **fatEnumDir(FSEntry *dir)
 {
     // Load the good cluster
-    hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
+    hddRead(dataSector + ((FatEntryData*) dir->data)->cluster, cluster, 1);
 
-    // TMP
-    size_t count = 3;
-    FSEntry **entries = malloc(sizeof(FSEntry*) * (count + 1));
+    // TODO : Multiple clusters
+    size_t maxCount = FAT_CLUSTER_SIZE / sizeof(FatEntry);
+    FSEntry **entries = malloc(sizeof(FSEntry*) * (maxCount + 1));
 
     size_t entryIndex = 0;
-    entries[0] = genEntry(&entryIndex);
-    entries[1] = genEntry(&entryIndex);
-    entries[2] = genEntry(&entryIndex);
+    for (size_t i = 0; i < maxCount; ++i)
+    {
+        // May be NULL to terminate the buffer (end of listing)
+        entries[i] = genEntry(&entryIndex);
 
-    entries[count] = NULL;
+        if (entries[i] == NULL)
+            break;
+    }
+
+    entries[maxCount] = NULL;
 
     return entries;
 }
@@ -399,7 +423,7 @@ FSEntry *fatGenRoot()
     FSEntry *root = genEntry(&i);
 
     // Root is not at cluster 0
-    ((FatFSEntryData*) root->data)->cluster = rootSector - dataSector;
+    ((FatEntryData*) root->data)->cluster = rootSector - dataSector;
 
     return root;
 }
