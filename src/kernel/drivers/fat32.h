@@ -17,7 +17,7 @@ typedef struct FatFSEntryData_t
     u32 cluster;
 } FatFSEntryData;
 
-FSEntry *fatFSEntry_new(const char *name, u8 flags, FatFSEntryData *data);
+FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData *data);
 
 void fatFSEntry_del(FSEntry *entry);
 
@@ -25,9 +25,14 @@ void FatFSEntryData_del(FatFSEntryData *data);
 
 FSEntry **fatEnumDir(FSEntry *dir);
 
+// TODO : Change
+void fatRead(FSEntry *file);
+
 // Generates the root entry
 FSEntry *fatGenRoot();
 
 // Returns the ops structure with
 // all methods of fat
 FSEntryOps *fatGenFSEntryOps();
+
+

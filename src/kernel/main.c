@@ -56,18 +56,38 @@ void main()
     fsInit();
 
 
-    puts("* ls root :");
-    FSEntry **rootEntries = root->ops->list(root);
-    printEntries(rootEntries);
+    // // Example : ls directories //
+    // puts("* ls root :");
+    // FSEntry **rootEntries = root->ops->list(root);
+    // printEntries(rootEntries);
 
-    FSEntry dir = *findEntry(rootEntries, "dir");
+    // FSEntry dir = *findEntry(rootEntries, "dir");
+
+    // freeEntries(rootEntries);
+
+    // puts("* ls dir :");
+    // FSEntry **dirEntries = dir.ops->list(&dir);
+    // printEntries(dirEntries);
+
+    // FSEntry *parent = findEntry(dirEntries, "..");
+    // FSEntry **parentEntries = parent->ops->list(parent);
+    // printEntries(parentEntries);
+    // freeEntries(parentEntries);
+    
+    // freeEntries(dirEntries);
+
+
+    // TODO : Encapsulate ops of FSEntry
+
+    // Example : cat file //
+    puts("* cat /file :");
+    FSEntry **rootEntries = root->ops->list(root);
+    FSEntry *file = findEntry(rootEntries, "file");
+    fatRead(file);
 
     freeEntries(rootEntries);
 
-    puts("* ls dir :");
-    FSEntry **dirEntries = dir.ops->list(&dir);
-    printEntries(dirEntries);
-    freeEntries(dirEntries);
+
 
     while (1);
 

@@ -241,11 +241,31 @@ static FSEntry *genEntry(size_t *entryIndex)
     if (rawEntry->flags & FAT_HIDDEN)
         entryFlags |= FS_HIDDEN;
 
+    // Size
+    size_t entrySize = rawEntry->fileSize;
+
     // Data
     entryData->cluster = (rawEntry->firstClusterHigh << 16) | rawEntry->firstClusterLow;
+
+
+
+
+
+
+
+    
+    // TMP
+    // To .. to root
+    // if (entryData == 0)
+        // entryData->cluster = 2;
+
+
+
+
+
     entryData = entryData;
 
-    return fatFSEntry_new(entryName, entryFlags, entryData);
+    return fatFSEntry_new(entryName, entryFlags, entrySize, entryData);
 }
 
 // --- Methods --- //
@@ -280,9 +300,9 @@ void fatTerminate()
 }
 
 // TODO : Useless ?
-FSEntry *fatFSEntry_new(const char *name, u8 flags, FatFSEntryData *data)
+FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData *data)
 {
-    return FSEntry_new(name, flags, data, fatGenFSEntryOps());
+    return FSEntry_new(name, flags, size, data, fatGenFSEntryOps());
 }
 
 // TODO : rm when use FSEntryOps
@@ -304,6 +324,11 @@ void FatFSEntryData_del(FatFSEntryData *data)
 // The array is NULL terminated
 FSEntry **fatEnumDir(FSEntry *dir)
 {
+    // Not a directory
+    // TODO : rm when Encapsulate ops of FSEntry
+    if (!(dir->flags & FS_DIRECTORY))
+        return NULL;
+
     // Load the good cluster
     hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
 
@@ -324,6 +349,26 @@ FSEntry **fatEnumDir(FSEntry *dir)
     entries[maxCount] = NULL;
 
     return entries;
+}
+
+void fatRead(FSEntry *file)
+{
+    // Not a file
+    // TODO : rm when Encapsulate ops of FSEntry
+    if (file->flags & FS_DIRECTORY)
+        return;
+
+    FatFSEntryData *f = (FatFSEntryData*)file->data;
+
+    // TODO : Multiple cluster (FAT)
+    
+    // Read the cluster
+    hddRead(dataSector + f->cluster, cluster, 1);
+    
+    // TODO : memcpy
+    for (size_t i = 0; i < file->size; ++i)
+        putchar(cluster[i]);
+    puts("");
 }
 
 FSEntry *fatGenRoot()

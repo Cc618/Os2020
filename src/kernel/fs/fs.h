@@ -16,6 +16,8 @@ typedef struct FSEntry_t
     // Name, not the path
     char *name;
     u8 flags;
+    // 0 if directory, the size in bytes of the file
+    size_t size;
 
     // Used by drivers
     void *data;
@@ -45,7 +47,7 @@ void fsInit();
 // !!! FS drivers MUST be terminated after
 void fsTerminate();
 
-FSEntry *FSEntry_new(const char *name, u8 flags, void *data, FSEntryOps *ops);
+FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntryOps *ops);
 
 // !!! Doesn't frees data
 void FSEntry_del(FSEntry *entry);

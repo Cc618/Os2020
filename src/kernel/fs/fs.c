@@ -15,13 +15,14 @@ void fsTerminate()
     free(root);
 }
 
-FSEntry *FSEntry_new(const char *name, u8 flags, void *data, FSEntryOps *ops)
+FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntryOps *ops)
 {
     FSEntry *entry = malloc(sizeof(FSEntry));
 
     *entry = (FSEntry){
         .name = name,
         .flags = flags,
+        .size = size,
         .data = data,
         .ops = ops
     };
