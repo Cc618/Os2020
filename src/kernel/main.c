@@ -81,15 +81,19 @@ void main()
     // TODO : Encapsulate ops of FSEntry
 
     // Example : cat file //
-    puts("* cat /file :");
+    // TODO : frees
+    // puts("* cat /file :");
     FSEntry **rootEntries = root->ops->list(root);
-    FSEntry *file = findEntry(rootEntries, "file");
+    FSEntry *dir = findEntry(rootEntries, "dir");
+    FSEntry **dirEntries = dir->ops->list(dir);
+    FSEntry *file = findEntry(dirEntries, "second");
     
     // Read
-    char buf[512];
-    size_t n = FSEntry_read(file, buf, 511);
+    char buf[4096];
+    size_t n = FSEntry_read(file, buf, 2000);
     buf[n] = '\0';
-    printf("%s", buf);
+    printf("%s\n", buf + 500);
+    printf("Read %d bytes\n", n);
 
 
     freeEntries(rootEntries);

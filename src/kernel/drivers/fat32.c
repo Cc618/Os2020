@@ -307,20 +307,88 @@ void FatFSEntryData_del(FatFSEntryData *data)
     free(data);
 }
 
+
+
+
+
+
+
+
+
+
+// Reads a data cluster
+void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
+{
+    // Read the cluster
+    hddRead(dataSector + clusterNb, cluster, 1);
+
+    // Load and copy
+    memcpy(buffer, cluster, bytesToLoad);
+}
+
+
+
+
+
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 {
+    if (count == 0)
+        return;
+
+    if (count > file->size)
+        count = file->size;
+
     FatFSEntryData *f = (FatFSEntryData*)file->data;
+
+    // This file has no content
+    if (f->cluster == 0)
+        return 0;
+
+    // Bytes read
     size_t n = 0;
 
-    // TODO : Multiple cluster (FAT)
+    u32 *fat = malloc(HDD_SECTOR_SIZE);
 
-    // Read the cluster
-    hddRead(dataSector + f->cluster, cluster, 1);
+    // Current sector loaded in fat
+    size_t currentFatSector = (size_t)-1;
 
+    // How many fat entries in the fat
+    size_t entriesPerSector = HDD_SECTOR_SIZE / 32;
 
-    // TODO : Verify size
-    memcpy(buffer, cluster, count);
-    n += count;
+    size_t currentCluster = f->cluster;
+    for (size_t loadedClusters = 0; count != 0; ++loadedClusters)
+    {
+        // Copy the cluster
+        size_t bytesToLoad = count > FAT_CLUSTER_SIZE ? FAT_CLUSTER_SIZE : count;
+        readCluster(currentCluster, buffer, bytesToLoad);
+
+        count -= bytesToLoad;
+        n += bytesToLoad;
+        buffer = (u8*)buffer + bytesToLoad;
+
+        // The location in the fat of the cluster entry
+        size_t fatCluster = (f->cluster + loadedClusters) / FAT_CLUSTER_SIZE;
+
+        // Update fat if necessary
+        if (currentFatSector != fatCluster)
+        {
+            currentFatSector = fatCluster;
+
+            // Load it
+            hddRead(fatSector + currentFatSector, fat, 1);
+        }
+
+        // The cluster to read into the buffer
+        size_t nextCluster = fat[(f->cluster + loadedClusters) % entriesPerSector] & 0x0FFFFFFF;
+
+        // This is the end (don't read bad sectors)
+        if (nextCluster >= 0x0FFFFFF7)
+            break;
+
+        currentCluster = nextCluster;
+    }
+
+    free(fat);
 
     return n;
 }
