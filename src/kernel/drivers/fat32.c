@@ -327,7 +327,7 @@ size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 
 // Returns an array of entry
 // The array is NULL terminated
-FSEntry **fatEnumDir(FSEntry *dir)
+FSEntry **fatFSEntry_list(FSEntry *dir)
 {
     // Load the good cluster
     hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
@@ -372,7 +372,7 @@ FSEntryOps *fatGenFSEntryOps()
     *ops = (FSEntryOps) {
         .del = fatFSEntry_del,
         // TODO : ren .list = fatFSEntry_list,
-        .list = fatEnumDir,
+        .list = fatFSEntry_list,
         .read = fatFSEntry_read,
     };
 

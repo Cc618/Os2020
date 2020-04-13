@@ -1,6 +1,6 @@
 #pragma once
 
-// The file system
+// The virtual file system
 
 #include "k/types.h"
 
@@ -14,7 +14,7 @@ struct FSEntryOps_t;
 typedef struct FSEntry_t
 {
     // Name, not the path
-    char *name;
+    const char *name;
     u8 flags;
     // 0 if directory, the size in bytes of the file
     size_t size;

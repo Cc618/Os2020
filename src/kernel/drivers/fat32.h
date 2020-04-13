@@ -25,7 +25,7 @@ void FatFSEntryData_del(FatFSEntryData *data);
 
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count);
 
-FSEntry **fatEnumDir(FSEntry *dir);
+FSEntry **fatFSEntry_list(FSEntry *dir);
 
 // Generates the root entry
 FSEntry *fatGenRoot();
@@ -33,5 +33,3 @@ FSEntry *fatGenRoot();
 // Returns the ops structure with
 // all methods of fat
 FSEntryOps *fatGenFSEntryOps();
-
-

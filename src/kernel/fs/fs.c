@@ -51,7 +51,7 @@ FSEntry **FSEntry_list(FSEntry *dir)
 
 void FSEntry_del(FSEntry *entry)
 {
-    free(entry->name);
+    free((void*) entry->name);
     free(entry);
 }
 
