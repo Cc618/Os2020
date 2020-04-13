@@ -213,7 +213,8 @@ static FSEntry *genEntry(size_t *entryIndex)
         }
         else
         {
-            size_t count = nameLast - entryName + 2;
+            // + 2 for point (last is the last char not the end)
+            size_t count = nameLast - rawEntry->name + 2;
             char *name = malloc(count + 1);
 
             // Copy name
@@ -247,23 +248,9 @@ static FSEntry *genEntry(size_t *entryIndex)
     // Data
     entryData->cluster = (rawEntry->firstClusterHigh << 16) | rawEntry->firstClusterLow;
 
-
-
-
-
-
-
-    
-    // TMP
     // To .. to root
-    // if (entryData == 0)
-        // entryData->cluster = 2;
-
-
-
-
-
-    entryData = entryData;
+    if (entryData->cluster == 0)
+        entryData->cluster = 2;
 
     return fatFSEntry_new(entryName, entryFlags, entrySize, entryData);
 }
@@ -361,10 +348,10 @@ void fatRead(FSEntry *file)
     FatFSEntryData *f = (FatFSEntryData*)file->data;
 
     // TODO : Multiple cluster (FAT)
-    
+
     // Read the cluster
     hddRead(dataSector + f->cluster, cluster, 1);
-    
+
     // TODO : memcpy
     for (size_t i = 0; i < file->size; ++i)
         putchar(cluster[i]);
