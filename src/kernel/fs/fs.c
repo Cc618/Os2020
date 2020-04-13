@@ -15,6 +15,7 @@ void fsTerminate()
     free(root);
 }
 
+// FSEntry methods //
 FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntryOps *ops)
 {
     FSEntry *entry = malloc(sizeof(FSEntry));
@@ -28,6 +29,24 @@ FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntr
     };
 
     return entry;
+}
+
+size_t FSEntry_read(FSEntry *entry, void *buffer, size_t count)
+{
+    // Not a file
+    if (entry->flags & FS_DIRECTORY)
+        return 0;
+    
+    return entry->ops->read(entry, buffer, count);
+}
+
+FSEntry **FSEntry_list(FSEntry *dir)
+{
+    // Not a directory
+    if (!(dir->flags & FS_DIRECTORY))
+        return NULL;
+    
+    return dir->ops->list(dir);
 }
 
 void FSEntry_del(FSEntry *entry)

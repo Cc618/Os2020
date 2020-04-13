@@ -307,15 +307,28 @@ void FatFSEntryData_del(FatFSEntryData *data)
     free(data);
 }
 
+size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
+{
+    FatFSEntryData *f = (FatFSEntryData*)file->data;
+    size_t n = 0;
+
+    // TODO : Multiple cluster (FAT)
+
+    // Read the cluster
+    hddRead(dataSector + f->cluster, cluster, 1);
+
+
+    // TODO : Verify size
+    memcpy(buffer, cluster, count);
+    n += count;
+
+    return n;
+}
+
 // Returns an array of entry
 // The array is NULL terminated
 FSEntry **fatEnumDir(FSEntry *dir)
 {
-    // Not a directory
-    // TODO : rm when Encapsulate ops of FSEntry
-    if (!(dir->flags & FS_DIRECTORY))
-        return NULL;
-
     // Load the good cluster
     hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
 
@@ -336,26 +349,6 @@ FSEntry **fatEnumDir(FSEntry *dir)
     entries[maxCount] = NULL;
 
     return entries;
-}
-
-void fatRead(FSEntry *file)
-{
-    // Not a file
-    // TODO : rm when Encapsulate ops of FSEntry
-    if (file->flags & FS_DIRECTORY)
-        return;
-
-    FatFSEntryData *f = (FatFSEntryData*)file->data;
-
-    // TODO : Multiple cluster (FAT)
-
-    // Read the cluster
-    hddRead(dataSector + f->cluster, cluster, 1);
-
-    // TODO : memcpy
-    for (size_t i = 0; i < file->size; ++i)
-        putchar(cluster[i]);
-    puts("");
 }
 
 FSEntry *fatGenRoot()
@@ -379,7 +372,8 @@ FSEntryOps *fatGenFSEntryOps()
     *ops = (FSEntryOps) {
         .del = fatFSEntry_del,
         // TODO : ren .list = fatFSEntry_list,
-        .list = fatEnumDir
+        .list = fatEnumDir,
+        .read = fatFSEntry_read,
     };
 
     return ops;

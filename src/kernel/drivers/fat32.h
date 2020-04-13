@@ -23,10 +23,9 @@ void fatFSEntry_del(FSEntry *entry);
 
 void FatFSEntryData_del(FatFSEntryData *data);
 
-FSEntry **fatEnumDir(FSEntry *dir);
+size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count);
 
-// TODO : Change
-void fatRead(FSEntry *file);
+FSEntry **fatEnumDir(FSEntry *dir);
 
 // Generates the root entry
 FSEntry *fatGenRoot();

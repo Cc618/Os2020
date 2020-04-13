@@ -56,37 +56,43 @@ void main()
     fsInit();
 
 
-    // Example : ls directories //
-    puts("* ls root :");
-    FSEntry **rootEntries = root->ops->list(root);
-    printEntries(rootEntries);
+    // // Example : ls directories //
+    // puts("* ls root :");
+    // FSEntry **rootEntries = root->ops->list(root);
+    // printEntries(rootEntries);
 
-    FSEntry dir = *findEntry(rootEntries, "dir");
+    // FSEntry dir = *findEntry(rootEntries, "dir");
 
-    freeEntries(rootEntries);
+    // freeEntries(rootEntries);
 
-    puts("* ls dir :");
-    FSEntry **dirEntries = dir.ops->list(&dir);
-    printEntries(dirEntries);
+    // puts("* ls dir :");
+    // FSEntry **dirEntries = dir.ops->list(&dir);
+    // printEntries(dirEntries);
 
-    puts("* ls .. :");
-    FSEntry *parent = findEntry(dirEntries, "..");
-    FSEntry **parentEntries = parent->ops->list(parent);
-    printEntries(parentEntries);
-    freeEntries(parentEntries);
+    // puts("* ls .. :");
+    // FSEntry *parent = findEntry(dirEntries, "..");
+    // FSEntry **parentEntries = parent->ops->list(parent);
+    // printEntries(parentEntries);
+    // freeEntries(parentEntries);
     
-    freeEntries(dirEntries);
+    // freeEntries(dirEntries);
 
 
     // TODO : Encapsulate ops of FSEntry
 
-    // // Example : cat file //
-    // puts("* cat /file :");
-    // FSEntry **rootEntries = root->ops->list(root);
-    // FSEntry *file = findEntry(rootEntries, "file");
-    // fatRead(file);
+    // Example : cat file //
+    puts("* cat /file :");
+    FSEntry **rootEntries = root->ops->list(root);
+    FSEntry *file = findEntry(rootEntries, "file");
+    
+    // Read
+    char buf[512];
+    size_t n = FSEntry_read(file, buf, 511);
+    buf[n] = '\0';
+    printf("%s", buf);
 
-    // freeEntries(rootEntries);
+
+    freeEntries(rootEntries);
 
 
 
