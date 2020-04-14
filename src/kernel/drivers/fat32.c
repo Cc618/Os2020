@@ -307,15 +307,6 @@ void FatFSEntryData_del(FatFSEntryData *data)
     free(data);
 }
 
-
-
-
-
-
-
-
-
-
 // Reads a data cluster
 void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
 {
@@ -325,10 +316,6 @@ void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
     // Load and copy
     memcpy(buffer, cluster, bytesToLoad);
 }
-
-
-
-
 
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 {
@@ -439,7 +426,6 @@ FSEntryOps *fatGenFSEntryOps()
 
     *ops = (FSEntryOps) {
         .del = fatFSEntry_del,
-        // TODO : ren .list = fatFSEntry_list,
         .list = fatFSEntry_list,
         .read = fatFSEntry_read,
     };
