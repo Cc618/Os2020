@@ -66,6 +66,18 @@ FSEntry **FSEntry_list(FSEntry *dir);
 // !!! Doesn't frees data
 void FSEntry_del(FSEntry *entry);
 
+// Deletes / frees all entries and also the array entries
+void delEntries(FSEntry **entries);
+
+// Finds an entry in the entry list with its name
+// Returns NULL if not found
+FSEntry *findEntry(FSEntry **entries, const char *name);
+
+// Retrieve an entry at this absolute path
+// We can use \ or /
+// Returns NULL if not found
+FSEntry *getEntry(const char *path);
+
 // TMP :
 #include <stdio.h>
 static inline void printEntry(FSEntry *entry)

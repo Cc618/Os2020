@@ -200,6 +200,8 @@ void keyboardInit()
 
 void keyboardTerminate()
 {
+    // TODO : Disable cursor
+
     keyboardEnabled = false;
 }
 

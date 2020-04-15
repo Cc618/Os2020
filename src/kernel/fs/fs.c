@@ -55,3 +55,62 @@ void FSEntry_del(FSEntry *entry)
     free(entry);
 }
 
+void delEntries(FSEntry **entries)
+{
+    for (size_t i = 0; entries[i]; ++i)
+        FSEntry_del(entries[i]);
+    
+    free(entries);
+}
+
+FSEntry *findEntry(FSEntry **entries, const char *name)
+{
+    for (size_t i = 0; entries[i]; ++i)
+        if (strcmp(name, entries[i]->name) == 0)
+            return entries[i];
+
+    return NULL;
+}
+
+FSEntry *getEntry(const char *path)
+{
+    // Don't parse root
+    if (path[0] == '/' || path[0] == '\\')
+        ++path;
+
+    char *p = strdup(path);
+    const char *delim = "/\\";
+    char *part = strtok(p, delim);
+    
+    // Current directory we parse
+    const FSEntry *current = root;
+
+    do
+    {
+        // ls
+        FSEntry **entries = FSEntry_list(current);
+
+        if (current != root)
+            FSEntry_del(current);
+
+        if (entries == NULL)
+            return NULL;
+
+        current = findEntry(entries, part);
+
+        // Free all entries excluding current
+        for (size_t i = 0; entries[i]; ++i)
+            // Don't delete the first directory
+            if (current == root || entries[i] != current)
+                FSEntry_del(entries[i]);
+        
+        free(entries);
+
+        if (current == NULL)
+            return NULL;
+    } while ((part = strtok(NULL, delim)));
+
+    free(p);
+
+    return current;
+}

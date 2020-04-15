@@ -31,6 +31,7 @@ void sys_fatal(const char *msg)
 
     free(errorMsg);
 
+    // TODO : JMP to terminateKernel
     while (1);
 }
 

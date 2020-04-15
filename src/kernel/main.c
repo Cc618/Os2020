@@ -15,75 +15,12 @@
 #include <stdio.h>
 
 
-FSEntry *findEntry(FSEntry **entries, const char *name)
-{
-    for (size_t i = 0; entries[i]; ++i)
-        if (strcmp(name, entries[i]->name) == 0)
-            return entries[i];
-
-    return NULL;
-}
-
 // TODO : rm
 void printEntries(FSEntry **entries)
 {
     for (size_t i = 0; entries[i]; ++i)
         printf("%s ", entries[i]->name);
     puts("");
-}
-
-void freeEntries(FSEntry **entries)
-{
-    for (size_t i = 0; entries[i]; ++i)
-        FSEntry_del(entries[i]);
-    
-    free(entries);
-}
-
-// Retrieve an entry at this absolute path
-// We can use \ or /
-// Returns NULL if not found
-FSEntry *getEntry(const char *path)
-{
-    // Don't parse root
-    if (path[0] == '/' || path[0] == '\\')
-        ++path;
-
-    char *p = strdup(path);
-    const char *delim = "/\\";
-    char *part = strtok(p, delim);
-    
-    // Current directory we parse
-    const FSEntry *current = root;
-
-    do
-    {
-        // ls
-        FSEntry **entries = FSEntry_list(current);
-
-        if (current != root)
-            FSEntry_del(current);
-
-        if (entries == NULL)
-            return NULL;
-
-        current = findEntry(entries, part);
-
-        //  Free all entries excluding current
-        for (size_t i = 0; entries[i]; ++i)
-            // Don't delete the first directory
-            if (current == root || entries[i] != current)
-                FSEntry_del(entries[i]);
-        
-        free(entries);
-
-        if (current == NULL)
-            return NULL;
-    } while ((part = strtok(NULL, delim)));
-
-    free(p);
-
-    return current;
 }
 
 
@@ -105,65 +42,66 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-// // Example : ls directories //
-    // puts("* ls root :");
-    // FSEntry **rootEntries = root->ops->list(root);
-    // printEntries(rootEntries);
+// Example : ls directories //
+    puts("* ls root :");
+    FSEntry **rootEntries = root->ops->list(root);
+    printEntries(rootEntries);
 
-    // FSEntry dir = *findEntry(rootEntries, "dir");
+    FSEntry dir = *findEntry(rootEntries, "dir");
 
-    // freeEntries(rootEntries);
+    delEntries(rootEntries);
 
-    // puts("* ls dir :");
-    // FSEntry **dirEntries = dir.ops->list(&dir);
-    // printEntries(dirEntries);
+    puts("* ls dir :");
+    FSEntry **dirEntries = dir.ops->list(&dir);
+    printEntries(dirEntries);
 
-    // puts("* ls .. :");
-    // FSEntry *parent = findEntry(dirEntries, "..");
-    // FSEntry **parentEntries = parent->ops->list(parent);
-    // printEntries(parentEntries);
-    // freeEntries(parentEntries);
+    puts("* ls .. :");
+    FSEntry *parent = findEntry(dirEntries, "..");
+    FSEntry **parentEntries = parent->ops->list(parent);
+    printEntries(parentEntries);
+    delEntries(parentEntries);
     
-    // freeEntries(dirEntries);
+    delEntries(dirEntries);
 
 
-    // // Example : cat file //
-    // // TODO : frees
-    // // puts("* cat /file :");
-    // FSEntry **rootEntries = root->ops->list(root);
-    // FSEntry *dir = findEntry(rootEntries, "dir");
-    // FSEntry **dirEntries = dir->ops->list(dir);
-    // FSEntry *file = findEntry(dirEntries, "second");
+    // Example : cat file //
+    // TODO : frees
+    // puts("* cat /file :");
+    FSEntry **rootEntries2 = root->ops->list(root);
+    FSEntry *dir2 = findEntry(rootEntries2, "dir");
+    FSEntry **dirEntries2 = dir2->ops->list(dir2);
+    FSEntry *file = findEntry(dirEntries2, "second");
     
-    // // Read
-    // char buf[4096];
-    // size_t n = FSEntry_read(file, buf, 2000);
-    // buf[n] = '\0';
-    // printf("%s\n", buf + 500);
-    // printf("Read %d bytes\n", n);
+    // Read
+    char buf[4096];
+    size_t n = FSEntry_read(file, buf, 2000);
+    buf[n] = '\0';
+    printf("%s\n", buf + 500);
+    printf("Read %d bytes\n", n);
 
-    // freeEntries(rootEntries);
-
-
-    // // Example : Follow path //
-    // FSEntry *f = getEntry("/dir/../dir/second");
-
-    // if (f == NULL)
-    //     puts("NULL");
-    // else
-    //     printf("File : %s\n", f->name);
+    delEntries(dirEntries2);
+    delEntries(rootEntries2);
 
 
-    // while (1);
+    // Example : Follow path //
+    FSEntry *f = getEntry("/dir/../dir/second");
+
+    if (f == NULL)
+        puts("NULL");
+    else
+        printf("File : %s\n", f->name);
+
+
+    // TODO : rm tests
+    return;
 
 
 
-    sys_fatal("My message");
 
 
     // Launch the shell
     // TODO : sys_exec
-    // execApp(shellMain, 0, NULL);
+    execApp(shellMain, 0, NULL);
 
     consoleNewLine();
     puts("No process running");
@@ -174,7 +112,7 @@ static void userAct()
 
 // Terminates all modules
 // !!! This function doesn't return
-static void terminateKernel()
+void terminateKernel()
 {
     keyboardTerminate();
     fatTerminate();
