@@ -6,6 +6,8 @@
 
 #define FMT_FATAL ((FMT_LIGHT_BLUE << 4) | FMT_WHITE)
 
+void terminateKernel();
+
 // --- System --- //
 void sys_fatal(const char *msg)
 {
@@ -31,7 +33,7 @@ void sys_fatal(const char *msg)
 
     free(errorMsg);
 
-    // TODO : JMP to terminateKernel
-    while (1);
+    // Disable computer
+    terminateKernel();
 }
 

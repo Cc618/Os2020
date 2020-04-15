@@ -60,7 +60,7 @@ static void userAct()
     FSEntry **parentEntries = parent->ops->list(parent);
     printEntries(parentEntries);
     delEntries(parentEntries);
-    
+
     delEntries(dirEntries);
 
 
@@ -71,7 +71,7 @@ static void userAct()
     FSEntry *dir2 = findEntry(rootEntries2, "dir");
     FSEntry **dirEntries2 = dir2->ops->list(dir2);
     FSEntry *file = findEntry(dirEntries2, "second");
-    
+
     // Read
     char buf[4096];
     size_t n = FSEntry_read(file, buf, 2000);
