@@ -1,5 +1,6 @@
 #include "int/interrupts.h"
 #include "drivers/console.h"
+#include "drivers/keyboard.h"
 #include "drivers/fat32.h"
 #include "fs/fs.h"
 #include "apps/shell.h"
@@ -13,7 +14,6 @@
 #include <stdio.h>
 
 
-
 FSEntry *findEntry(FSEntry **entries, const char *name)
 {
     for (size_t i = 0; entries[i]; ++i)
@@ -22,7 +22,6 @@ FSEntry *findEntry(FSEntry **entries, const char *name)
 
     return NULL;
 }
-
 
 // TODO : rm
 void printEntries(FSEntry **entries)
@@ -39,11 +38,6 @@ void freeEntries(FSEntry **entries)
     
     free(entries);
 }
-
-
-
-
-
 
 // Retrieve an entry at this absolute path
 // We can use \ or /
@@ -92,9 +86,6 @@ FSEntry *getEntry(const char *path)
 }
 
 
-
-
-
 // Entry from stage2
 void main()
 {
@@ -105,6 +96,9 @@ void main()
     // File system init
     fatInit();
     fsInit();
+
+    // Inputs init
+    keyboardInit();
 
 
     // // Example : ls directories //
@@ -147,18 +141,19 @@ void main()
     // freeEntries(rootEntries);
 
 
-    // Example : Follow path //
-    FSEntry *f = getEntry("/dir/../dir/second");
+    // // Example : Follow path //
+    // FSEntry *f = getEntry("/dir/../dir/second");
 
-    if (f == NULL)
-        puts("NULL");
-    else
-        printf("File : %s\n", f->name);
+    // if (f == NULL)
+    //     puts("NULL");
+    // else
+    //     printf("File : %s\n", f->name);
 
 
-    while (1);
+    // while (1);
 
     // Launch the shell
+    // TODO : sys_exec
     execApp(shellMain, 0, NULL);
 
     consoleNewLine();
@@ -166,6 +161,7 @@ void main()
 
     puts("Exiting");
 
+    keyboardTerminate();
     fatTerminate();
     fsTerminate();
 

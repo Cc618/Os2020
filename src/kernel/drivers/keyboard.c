@@ -116,6 +116,8 @@ typedef char key_t;
 
 bool shiftPressed = false;
 bool ctrlPressed = false;
+bool keyboardEnabled = false;
+
 
 // All displayable keys (without shift pressed)
 key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
@@ -189,11 +191,26 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     0, 0, 0, 0, 0, 0, 0, 0,
 };
 
+void keyboardInit()
+{
+    keyboardEnabled = true;
+
+    // TODO : Use pipe
+}
+
+void keyboardTerminate()
+{
+    keyboardEnabled = false;
+}
+
 void onKeyPressed()
 {
     static bool wasString = false;
 
     unsigned char data = inb(KBD_DATA);
+
+    if (!keyboardEnabled)
+        return;
 
     // String
     if (wasString)
