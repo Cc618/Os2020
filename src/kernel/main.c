@@ -5,6 +5,7 @@
 #include "fs/fs.h"
 #include "apps/shell.h"
 #include "apps/app.h"
+#include "syscalls/syscalls.h"
 
 #include "_libc.h"
 
@@ -86,8 +87,8 @@ FSEntry *getEntry(const char *path)
 }
 
 
-// Entry from stage2
-void main()
+// Inits all modules
+static void initKernel()
 {
     initInterrupts();
 
@@ -99,9 +100,12 @@ void main()
 
     // Inputs init
     keyboardInit();
+}
 
-
-    // // Example : ls directories //
+// After init, the user can access the kernel
+static void userAct()
+{
+// // Example : ls directories //
     // puts("* ls root :");
     // FSEntry **rootEntries = root->ops->list(root);
     // printEntries(rootEntries);
@@ -152,18 +156,39 @@ void main()
 
     // while (1);
 
+
+
+    sys_fatal("My message");
+
+
     // Launch the shell
     // TODO : sys_exec
-    execApp(shellMain, 0, NULL);
+    // execApp(shellMain, 0, NULL);
 
     consoleNewLine();
     puts("No process running");
 
     puts("Exiting");
 
+}
+
+// Terminates all modules
+// !!! This function doesn't return
+static void terminateKernel()
+{
     keyboardTerminate();
     fatTerminate();
     fsTerminate();
 
     while (1);
+}
+
+// Entry from stage2
+void main()
+{
+    initKernel();
+
+    userAct();
+
+    terminateKernel();
 }

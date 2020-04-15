@@ -41,8 +41,7 @@ void hddRead(size_t src, void *dst, size_t sectorCount)
 
         // Check error
         if (status & 0x01)
-            // TODO : msg = Disk can't be read
-            sys_fatal();
+            sys_fatal("Disk can't be read");
 
         // Read data
         for (int i = 0; i < HDD_SECTOR_SIZE / 2; ++i)
@@ -76,8 +75,7 @@ void hddWrite(void *src, size_t dst, size_t sectorCount)
 
         // Check error
         if (status & 0x01)
-            // TODO : msg = Disk can't be written
-            sys_fatal();
+            sys_fatal("Disk can't be written");
 
         // Write data
         for (int i = 0; i < HDD_SECTOR_SIZE / 2; ++i)

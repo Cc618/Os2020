@@ -30,8 +30,7 @@ void sys_putc()
     default:
         // TODO : When fs, write to file
         
-        // TODO : Fatal message
-        sys_fatal();
+        sys_fatal("No file associated with this descriptor");
         break;
     }
 }
@@ -57,7 +56,7 @@ void sys_strcon()
         break;
     
     default:
-        sys_fatal();
+        sys_fatal("No file associated with this descriptor");
         break;
     }
 }

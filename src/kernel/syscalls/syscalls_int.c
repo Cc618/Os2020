@@ -24,7 +24,7 @@ void onSyscall()
 
     // Invalid syscall id
     if (sysc == NULL)
-        sys_fatal();
+        sys_fatal("Invalid syscall id");
 
     sysc();
 }
