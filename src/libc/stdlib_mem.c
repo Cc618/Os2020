@@ -31,10 +31,7 @@ static MallocHeader *firstBlock = NULL;
 void free(void *ptr)
 {
     if (!ptr)
-    {
-        // TODO : Error message nullptr freed
-        SYSC0(SYS_FATAL);
-    }
+        fatal("Tryied to free NULL");
 
     // The header associated to the data
     MallocHeader *header = (MallocHeader*)((size_t)ptr - sizeof(MallocHeader));

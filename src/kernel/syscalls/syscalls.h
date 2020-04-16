@@ -4,16 +4,17 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include "k/types.h"
 
 // TODO : Update args
 // --- Args --- //
 // To pass args between syscalls
-extern uint32_t syscallId;
-extern uint32_t syscallRet;
-extern uint32_t syscallArg1;
-extern uint32_t syscallArg2;
-extern uint32_t syscallArg3;
-extern uint32_t syscallArg4;
+// extern uint32_t syscallId;
+// extern uint32_t syscallRet;
+// extern uint32_t syscallArg1;
+// extern uint32_t syscallArg2;
+// extern uint32_t syscallArg3;
+// extern uint32_t syscallArg4;
 
 // TODO : Update all
 // --- Interrupts --- //
@@ -26,13 +27,11 @@ void sys_fatal(const char *msg);
 
 // --- IO --- //
 // Appends a char to the file
-// - arg1 = c : char
-// - arg2 = fd : File descriptor
-void sys_putc();
+void sys_putc(u8 c, int fd);
 
 // Connects the stream to the callback cb
 // - arg1 = fd : File descriptor 
 // - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)
-void sys_strcon();
-
-
+// TODO : rm
+#include "io/stdstream.h"
+void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count));

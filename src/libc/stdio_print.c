@@ -207,7 +207,7 @@ ret:
 
 int putchar(int c)
 {
-    SYSC2(SYS_PUTC, c, stdout);
+    putc(c, stdout);
 
     return 0;
 }

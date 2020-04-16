@@ -238,12 +238,12 @@ void onKeyPressed()
         // Delete (may be) the char in the console
         if (shellDelete())
             // Delete the char in stdin
-            SYSC2(SYS_PUTC, 0x08, stdin);
+            sys_putc(0x08, stdin);
 
         return;
     
     case KEY_PRESSED_ENTER:
-        SYSC2(SYS_PUTC, '\n', stdin);
+        sys_putc('\n', stdin);
         consoleNewLine();
 
         return;
@@ -301,7 +301,7 @@ void onKeyPressed()
             consolePut(key);
 
             // Output this char to stdin
-            SYSC2(SYS_PUTC, key, stdin);
+            sys_putc(key, stdin);
         }
 
         return;

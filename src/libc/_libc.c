@@ -5,6 +5,7 @@
 
 void __libc_init()
 {
+    // TODO : when pipes, update
     // Bind stdin to libc stdin
-    SYSC2(SYS_STRCON, stdin, __libc_stdinCallback);
+    strcon(stdin, __libc_stdinCallback);
 }
