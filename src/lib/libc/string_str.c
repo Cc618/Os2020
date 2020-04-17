@@ -1,6 +1,6 @@
 #include "string.h"
 
-#include "syscall.h"
+#include "k/syscalls.h"
 #include <stdlib.h>
 #include <stdbool.h>
 

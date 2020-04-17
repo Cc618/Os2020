@@ -1,20 +1,10 @@
 #pragma once
 
-// All syscalls implemented in ./syscalls_handlers.c
+// All syscalls (kernel) implemented in ./syscalls_handlers.c
 
 #include <stdint.h>
 #include <stddef.h>
 #include "k/types.h"
-
-// TODO : Update args
-// --- Args --- //
-// To pass args between syscalls
-// extern uint32_t syscallId;
-// extern uint32_t syscallRet;
-// extern uint32_t syscallArg1;
-// extern uint32_t syscallArg2;
-// extern uint32_t syscallArg3;
-// extern uint32_t syscallArg4;
 
 // TODO : Update all
 // --- Interrupts --- //

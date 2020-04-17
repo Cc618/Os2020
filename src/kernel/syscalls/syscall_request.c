@@ -1,6 +1,6 @@
 #include "syscalls.h"
 
-#include "syscall.h"
+#include "k/syscalls.h"
 #include "k/types.h"
 
 // The table that gathers syscalls

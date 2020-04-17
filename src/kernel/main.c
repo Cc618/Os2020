@@ -94,6 +94,10 @@ static void userAct()
     read() : Called from user
 
     read -> syscall -> onSyscall -> sys_read
+
+    TODO : 1. Move k and libc to lib
+    TODO : 2. Verify we use valid syscalls from user mode (not sys_*)
+    TODO : 3. Change sys_putc by sys_read and remove strcon (change / rm __libc...)
     */
 
 

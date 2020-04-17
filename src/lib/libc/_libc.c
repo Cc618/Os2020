@@ -1,7 +1,7 @@
 #include "_libc.h"
 
 #include <stdio.h>
-#include "syscall.h"
+#include "k/syscalls.h"
 
 void __libc_init()
 {

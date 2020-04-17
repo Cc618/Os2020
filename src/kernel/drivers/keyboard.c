@@ -5,7 +5,7 @@
 #include "io/stdstream.h"
 #include "apps/shell.h"
 #include "apps/app.h"
-#include "syscall.h"
+#include "syscalls/syscalls.h"
 #include <stdio.h>
 
 #define KBD_DATA 0x60

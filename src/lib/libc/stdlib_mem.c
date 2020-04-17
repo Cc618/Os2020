@@ -1,6 +1,6 @@
 #include "stdlib.h"
 
-#include "syscall.h"
+#include "k/syscalls.h"
 
 // Addresses of the heap
 #define HEAP_START  0x1500000

@@ -1,10 +1,10 @@
 #include "stdio.h"
 
+#include "k/syscalls.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdarg.h>
 #include <stddef.h>
-#include "syscall.h"
 
 // Maximum power of 10 that can be stored
 // in an int32_t
