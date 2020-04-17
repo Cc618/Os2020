@@ -1,5 +1,8 @@
 ; To call syscalls from user level with custom args (not int)
 
+; To have syscall ids
+%include "k/syscalls.inc"
+
 ; Syscall args :
 ; eax = syscall id / return
 ; ebx = 1st arg
@@ -102,13 +105,9 @@ global %1
     ret
 %endmacro
 
+; Sys
+DEF_SYSC_1 fatal,   SYS_FATAL
 
-
-
-
-; TODO : Use defines for ids
-DEF_SYSC_1 fatal,   0x02
-DEF_SYSC_2 putc,    0x10
-DEF_SYSC_2 strcon,  0x20
-
-
+; Io
+DEF_SYSC_2 putc,    SYS_PUTC
+DEF_SYSC_2 strcon,  SYS_STRCON

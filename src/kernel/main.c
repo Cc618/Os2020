@@ -76,9 +76,38 @@ u16 sysc3(u32 a, u16 b, u32 c)
 
 
 #include "k/syscalls.h"
+#include "k/vector.h"
+
+
+static void p(void *item)
+{
+    printf("- %d\n", *(int*)item);
+}
+
 // After init, the user can access the kernel
 static void userAct()
 {
+    // --- DS --- //
+    Vector *v = Vector_new();
+
+    int *_1 = malloc(4),
+        *_2 = malloc(4),
+        *_3 = malloc(4);
+
+    *_1 = 1;
+    *_2 = 2;
+    *_3 = 3;
+
+    Vector_add(v, _1);
+    Vector_add(v, _2);
+    Vector_add(v, _3);
+
+    Vector_iter(v, p);
+
+    Vector_del(v);
+
+
+
     // --- INT --- //
     // printf("%d\n", sysc1(1));
     // printf("%d\n", sysc2(2, 3));
@@ -128,8 +157,7 @@ static void userAct()
 
     // putc('!', stdout);
 
-    printf("OK 0x%X", 0x42);
-
+    // printf("OK 0x%X", 0x42);
     // fatal("This works !");
 
 

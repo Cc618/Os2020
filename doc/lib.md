@@ -5,7 +5,7 @@ All files are located in src/lib.
 
 ## Libk
 
-To include libk files use k/*.c, libk provides system related functions like syscalls.
+To include libk files use k/*.c, libk provides system related functions like syscalls and also data structures.
 
 ## Libc
 

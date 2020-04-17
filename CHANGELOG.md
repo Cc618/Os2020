@@ -3,6 +3,11 @@
 ## 0.2
 
 - Added color app to change the color of the tty
+- Added Virtual File System (vfs)
+- Added Fat32 driver
+- Moved libc and kernel/k to lib
+- Remade syscalls
+- Added data structures like vector to k
 
 ## 0.1
 
