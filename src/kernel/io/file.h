@@ -7,6 +7,16 @@
 // File descriptor type
 typedef u32 fd_t;
 
+struct FileOps_t;
+
+typedef struct File_t
+{
+    // Descriptor
+    fd_t fd;
+    void *data;
+    struct FileOps_t *ops;
+} File;
+
 // Operations in a file
 typedef struct FileOps_t
 {
@@ -18,14 +28,6 @@ typedef struct FileOps_t
     // If NULL, the file is not writable
     size_t (*write)(File *f, void *buffer, size_t count);
 } FileOps;
-
-typedef struct File_t
-{
-    // Descriptor
-    fd_t fd;
-    void *data;
-    FileOps *ops;
-} File;
 
 File *File_new(fd_t fd, void *data, FileOps *ops);
 

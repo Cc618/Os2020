@@ -24,8 +24,7 @@ void Queue_add(Queue *q, void *item)
 
     q->end = (q->end + 1) % q->capacity;
 
-    // When full, the queue is considered as empty
-    if (Queue_empty(q))
+    if (Queue_full(q))
         fatal("Queue : Can't enqueue with fully filled queue");
 }
 

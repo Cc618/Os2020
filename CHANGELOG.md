@@ -7,7 +7,8 @@
 - Added Fat32 driver
 - Moved libc and kernel/k to lib
 - Remade syscalls
-- Added data structures like vector to k
+- Added data structures like vector and queue to k
+- Added pipes in kernel
 
 ## 0.1
 

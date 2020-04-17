@@ -34,5 +34,7 @@ void *Queue_clear(Queue *q);
 // For each
 void *Queue_iter(Queue *q, void (*functor)(void *item));
 
+// When full, the queue is considered as empty
+#define Queue_full Queue_empty
 static inline bool Queue_empty(const Queue *q)
 { return q->start == q->end; }

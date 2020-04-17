@@ -74,7 +74,8 @@ u16 sysc3(u32 a, u16 b, u32 c)
 }
 
 
-
+#include "io/pipe.h"
+#include "io/file.h"
 #include "k/syscalls.h"
 #include "k/vector.h"
 #include "k/queue.h"
@@ -112,33 +113,42 @@ static void userAct()
 
 
     // Queue //
-    Queue *v = Queue_new(512);
+    // Queue *v = Queue_new(512);
 
-    int *_1 = malloc(4),
-        *_2 = malloc(4),
-        *_3 = malloc(4);
+    // int *_1 = malloc(4),
+    //     *_2 = malloc(4),
+    //     *_3 = malloc(4);
 
-    *_1 = 1;
-    *_2 = 2;
-    *_3 = 3;
+    // *_1 = 1;
+    // *_2 = 2;
+    // *_3 = 3;
 
-    Queue_add(v, _1);
-    Queue_add(v, _2);
-    Queue_add(v, _3);
-    p(Queue_pop(v));
-    puts("---");
+    // Queue_add(v, _1);
+    // Queue_add(v, _2);
+    // Queue_add(v, _3);
+    // p(Queue_pop(v));
+    // puts("---");
 
-    Queue_iter(v, p);
+    // Queue_iter(v, p);
 
-    Queue_del(v);
-
-
+    // Queue_del(v);
 
 
+    // Pipe //
+    File *p = Pipe_new(42);
 
+    u8 buf[] = { 1, 2, 3, 4, 5 };
 
+    printf("Written %d bytes\n", Pipe_write(p, buf, 5));
+    size_t n;
+    printf("Read %d bytes\n", n = Pipe_read(p, buf, 10));
 
-
+    for (size_t i = 0; i < n; i++)
+    {
+        printf("%d ", buf[i]);
+    }
+    
+    Pipe_del(p);
 
 
 
