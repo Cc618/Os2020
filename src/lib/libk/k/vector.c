@@ -1,5 +1,6 @@
 #include "vector.h"
 
+#include <k/syscalls.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -48,6 +49,17 @@ void Vector_add(Vector *v, void *item)
 
     // Add the item
     v->data[v->size - 1] = item;
+}
+
+void *Vector_pop(Vector *v)
+{
+    if (v->size == 0)
+        fatal("Tried to Vector_pop with an empty vector");
+    
+    --v->size;
+
+    // Intended overflow
+    return v->data[v->size];
 }
 
 void Vector_clear(Vector *v)

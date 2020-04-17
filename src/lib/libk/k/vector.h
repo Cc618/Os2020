@@ -24,8 +24,8 @@ void *Vector_at(Vector *v, size_t i);
 // Adds an entry
 void Vector_add(Vector *v, void *item);
 
-// TODO : Pop
-
+// Removes the last entry and returns it
+void *Vector_pop(Vector *v);
 
 // Removes and frees all items
 // The capacity remains inchanged

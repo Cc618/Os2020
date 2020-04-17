@@ -101,6 +101,8 @@ static void userAct()
     Vector_add(v, _1);
     Vector_add(v, _2);
     Vector_add(v, _3);
+    p(Vector_pop(v));
+    puts("---");
 
     Vector_iter(v, p);
 
