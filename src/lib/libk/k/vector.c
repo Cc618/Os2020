@@ -20,9 +20,8 @@ Vector *Vector_new()
 
 void *Vector_at(Vector *v, size_t i)
 {
-    // TODO : Error, index out of bounds
     if (i >= v->size)
-        return NULL;
+        fatal("Vector : Index out of bounds");
 
     return v->data[i];
 }
@@ -64,8 +63,7 @@ void *Vector_pop(Vector *v)
 
 void Vector_clear(Vector *v)
 {
-    for (size_t i = 0; i < v->size; ++i)
-        free(v->data[i]);
+    Vector_iter(v, free);
     
     v->size = 0;
 }

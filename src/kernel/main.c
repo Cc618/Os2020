@@ -77,6 +77,7 @@ u16 sysc3(u32 a, u16 b, u32 c)
 
 #include "k/syscalls.h"
 #include "k/vector.h"
+#include "k/queue.h"
 
 
 static void p(void *item)
@@ -88,7 +89,30 @@ static void p(void *item)
 static void userAct()
 {
     // --- DS --- //
-    Vector *v = Vector_new();
+    // Vector //
+    // Vector *v = Vector_new();
+
+    // int *_1 = malloc(4),
+    //     *_2 = malloc(4),
+    //     *_3 = malloc(4);
+
+    // *_1 = 1;
+    // *_2 = 2;
+    // *_3 = 3;
+
+    // Vector_add(v, _1);
+    // Vector_add(v, _2);
+    // Vector_add(v, _3);
+    // p(Vector_pop(v));
+    // puts("---");
+
+    // Vector_iter(v, p);
+
+    // Vector_del(v);
+
+
+    // Queue //
+    Queue *v = Queue_new(512);
 
     int *_1 = malloc(4),
         *_2 = malloc(4),
@@ -98,15 +122,36 @@ static void userAct()
     *_2 = 2;
     *_3 = 3;
 
-    Vector_add(v, _1);
-    Vector_add(v, _2);
-    Vector_add(v, _3);
-    p(Vector_pop(v));
+    Queue_add(v, _1);
+    Queue_add(v, _2);
+    Queue_add(v, _3);
+    p(Queue_pop(v));
     puts("---");
 
-    Vector_iter(v, p);
+    Queue_iter(v, p);
 
-    Vector_del(v);
+    Queue_del(v);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
