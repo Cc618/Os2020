@@ -106,7 +106,7 @@ global %1
 
 
 
-; TODO : Use defines
+; TODO : Use defines for ids
 DEF_SYSC_1 fatal,   0x02
 DEF_SYSC_2 putc,    0x10
 DEF_SYSC_2 strcon,  0x20
