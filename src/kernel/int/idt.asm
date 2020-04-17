@@ -146,9 +146,21 @@ irq15:
 
 ; Syscall
 irq128:
+	push ebp
+	mov ebp, esp
+
+	; To return eax
+	push 0
 	pusha
 
 	call onSyscall
 
+	; Save return
+	mov dword [ebp - 4], eax
+
 	popa
+	pop eax
+
+    leave
+
 	iret

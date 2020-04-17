@@ -107,6 +107,7 @@ global %1
 
 ; Sys
 DEF_SYSC_1 fatal,   SYS_FATAL
+DEF_SYSC_3 enter,   SYS_ENTER
 
 ; Io
 DEF_SYSC_2 putc,    SYS_PUTC

@@ -25,6 +25,7 @@ void *Vector_at(Vector *v, size_t i);
 void Vector_add(Vector *v, void *item);
 
 // Removes the last entry and returns it
+// !!! Doesn't delete the entry
 void *Vector_pop(Vector *v);
 
 // Removes and frees all items

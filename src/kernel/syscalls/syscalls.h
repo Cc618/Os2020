@@ -4,16 +4,20 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "k/types.h"
+#include <k/types.h>
 
 // TODO : Update all
 // --- Interrupts --- //
 // When we do int 0x80 or syscall this interrupt handler is called
-void onSyscall();
+u32 onSyscall();
 
 // --- System --- //
 // Fatal error
 void sys_fatal(const char *msg);
+
+// Executes an application by executing entry (main)
+// Exec without loading and preparing the program in ram
+int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv);
 
 // --- IO --- //
 // Appends a char to the file

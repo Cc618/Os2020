@@ -1,16 +1,17 @@
 #include "syscalls.h"
 
-#include "k/syscalls.h"
-#include "k/types.h"
+#include <k/syscalls.h>
+#include <k/types.h>
 
 // The table that gathers syscalls
-void (*syscalls[256])() = {
+u32 (*syscalls[256])() = {
     [SYS_FATAL] = sys_fatal,
+    [SYS_ENTER] = sys_enter,
     [SYS_PUTC] = sys_putc,
     [SYS_STRCON] = sys_strcon,
 };
 
-void onSyscall()
+u32 onSyscall()
 {
     u32 eax,
         ebx,
@@ -31,5 +32,5 @@ void onSyscall()
     if (sysc == NULL)
         sys_fatal("Invalid syscall id");
 
-    sysc(ebx, ecx, edx, edi);
+    return sysc(ebx, ecx, edx, edi);
 }

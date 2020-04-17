@@ -41,39 +41,7 @@ static void initKernel()
 
 
 
-
-
-
-u32 sysc(int id)
-{
-    
-}
-
-
-
-
-u32 sysc1(u32 a)
-{
-    printf("sysc1(%u) -> ", a);
-
-    return 42;
-}
-
-u32 sysc2(u32 a, u32 b)
-{
-    printf("sysc2(%u, %u) -> ", a, b);
-
-    return 43;
-}
-
-u16 sysc3(u32 a, u16 b, u32 c)
-{
-    printf("sysc2(%u, %u, %u) -> ", a, b, c);
-
-    return 44;
-}
-
-
+// TODO : rm
 #include "io/pipe.h"
 #include "io/file.h"
 #include "k/syscalls.h"
@@ -85,6 +53,16 @@ static void p(void *item)
 {
     printf("- %d\n", *(int*)item);
 }
+
+int myApp(int argc, char **argv)
+{
+    printf("myApp: %d args, 1st = %s\n", argc, argv[0]);
+
+    puts("Exit with code 42");
+
+    return 42;
+}
+
 
 // After init, the user can access the kernel
 static void userAct()
@@ -135,20 +113,20 @@ static void userAct()
 
 
     // Pipe //
-    File *p = Pipe_new(42);
+    // File *p = Pipe_new(42);
 
-    u8 buf[] = { 1, 2, 3, 4, 5 };
+    // u8 buf[] = { 1, 2, 3, 4, 5 };
 
-    printf("Written %d bytes\n", Pipe_write(p, buf, 5));
-    size_t n;
-    printf("Read %d bytes\n", n = Pipe_read(p, buf, 10));
+    // printf("Written %d bytes\n", Pipe_write(p, buf, 5));
+    // size_t n;
+    // printf("Read %d bytes\n", n = Pipe_read(p, buf, 10));
 
-    for (size_t i = 0; i < n; i++)
-    {
-        printf("%d ", buf[i]);
-    }
+    // for (size_t i = 0; i < n; i++)
+    // {
+    //     printf("%d ", buf[i]);
+    // }
     
-    Pipe_del(p);
+    // Pipe_del(p);
 
 
 
@@ -217,9 +195,11 @@ static void userAct()
     // printf("OK 0x%X", 0x42);
     // fatal("This works !");
 
+    char *argv[2];
+    argv[0] = "ABC";
+    argv[1] = "DEF";
 
-
-
+    printf("Exited with code %d\n", enter(myApp, 2, argv));
 
 
 

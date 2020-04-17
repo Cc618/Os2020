@@ -1,6 +1,8 @@
 #pragma once
 
-#define IRQ_DEF_HANDLER(ID) void irq ## ID ## Handler()
+#include <k/types.h>
+
+#define IRQ_DEF_HANDLER(ID) u32 irq ## ID ## Handler()
 
 IRQ_DEF_HANDLER(0);
 IRQ_DEF_HANDLER(1);

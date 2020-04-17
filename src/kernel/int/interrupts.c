@@ -1,5 +1,6 @@
 #include "drivers/ports.h"
 
+#include <k/types.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -34,23 +35,23 @@
 extern void loadIDT();
 
 // Interrupts defined in int/idt.asm
-extern void irq0();
-extern void irq1();
-extern void irq2();
-extern void irq3();
-extern void irq4();
-extern void irq5();
-extern void irq6();
-extern void irq7();
-extern void irq8();
-extern void irq9();
-extern void irq10();
-extern void irq11();
-extern void irq12();
-extern void irq13();
-extern void irq14();
-extern void irq15();
-extern void irq128();
+extern u32 irq0();
+extern u32 irq1();
+extern u32 irq2();
+extern u32 irq3();
+extern u32 irq4();
+extern u32 irq5();
+extern u32 irq6();
+extern u32 irq7();
+extern u32 irq8();
+extern u32 irq9();
+extern u32 irq10();
+extern u32 irq11();
+extern u32 irq12();
+extern u32 irq13();
+extern u32 irq14();
+extern u32 irq15();
+extern u32 irq128();
 
 // An entry in the IDT
 typedef struct IDTEntry_t
