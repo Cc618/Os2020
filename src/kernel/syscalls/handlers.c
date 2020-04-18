@@ -2,7 +2,6 @@
 
 #include "drivers/screen.h"
 #include <k/vector.h>
-#include <k/regs.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,10 +12,7 @@
 void terminateKernel();
 
 // --- System --- //
-// The location to return when there is a termination signal
-void *terminationReturn;
-
-// Gathers the stack state to return to onTerminate
+// Gathers the stack state to terminate a process
 // when pressing Ctrl + C or sending termination signal
 Vector *stackStates;
 
@@ -47,58 +43,6 @@ void sys_fatal(const char *msg)
     // Disable computer
     terminateKernel();
 }
-
-// int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv)
-// {
-//     // Prepare global variables
-//     terminationReturn = &&onTerminate;
-//     // TMP
-//     if (!stackStates)
-//         stackStates = Vector_new();
-
-//     int ret;
-
-//     // Push the new state
-//     StackRegs *state = malloc(sizeof(StackRegs));
-//     STACK_REGS_GET(state);
-//     Vector_add(stackStates, state);
-
-//     printf("terminationReturn = 0x%p\n", &&onTerminate);
-
-//     // Execute the app
-//     ret = entry(argc, argv);
-
-//     // Retrieve this state because there is no
-//     // termination signal
-//     free(Vector_pop(stackStates));
-
-//     goto onExit;
-
-//     // Ctrl + C termination
-// onTerminate:;
-//     ret = -2;
-
-//     // TMP
-//     // TODO : Top
-//     STACK_REGS_SET(&((StackRegs*) stackStates->data)[0]);
-
-//     puts("SIGTERM");
-    
-//     while (1);
-
-// onExit:;
-//     return ret;
-// }
-
-// // TMP : As syscall
-// void sys_terminate()
-// {
-//     // TODO : Stack
-//     __asm__ volatile(
-//         "jmp terminationReturn;"
-//     );
-// }
-
 
 // --- IO --- //
 void sys_putc(u8 c, int fd)
@@ -150,4 +94,3 @@ void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count))
         break;
     }
 }
-

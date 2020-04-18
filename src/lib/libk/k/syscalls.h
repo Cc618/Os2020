@@ -10,6 +10,8 @@
 // See doc/syscalls.md for specs
 #define SYS_FATAL       0x02
 #define SYS_ENTER       0x03
+#define SYS_TERMINATE   0x04
+
 #define SYS_PUTC        0x10
 // Stream connect
 #define SYS_STRCON      0x20
@@ -21,6 +23,9 @@ extern void fatal(const char *msg);
 
 // Calls the entry of an application
 extern int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+
+// Terminates the current program
+extern int terminate();
 
 // --- IO --- //
 // Appends a char to the file

@@ -55,14 +55,11 @@ static void p(void *item)
 }
 
 
-// TMP
-void sys_terminate();
-
 int child(int argc, char **argv)
 {
     puts("child");
 
-    sys_terminate();
+    terminate();
 
     return 43;
 }

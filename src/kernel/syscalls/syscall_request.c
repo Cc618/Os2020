@@ -5,8 +5,12 @@
 
 // The table that gathers syscalls
 u32 (*syscalls[256])() = {
+    // Sys //
     [SYS_FATAL] = sys_fatal,
     [SYS_ENTER] = sys_enter,
+    [SYS_TERMINATE] = sys_terminate,
+
+    // Io //
     [SYS_PUTC] = sys_putc,
     [SYS_STRCON] = sys_strcon,
 };

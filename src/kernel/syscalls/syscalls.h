@@ -17,7 +17,12 @@ void sys_fatal(const char *msg);
 
 // Executes an application by executing entry (main)
 // Exec without loading and preparing the program in ram
-int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+// Defined in handlers.asm
+extern int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+
+// Terminates the current process
+// Defined in handlers.asm
+extern void sys_terminate();
 
 // --- IO --- //
 // Appends a char to the file

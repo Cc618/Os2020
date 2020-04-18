@@ -106,8 +106,9 @@ global %1
 %endmacro
 
 ; Sys
-DEF_SYSC_1 fatal,   SYS_FATAL
-DEF_SYSC_3 enter,   SYS_ENTER
+DEF_SYSC_1 fatal,       SYS_FATAL
+DEF_SYSC_3 enter,       SYS_ENTER
+DEF_SYSC_3 terminate,   SYS_TERMINATE
 
 ; Io
 DEF_SYSC_2 putc,    SYS_PUTC
