@@ -220,8 +220,6 @@ void onKeyPressed()
         switch (data)
         {
         case KEY_PRESSED_MOD:
-            // TODO : Remove print when backspace
-            // printf("<MOD>");
             // TODO : On mod pressed ()
             break;
         }
@@ -286,12 +284,11 @@ void onKeyPressed()
             switch (key)
             {
             case 'c':
-                // TODO :
-                // terminateApp();
-
                 consolePut('^');
                 consolePut('C');
                 consoleNewLine();
+
+                sys_terminate();
                 break;
             }
         }

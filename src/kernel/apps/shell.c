@@ -63,8 +63,14 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
     return BUILTIN_NOT_FOUND;
 }
 
-int shellMain(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
+int shellMain(int argc, char **argv)
 {
+    // TODO : cd to cwd
+    if (argc == 2)
+        shellCwd = argv[1];
+    else
+        shellCwd = "/";
+
     shellRunning = true;
     shellExitCode = 0;
 

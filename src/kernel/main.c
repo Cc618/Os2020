@@ -209,13 +209,12 @@ static void userAct()
     // printf("OK 0x%X", 0x42);
     // fatal("This works !");
 
-    char *argv[2];
-    argv[0] = "ABC";
-    argv[1] = "DEF";
+    // // Test : terminate 
+    // char *argv[2];
+    // argv[0] = "ABC";
+    // argv[1] = "DEF";
 
-    printf("Exited with code %d\n", enter(myApp, 2, argv));
-
-
+    // printf("Exited with code %d\n", enter(myApp, 2, argv));
 
 
     // // --- FS --- //
@@ -269,16 +268,20 @@ static void userAct()
     //     printf("File : %s\n", f->name);
 
 
-    // TODO : rm tests
-    return;
 
 
 
+    // TODO : remove execApp
 
 
     // Launch the shell
-    // TODO : sys_exec
-    execApp(shellMain, 0, NULL);
+    const char *a = "/";
+    const char *b = "/";
+    char *shellArgv[2];
+    shellArgv[0] = a;
+    shellArgv[1] = b;
+
+    sys_enter(shellMain, 2, shellArgv);
 
     consoleNewLine();
     puts("No process running");
