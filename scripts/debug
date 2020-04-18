@@ -2,3 +2,6 @@ target remote localhost:1234
 symbol-file obj/kernel/kernel.sym
 b *main
 continue
+b *sys_enter
+b *myApp
+continue

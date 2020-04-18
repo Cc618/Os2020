@@ -36,7 +36,7 @@ void Vector_add(Vector *v, void *item)
         // Reallocate data
         size_t newCapacity = v->capacity + VECTOR_CAPACITY_DELTA;
         void **newData = malloc(sizeof(void*) * newCapacity);
-        
+
         // Copy data
         memcpy(newData, v->data, sizeof(void*) * v->capacity);
         free(v->data);
@@ -54,7 +54,7 @@ void *Vector_pop(Vector *v)
 {
     if (v->size == 0)
         fatal("Tried to Vector_pop with an empty vector");
-    
+
     --v->size;
 
     // Intended overflow
@@ -64,7 +64,7 @@ void *Vector_pop(Vector *v)
 void Vector_clear(Vector *v)
 {
     Vector_iter(v, free);
-    
+
     v->size = 0;
 }
 

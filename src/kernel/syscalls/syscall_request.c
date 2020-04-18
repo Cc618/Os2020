@@ -28,6 +28,10 @@ u32 onSyscall()
 
     u32 (*sysc)(u32, ...) = syscalls[eax];
 
+    // Interrupt end
+    outb(0xA0, 0x20);
+    outb(0x20, 0x20);
+
     // Invalid syscall id
     if (sysc == NULL)
         sys_fatal("Invalid syscall id");

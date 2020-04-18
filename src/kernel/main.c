@@ -54,9 +54,26 @@ static void p(void *item)
     printf("- %d\n", *(int*)item);
 }
 
+
+// TMP
+void sys_terminate();
+
+int child(int argc, char **argv)
+{
+    puts("child");
+
+    sys_terminate();
+
+    return 43;
+}
+
 int myApp(int argc, char **argv)
 {
     printf("myApp: %d args, 1st = %s\n", argc, argv[0]);
+
+    sys_enter(child, 0, NULL);
+
+    // sys_terminate();
 
     puts("Exit with code 42");
 
@@ -125,7 +142,7 @@ static void userAct()
     // {
     //     printf("%d ", buf[i]);
     // }
-    
+
     // Pipe_del(p);
 
 
@@ -175,7 +192,7 @@ static void userAct()
     //     ecx,
     //     edx,
     //     edi;
-    
+
     // // Retrieve registers
     // __asm__ volatile("movl %%eax, %0" : "=g" (eax));
     // __asm__ volatile("movl %%ebx, %0" : "=g" (ebx));

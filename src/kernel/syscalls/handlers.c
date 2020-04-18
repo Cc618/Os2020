@@ -18,7 +18,7 @@ void *terminationReturn;
 
 // Gathers the stack state to return to onTerminate
 // when pressing Ctrl + C or sending termination signal
-static Vector *stackStates;
+Vector *stackStates;
 
 void sys_fatal(const char *msg)
 {
@@ -48,39 +48,57 @@ void sys_fatal(const char *msg)
     terminateKernel();
 }
 
-int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv)
-{
-    // Prepare global variables
-    terminationReturn = &&onTerminate;
-    if (!stackStates)
-        stackStates = Vector_new();
+// int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv)
+// {
+//     // Prepare global variables
+//     terminationReturn = &&onTerminate;
+//     // TMP
+//     if (!stackStates)
+//         stackStates = Vector_new();
 
-    int ret;
+//     int ret;
 
-    // Push the new state
-    StackRegs *state = malloc(sizeof(StackRegs));
-    STACK_REGS_GET(state);
-    Vector_add(stackStates, state);
+//     // Push the new state
+//     StackRegs *state = malloc(sizeof(StackRegs));
+//     STACK_REGS_GET(state);
+//     Vector_add(stackStates, state);
 
-    // TMP
-    // TODO : Disable interrupts
-    // Execute the app
-    ret = entry(argc, argv);
+//     printf("terminationReturn = 0x%p\n", &&onTerminate);
 
-    // Retrieve this state because there is no
-    // termination signal
-    free(Vector_pop(stackStates));
+//     // Execute the app
+//     ret = entry(argc, argv);
 
-    goto onExit;
+//     // Retrieve this state because there is no
+//     // termination signal
+//     free(Vector_pop(stackStates));
 
-    // Ctrl + C termination
-onTerminate:;
-    ret = -2;
-    goto onExit;
+//     goto onExit;
 
-onExit:;
-    return ret;
-}
+//     // Ctrl + C termination
+// onTerminate:;
+//     ret = -2;
+
+//     // TMP
+//     // TODO : Top
+//     STACK_REGS_SET(&((StackRegs*) stackStates->data)[0]);
+
+//     puts("SIGTERM");
+    
+//     while (1);
+
+// onExit:;
+//     return ret;
+// }
+
+// // TMP : As syscall
+// void sys_terminate()
+// {
+//     // TODO : Stack
+//     __asm__ volatile(
+//         "jmp terminationReturn;"
+//     );
+// }
+
 
 // --- IO --- //
 void sys_putc(u8 c, int fd)
