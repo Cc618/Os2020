@@ -2,11 +2,15 @@
 
 #include <k/queue.h>
 
-File *Pipe_new(fd_t fd)
+File *Pipe_new()
 {
     Queue *data = Queue_new(PIPE_CAPACITY);
 
-    return File_new(fd, data, Pipe_ops());
+    File *pipe = File_new(data, Pipe_ops());
+
+    registerFile(pipe);
+
+    return pipe;
 }
 
 // Returns file ops for a pipe
@@ -25,6 +29,8 @@ FileOps *Pipe_ops()
 void Pipe_del(File *f)
 {
     Queue_del(f->data);
+
+    deregisterFile(f->fd);
 
     File_del(f);
 }

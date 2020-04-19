@@ -286,7 +286,6 @@ void fatTerminate()
     free(cluster);
 }
 
-// TODO : Useless ?
 FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData *data)
 {
     return FSEntry_new(name, flags, size, data, fatGenFSEntryOps());

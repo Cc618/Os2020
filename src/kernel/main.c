@@ -29,14 +29,16 @@ static void initKernel()
 {
     initInterrupts();
 
-    __libc_init();
-
     // File system init
     fatInit();
     fsInit();
+    
+    filesInit();
 
     // Inputs init
     keyboardInit();
+
+    __libc_init();
 }
 
 
@@ -270,9 +272,38 @@ static void userAct()
 
 
 
+    File *p = Pipe_new();
+
+    fd_t pFd = p->fd;
+
+    char inData[4];
+    inData[0] = 'H';
+    inData[1] = 'E';
+    inData[2] = 'L';
+    inData[3] = 'O';
+
+    // write(pFd, inData, 4);
+    File_write(getFile(pFd), inData, 4);
+
+    char outData[5];
+
+    // read(pFd, outData, 4);
+    File_read(getFile(pFd), outData, 4);
+    outData[4] = '\0';
+
+    printf("Data in pipe : %s\n", outData);
+
+    Pipe_del(p);
+
+
+    // TMP
+    for (;;);
+
+
+
 
     // TODO : remove execApp
-
+    // TODO : add shell as app
 
     // Launch the shell
     const char *a = "/";
@@ -295,6 +326,7 @@ static void userAct()
 void terminateKernel()
 {
     keyboardTerminate();
+    filesTerminate();
     fatTerminate();
     fsTerminate();
 

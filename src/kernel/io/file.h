@@ -4,6 +4,7 @@
 
 #include <k/types.h>
 
+// --- File --- //
 // File descriptor type
 typedef u32 fd_t;
 
@@ -29,7 +30,8 @@ typedef struct FileOps_t
     size_t (*write)(File *f, void *buffer, size_t count);
 } FileOps;
 
-File *File_new(fd_t fd, void *data, FileOps *ops);
+// * fd is set to -1
+File *File_new(void *data, FileOps *ops);
 
 // !!! Doesn't free data
 void File_del(File *f);
@@ -41,3 +43,21 @@ size_t File_read(File *f, void *buffer, size_t count);
 // Writes count bytes of buffer
 // Returns how many bytes written
 size_t File_write(File *f, void *buffer, size_t count);
+
+// --- Files --- //
+void filesInit();
+
+void filesTerminate();
+
+// Adds the file to the file vector
+// to allow file access via the file descriptor
+void registerFile(File *f);
+
+// Removes the access of the file associated
+// to this fd
+// * f->fd is set to -1 if found
+void deregisterFile(File *f);
+
+// Retrieve a file with this fd
+// !!! Returns NULL on negative search
+File *getFile(fd_t fd);

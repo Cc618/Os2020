@@ -1,12 +1,14 @@
 #include "file.h"
 
+#include <k/vector.h>
 #include <stdlib.h>
 
-File *File_new(fd_t fd, void *data, FileOps *ops)
+// --- File --- //
+File *File_new(void *data, FileOps *ops)
 {
     File *f = malloc(sizeof(File));
 
-    f->fd = fd;
+    f->fd = -1;
     f->data = data;
     f->ops = ops;
 
@@ -40,4 +42,52 @@ size_t File_write(File *f, void *buffer, size_t count)
         return 0;
 
     return f->ops->write(f, buffer, count);
+}
+
+// --- Files --- //
+// Gathers all files accessible with file descriptors
+static Vector *files;
+
+void filesInit()
+{
+    files = Vector_new();
+
+    // TODO : Init first files (stdin...)
+}
+
+void filesTerminate()
+{
+    // Custom destructor
+    // TODO : Delete files here ?
+    Vector_iter(files, File_del);
+
+    free(files);
+}
+
+void registerFile(File *f)
+{
+    // TODO : Find NULL entry
+
+    f->fd = files->size;
+
+    Vector_add(files, f);
+}
+
+void deregisterFile(File *f)
+{
+    // Exists
+    if (f->fd < files->size)
+    {
+        files->data[f->fd] = NULL;
+        f->fd = -1;
+    }
+}
+
+File *getFile(fd_t fd)
+{
+    // May be found (can be also NULL)
+    if (fd < files->size)
+        return files->data[fd];
+    
+    return NULL;
 }

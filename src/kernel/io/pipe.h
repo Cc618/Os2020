@@ -8,7 +8,8 @@
 // How many bytes within a pipe
 #define PIPE_CAPACITY 4096
 
-File *Pipe_new(fd_t fd);
+// Creates a new pipe and register it
+File *Pipe_new();
 
 // Returns file ops for a pipe
 FileOps *Pipe_ops();
