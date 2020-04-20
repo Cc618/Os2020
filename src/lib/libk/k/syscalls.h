@@ -15,6 +15,10 @@
 #define SYS_PUTC        0x10
 // Stream connect
 #define SYS_STRCON      0x20
+#define SYS_READ        0x11
+#define SYS_WRITE       0x12
+#define SYS_CLOSE       0x13
+#define SYS_PIPE        0x14
 
 
 // --- System --- //
@@ -37,3 +41,18 @@ extern void putc(char c, int fd);
 // - arg1 = fd : File descriptor 
 // - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)
 extern void strcon(int fd, void (*cb)(void *s, uint8_t *data, size_t count));
+
+// Reads count bytes of the file associated to fd in buffer
+// * Returns how many bytes read
+extern size_t read(fd_t fd, void *buffer, size_t count);
+
+// Writes count bytes of buffer in the file associated to fd
+// * Returns how many bytes written
+extern size_t write(fd_t fd, void *buffer, size_t count);
+
+// Closes a file
+extern void close(fd_t fd);
+
+// Creates a pipe
+// * Returns its file descriptor
+extern fd_t pipe();

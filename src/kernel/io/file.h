@@ -5,9 +5,6 @@
 #include <k/types.h>
 
 // --- File --- //
-// File descriptor type
-typedef u32 fd_t;
-
 struct FileOps_t;
 
 typedef struct File_t
@@ -28,6 +25,9 @@ typedef struct FileOps_t
     // See File_write
     // If NULL, the file is not writable
     size_t (*write)(File *f, void *buffer, size_t count);
+
+    // Like a destructor
+    void (*close)(File *f);
 } FileOps;
 
 // * fd is set to -1
@@ -43,6 +43,9 @@ size_t File_read(File *f, void *buffer, size_t count);
 // Writes count bytes of buffer
 // Returns how many bytes written
 size_t File_write(File *f, void *buffer, size_t count);
+
+// Like a destructor
+void File_close(File *f);
 
 // --- Files --- //
 void filesInit();

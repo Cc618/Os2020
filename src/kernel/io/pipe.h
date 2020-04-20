@@ -19,3 +19,5 @@ void Pipe_del(File *f);
 size_t Pipe_read(File *f, void *buffer, size_t count);
 
 size_t Pipe_write(File *f, void *buffer, size_t count);
+
+void Pipe_close(File *f);

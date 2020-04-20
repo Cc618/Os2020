@@ -25,7 +25,23 @@ extern int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv)
 extern void sys_terminate();
 
 // --- IO --- //
-// Appends a char to the file
+// Reads count bytes of the file associated to fd in buffer
+// * Returns how many bytes read
+size_t sys_read(fd_t fd, void *buffer, size_t count);
+
+// Writes count bytes of buffer in the file associated to fd
+// * Returns how many bytes written
+size_t sys_write(fd_t fd, void *buffer, size_t count);
+
+// Closes a file
+void sys_close(fd_t fd);
+
+// Creates a pipe
+// * Returns the file descriptor of the pipe
+fd_t sys_pipe();
+
+
+// TODO : rm Appends a char to the file
 void sys_putc(u8 c, int fd);
 
 // Connects the stream to the callback cb

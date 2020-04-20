@@ -1,6 +1,8 @@
 #include "syscalls/syscalls.h"
 
 #include "drivers/screen.h"
+#include "io/file.h"
+#include "io/pipe.h"
 #include <k/vector.h>
 #include <string.h>
 #include <stdlib.h>
@@ -93,4 +95,42 @@ void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count))
         sys_fatal("No file associated with this descriptor");
         break;
     }
+}
+
+size_t sys_read(fd_t fd, void *buffer, size_t count)
+{
+    File *f = getFile(fd);
+
+    // Not found
+    if (!f)
+        return 0;
+
+    return File_read(f, buffer, count);
+}
+
+size_t sys_write(fd_t fd, void *buffer, size_t count)
+{
+    File *f = getFile(fd);
+
+    // Not found
+    if (!f)
+        return 0;
+
+    return File_write(f, buffer, count);
+}
+
+void sys_close(fd_t fd)
+{
+    File *f = getFile(fd);
+
+    deregisterFile(f);
+
+    // TODO TMP : Del f ???
+}
+
+fd_t sys_pipe()
+{
+    File *f = Pipe_new();
+
+    return f->fd;
 }

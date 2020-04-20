@@ -13,6 +13,10 @@ u32 (*syscalls[256])() = {
     // Io //
     [SYS_PUTC] = sys_putc,
     [SYS_STRCON] = sys_strcon,
+    [SYS_READ] = sys_read,
+    [SYS_WRITE] = sys_write,
+    [SYS_CLOSE] = sys_close,
+    [SYS_PIPE] = sys_pipe,
 };
 
 u32 onSyscall()

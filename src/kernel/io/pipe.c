@@ -21,6 +21,7 @@ FileOps *Pipe_ops()
     *ops = (FileOps) {
         .read = Pipe_read,
         .write = Pipe_write,
+        .close = Pipe_close,
     };
 
     return ops;
@@ -28,7 +29,7 @@ FileOps *Pipe_ops()
 
 void Pipe_del(File *f)
 {
-    Queue_del(f->data);
+    Pipe_close(f);
 
     deregisterFile(f->fd);
 
@@ -41,10 +42,10 @@ size_t Pipe_read(File *f, void *buffer, size_t count)
     size_t n = 0;
     for ( ; n < count; ++n)
     {
-        ((u8*) buffer)[n] = Queue_pop(q);
-
         if (Queue_empty(q))
             break;
+
+        ((u8*) buffer)[n] = Queue_pop(q);
     }
     
     return ++n;
@@ -63,4 +64,9 @@ size_t Pipe_write(File *f, void *buffer, size_t count)
     }
     
     return n;
+}
+
+void Pipe_close(File *f)
+{
+    Queue_del(f->data);
 }

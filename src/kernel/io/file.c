@@ -44,6 +44,15 @@ size_t File_write(File *f, void *buffer, size_t count)
     return f->ops->write(f, buffer, count);
 }
 
+void File_close(File *f)
+{
+    // No need to close
+    if (f->ops->close == NULL)
+        return 0;
+
+    return f->ops->close(f);
+}
+
 // --- Files --- //
 // Gathers all files accessible with file descriptors
 static Vector *files;

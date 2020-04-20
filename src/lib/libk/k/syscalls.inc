@@ -6,3 +6,7 @@
 ; Io
 %define SYS_PUTC        0x10
 %define SYS_STRCON      0x20
+%define SYS_READ        0x11
+%define SYS_WRITE       0x12
+%define SYS_CLOSE       0x13
+%define SYS_PIPE        0x14

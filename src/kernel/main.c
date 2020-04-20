@@ -272,9 +272,35 @@ static void userAct()
 
 
 
-    File *p = Pipe_new();
+    // Kernel pipe
+    // File *p = Pipe_new();
 
-    fd_t pFd = p->fd;
+    // fd_t pFd = p->fd;
+
+    // char inData[4];
+    // inData[0] = 'H';
+    // inData[1] = 'E';
+    // inData[2] = 'L';
+    // inData[3] = 'O';
+
+    // // write(pFd, inData, 4);
+    // File_write(getFile(pFd), inData, 4);
+
+    // char outData[5];
+
+    // // read(pFd, outData, 4);
+    // File_read(getFile(pFd), outData, 4);
+    // outData[4] = '\0';
+
+    // printf("Data in pipe : %s\n", outData);
+
+    // Pipe_del(p);
+
+
+    // User pipe
+    fd_t pFd = pipe();
+
+    printf("Pipe no %d\n", pFd);
 
     char inData[4];
     inData[0] = 'H';
@@ -282,18 +308,16 @@ static void userAct()
     inData[2] = 'L';
     inData[3] = 'O';
 
-    // write(pFd, inData, 4);
-    File_write(getFile(pFd), inData, 4);
+    printf("%d bytes written\n", write(pFd, inData, 4));
 
     char outData[5];
 
-    // read(pFd, outData, 4);
-    File_read(getFile(pFd), outData, 4);
+    read(pFd, outData, 4);
     outData[4] = '\0';
 
     printf("Data in pipe : %s\n", outData);
 
-    Pipe_del(p);
+    close(p);
 
 
     // TMP
