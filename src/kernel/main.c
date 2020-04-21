@@ -297,27 +297,34 @@ static void userAct()
     // Pipe_del(p);
 
 
-    // User pipe
-    fd_t pFd = pipe();
+    // // User pipe
+    // fd_t pFd = pipe();
 
-    printf("Pipe no %d\n", pFd);
+    // printf("Pipe no %d\n", pFd);
 
-    char inData[4];
-    inData[0] = 'H';
-    inData[1] = 'E';
-    inData[2] = 'L';
-    inData[3] = 'O';
+    // char inData[4];
+    // inData[0] = 'H';
+    // inData[1] = 'E';
+    // inData[2] = 'L';
+    // inData[3] = 'O';
 
-    printf("%d bytes written\n", write(pFd, inData, 4));
+    // printf("%d bytes written\n", write(pFd, inData, 4));
 
-    char outData[5];
+    // char outData[5];
 
-    read(pFd, outData, 4);
-    outData[4] = '\0';
+    // read(pFd, outData, 4);
+    // outData[4] = '\0';
 
-    printf("Data in pipe : %s\n", outData);
+    // printf("Data in pipe : %s\n", outData);
 
-    close(pFd);
+    // close(pFd);
+
+
+    // User write to stdout with syscalls
+    // Now stdout is the fd 0
+    fd_t _stdout = 0;
+    write(_stdout, "Hello world !", 13);
+
 
 
     // TMP

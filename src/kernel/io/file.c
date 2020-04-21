@@ -1,5 +1,6 @@
 #include "file.h"
 
+#include "stdout.h"
 #include <k/vector.h>
 #include <stdlib.h>
 
@@ -63,7 +64,9 @@ void filesInit()
 {
     files = Vector_new();
 
-    // TODO : Init first files (stdin...)
+    // TODO : Stdin_init();
+    Stdout_init();
+    // TODO : Stderr_init();
 }
 
 void filesTerminate()
