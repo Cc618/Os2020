@@ -1,6 +1,8 @@
 #include "file.h"
 
+#include "stdin.h"
 #include "stdout.h"
+#include "stderr.h"
 #include <k/vector.h>
 #include <stdlib.h>
 
@@ -64,16 +66,17 @@ void filesInit()
 {
     files = Vector_new();
 
-    // TODO : Stdin_init();
+    Stdin_init();
     Stdout_init();
-    // TODO : Stderr_init();
+    Stderr_init();
 }
 
 void filesTerminate()
 {
     // Custom destructor
-    // TODO : Delete files here ?
-    Vector_iter(files, File_del);
+    for (size_t i = 0; i < files->size; ++i)
+        if (files->data[i] != NULL)
+            File_close((File*) files->data[i]);
 
     free(files);
 }

@@ -8,8 +8,6 @@ File *Pipe_new()
 
     File *pipe = File_new(data, Pipe_ops());
 
-    registerFile(pipe);
-
     return pipe;
 }
 

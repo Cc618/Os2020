@@ -164,23 +164,6 @@ static void userAct()
     // printf("%d\n", sysc2(2, 3));
     // printf("%d\n", sysc3(4, 5, 6));
 
-
-    /*
-    !!! Preserve regs
-    1. u32 syscall(id, a1, a2, a3, a4) : ASM : Retrieves args, sends them as registers and int 0x80
-    2. syscall_handler : Retrieves registers and calls onSyscall
-
-    sys_read() : Called from kernel
-    read() : Called from user
-
-    read -> syscall -> onSyscall -> sys_read
-
-    TODO : 1. Move k and libc to lib
-    TODO : 2. Verify we use valid syscalls from user mode (not sys_*)
-    TODO : 3. Change sys_putc by sys_read and remove strcon (change / rm __libc...)
-    */
-
-
     // // eax = syscall id / return
     // // ebx = 1st arg
     // // ecx = 2nd arg
@@ -320,10 +303,16 @@ static void userAct()
     // close(pFd);
 
 
-    // User write to stdout with syscalls
-    // Now stdout is the fd 0
-    fd_t _stdout = 0;
-    write(_stdout, "Hello world !", 13);
+    // User write to std streams with syscalls
+    char stdinBuf[] = "Stdin data !";
+    size_t written = write(stdin, stdinBuf, sizeof(stdinBuf));
+
+    write(stdout, "Written in stdin : ", 19);
+    char buf[written];
+    read(stdin, buf, written);
+    write(stdout, buf, written);
+
+    write(stderr, "\nI am an error", 14);
 
 
 
