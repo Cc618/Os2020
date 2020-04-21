@@ -1,9 +1,9 @@
 #pragma once
 
 // Std streams
-#define stdin 1
-#define stdout 2
-#define stderr 3
+#define stdin 0
+#define stdout 1
+#define stderr 2
 
 char *gets(char *s);
 
