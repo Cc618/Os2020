@@ -8,16 +8,18 @@ File *File_new(void *data, FileOps *ops)
 {
     File *f = malloc(sizeof(File));
 
-    f->fd = -1;
     f->data = data;
     f->ops = ops;
+
+    registerFile(f);
 
     return f;
 }
 
-// !!! Doesn't free data
 void File_del(File *f)
 {
+    deregisterFile(f);
+
     free(f->ops);
     free(f);
 }
@@ -47,10 +49,10 @@ size_t File_write(File *f, void *buffer, size_t count)
 void File_close(File *f)
 {
     // No need to close
-    if (f->ops->close == NULL)
-        return 0;
+    if (f->ops->close != NULL)
+        f->ops->close(f);
 
-    return f->ops->close(f);
+    File_del(f);
 }
 
 // --- Files --- //

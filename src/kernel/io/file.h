@@ -30,10 +30,10 @@ typedef struct FileOps_t
     void (*close)(File *f);
 } FileOps;
 
-// * fd is set to -1
+// Creates and register the file
 File *File_new(void *data, FileOps *ops);
 
-// !!! Doesn't free data
+// Deregister and closes the file
 void File_del(File *f);
 
 // Reads count bytes in buffer

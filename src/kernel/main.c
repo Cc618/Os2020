@@ -317,7 +317,7 @@ static void userAct()
 
     printf("Data in pipe : %s\n", outData);
 
-    close(p);
+    close(pFd);
 
 
     // TMP

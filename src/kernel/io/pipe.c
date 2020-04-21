@@ -27,15 +27,6 @@ FileOps *Pipe_ops()
     return ops;
 }
 
-void Pipe_del(File *f)
-{
-    Pipe_close(f);
-
-    deregisterFile(f->fd);
-
-    File_del(f);
-}
-
 size_t Pipe_read(File *f, void *buffer, size_t count)
 {
     Queue *q = f->data;

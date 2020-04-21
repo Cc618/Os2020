@@ -123,9 +123,8 @@ void sys_close(fd_t fd)
 {
     File *f = getFile(fd);
 
-    deregisterFile(f);
-
-    // TODO TMP : Del f ???
+    if (f != NULL)
+        File_close(f);
 }
 
 fd_t sys_pipe()
