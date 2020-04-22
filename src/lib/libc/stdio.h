@@ -21,6 +21,8 @@ int fprintf(FILE *f, const char *fmt, ...);
 
 int fputc(int c, FILE *stream);
 
+int fputs(const char *s, FILE *f);
+
 char *gets(char *s);
 
 int getchar();

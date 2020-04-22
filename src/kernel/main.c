@@ -314,9 +314,12 @@ static void userAct()
 
     // write(2, "\nI am an error", 14);
 
-    fprintf(stderr, "Hello world ! 0x%X %d %s\n", 0x46454443, 42, "Hey world !");
 
+    // stdio test
+    fprintf(stderr, "Hello world ! 0x%X %d %s %p\n", 0x46454443, 42, "Hey world !", 0);
 
+    fputs("This is an error\n", stderr);
+    puts("This is NOT an error");
 
     // TMP
     for (;;);

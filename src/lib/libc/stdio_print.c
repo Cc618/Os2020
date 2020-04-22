@@ -51,8 +51,7 @@ int printf_hex(FILE *f, uint32_t n, bool upper, bool isP)
     {
         if (isP)
         {
-            // TODO : Use fwrite
-            putc('(', f); putc('n', f); putc('i', f); putc('l', f); putc(')', f);
+            fputs("(nil)", f);
 
             // Size of (nil) is 5
             return 5;
@@ -138,7 +137,7 @@ int fprintf(FILE *f, const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    
+
     int ret = vfprintf(f, fmt, args);
 
     va_end(args);
@@ -156,11 +155,27 @@ int fputc(int c, FILE *f)
     return c;
 }
 
+int fputs(const char *s, FILE *f)
+{
+    int ret = 0;
+    while (*s != '\0')
+    {
+        int status;
+        if ((status = fputc(*s, f)) == EOF)
+            return EOF;
+
+        ++s;
+        ++ret;
+    }
+
+    return ret;
+}
+
 int printf(const char *fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    
+
     int ret = vfprintf(stdout, fmt, args);
 
     va_end(args);
@@ -176,16 +191,8 @@ int putchar(int c)
 
 int puts(const char *s)
 {
-    // TODO : Use fputs with CRLF
-
-    while (*s != '\0')
-    {
-        int status;
-        if ((status = putchar(*s)))
-            return status;
-
-        ++s;
-    }
+    if (fputs(s, stdout) == EOF)
+        return EOF;
 
     return putchar('\n');
 }
