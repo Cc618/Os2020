@@ -111,7 +111,6 @@ DEF_SYSC_3 enter,       SYS_ENTER
 DEF_SYSC_3 terminate,   SYS_TERMINATE
 
 ; Io
-DEF_SYSC_2 putc,    SYS_PUTC
 DEF_SYSC_2 strcon,  SYS_STRCON
 DEF_SYSC_3 read,    SYS_READ
 DEF_SYSC_3 write,   SYS_WRITE

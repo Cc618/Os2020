@@ -4,6 +4,7 @@
 #include "io/file.h"
 #include "io/pipe.h"
 #include <k/vector.h>
+#include <k/io.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -47,47 +48,21 @@ void sys_fatal(const char *msg)
 }
 
 // --- IO --- //
-void sys_putc(u8 c, int fd)
-{
-    // TODO : Use table
-    switch (fd)
-    {
-    case stdout:
-        // TODO : Implement
-        stdoutStream.push(&stdoutStream, &c, 1);
-        break;
-
-    case stderr:
-        stderrStream.push(&stderrStream, &c, 1);
-        break;
-
-    case stdin:
-        stdinStream.push(&stdinStream, &c, 1);
-        break;
-    
-    default:
-        // TODO : When fs, write to file
-
-        sys_fatal("No file associated with this descriptor");
-        break;
-    }
-}
-
 void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count))
 {
 
     // TODO : Table
     switch (fd)
     {
-    case stdin:
+    case STDIN_FD:
         stdinStream.push = cb;
         break;
     
-    case stdout:
+    case STDOUT_FD:
         stdoutStream.push = cb;
         break;
 
-    case stderr:
+    case STDERR_FD:
         stderrStream.push = cb;
         break;
     

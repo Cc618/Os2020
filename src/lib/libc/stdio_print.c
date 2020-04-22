@@ -1,6 +1,6 @@
 #include "stdio.h"
 
-#include "k/syscalls.h"
+#include <k/syscalls.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdarg.h>
@@ -134,6 +134,17 @@ int printf_string(char *s)
 }
 
 // --- Functions --- //
+int fputc(int c, FILE *f)
+{
+    size_t written = write(f->_fileno, &c, 1);
+
+    // Error
+    if (written != 1)
+        return EOF;
+    
+    return c;
+}
+
 int printf(const char *fmt, ...)
 {
     int written = 0;

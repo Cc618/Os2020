@@ -233,15 +233,16 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
+        // TODO : Update with line buffering
         // Delete (may be) the char in the console
         if (shellDelete())
             // Delete the char in stdin
-            sys_putc(0x08, stdin);
+            putc(0x08, stdin);
 
         return;
     
     case KEY_PRESSED_ENTER:
-        sys_putc('\n', stdin);
+        putc('\n', stdin);
         consoleNewLine();
 
         return;
@@ -298,7 +299,7 @@ void onKeyPressed()
             consolePut(key);
 
             // Output this char to stdin
-            sys_putc(key, stdin);
+            putc(key, stdin);
         }
 
         return;

@@ -41,9 +41,6 @@ void sys_close(fd_t fd);
 fd_t sys_pipe();
 
 
-// TODO : rm Appends a char to the file
-void sys_putc(u8 c, int fd);
-
 // Connects the stream to the callback cb
 // - arg1 = fd : File descriptor 
 // - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)

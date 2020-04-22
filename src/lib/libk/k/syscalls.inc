@@ -4,7 +4,6 @@
 %define SYS_TERMINATE   0x04
 
 ; Io
-%define SYS_PUTC        0x10
 %define SYS_STRCON      0x20
 %define SYS_READ        0x11
 %define SYS_WRITE       0x12

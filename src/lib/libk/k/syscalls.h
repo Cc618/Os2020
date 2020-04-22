@@ -12,7 +12,6 @@
 #define SYS_ENTER       0x03
 #define SYS_TERMINATE   0x04
 
-#define SYS_PUTC        0x10
 // Stream connect
 #define SYS_STRCON      0x20
 #define SYS_READ        0x11
@@ -32,11 +31,7 @@ extern int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
 extern int terminate();
 
 // --- IO --- //
-// Appends a char to the file
-// - arg1 = c : char
-// - arg2 = fd : File descriptor
-extern void putc(char c, int fd);
-
+// TODO : rm
 // Connects the stream to the callback cb
 // - arg1 = fd : File descriptor 
 // - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)

@@ -303,16 +303,18 @@ static void userAct()
     // close(pFd);
 
 
-    // User write to std streams with syscalls
-    char stdinBuf[] = "Stdin data !";
-    size_t written = write(stdin, stdinBuf, sizeof(stdinBuf));
+    // // User write to std streams with syscalls
+    // char stdinBuf[] = "Stdin data !";
+    // size_t written = write(0, stdinBuf, sizeof(stdinBuf));
 
-    write(stdout, "Written in stdin : ", 19);
-    char buf[written];
-    read(stdin, buf, written);
-    write(stdout, buf, written);
+    // write(1, "Written in stdin : ", 19);
+    // char buf[written];
+    // read(0, buf, written);
+    // write(1, buf, written);
 
-    write(stderr, "\nI am an error", 14);
+    // write(2, "\nI am an error", 14);
+
+    printf("Hello world !\n");
 
 
 
