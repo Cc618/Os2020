@@ -3,7 +3,6 @@
 #include <k/syscalls.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdarg.h>
 #include <stddef.h>
 
 // Maximum power of 10 that can be stored
@@ -13,7 +12,7 @@
 // --- Flags --- //
 // Flags return the number of characters written
 // %u flag
-int printf_uint32(uint32_t n)
+int printf_uint32(FILE *f, uint32_t n)
 {
     int written = 0;
     uint32_t mod = UINT32_10POW_MAX;
@@ -33,7 +32,7 @@ int printf_uint32(uint32_t n)
         if (started)
         {
             // Display this digit
-            putchar('0' + digit);
+            putc('0' + digit, f);
             ++written;
         }
 
@@ -46,20 +45,21 @@ int printf_uint32(uint32_t n)
 }
 
 // %x / %X / %p flag
-int printf_hex(uint32_t n, bool upper, bool isP)
+int printf_hex(FILE *f, uint32_t n, bool upper, bool isP)
 {
     if (n == 0)
     {
         if (isP)
         {
-            putchar('('); putchar('n'); putchar('i'); putchar('l'); putchar(')');
+            // TODO : Use fwrite
+            putc('(', f); putc('n', f); putc('i', f); putc('l', f); putc(')', f);
 
             // Size of (nil) is 5
             return 5;
         }
         else
         {
-            putchar('0');
+            putc('0', f);
 
             return 1;
         }
@@ -89,9 +89,9 @@ int printf_hex(uint32_t n, bool upper, bool isP)
         if (started)
         {
             if (digit < 0xA)
-                putchar('0' + digit);
+                putc('0' + digit, f);
             else
-                putchar((upper ? 'A' : 'a') + digit - 0xA);
+                putc((upper ? 'A' : 'a') + digit - 0xA, f);
 
             ++written;
         }
@@ -105,35 +105,46 @@ int printf_hex(uint32_t n, bool upper, bool isP)
 }
 
 // %d flag
-int printf_int32(int n)
+int printf_int32(FILE *f, int n)
 {
     if (n == 0)
     {
-        putchar('0');
+        putc('0', f);
         return 1;
     }
 
     // Negative
     if (n < 0)
     {
-        putchar('-');
-        return 1 + printf_uint32(-n);
+        putc('-', f);
+        return 1 + printf_uint32(f, -n);
     }
 
-    return printf_uint32(n);
+    return printf_uint32(f, n);
 }
 
 // %s flag
-int printf_string(char *s)
+int printf_string(FILE *f, char *s)
 {
     int i = 0;
     while (s[i] != '\0')
-        putchar(s[i++]);
+        putc(s[i++], f);
 
     return i;
 }
 
 // --- Functions --- //
+int fprintf(FILE *f, const char *fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    
+    int ret = vfprintf(f, fmt, args);
+
+    va_end(args);
+    return ret;
+}
+
 int fputc(int c, FILE *f)
 {
     size_t written = write(f->_fileno, &c, 1);
@@ -141,79 +152,19 @@ int fputc(int c, FILE *f)
     // Error
     if (written != 1)
         return EOF;
-    
+
     return c;
 }
 
 int printf(const char *fmt, ...)
 {
-    int written = 0;
-
     va_list args;
     va_start(args, fmt);
+    
+    int ret = vfprintf(stdout, fmt, args);
 
-    for (size_t i = 0; fmt[i] != '\0'; )
-    {
-        char c = fmt[i];
-        switch (c)
-        {
-        case '%':
-        {
-            ++written;
-            char next = fmt[++i];
-
-            switch (next)
-            {
-            case '%':
-                putchar('%');
-                ++written;
-                break;
-
-            case 's':
-                written += printf_string(va_arg(args, char*));
-                break;
-
-            case 'd':
-            case 'i':
-                written += printf_int32(va_arg(args, int32_t));
-                break;
-
-            case 'c':
-                ++written;
-                putchar(va_arg(args, int));
-                break;
-
-            case 'u':
-                written += printf_uint32(va_arg(args, uint32_t));
-                break;
-
-            case 'x':
-            case 'X':
-            case 'p':
-                written += printf_hex(va_arg(args, uint32_t), next == 'X', next == 'p');
-                break;
-
-            default:
-                // return -1
-                written = -1;
-                goto ret;
-            }
-        }
-            break;
-
-        default:
-            putchar(c);
-            ++written;
-            break;
-        }
-
-        ++i;
-    }
-
-ret:
     va_end(args);
-
-    return written;
+    return ret;
 }
 
 int putchar(int c)
@@ -237,4 +188,67 @@ int puts(const char *s)
     }
 
     return putchar('\n');
+}
+
+int vfprintf(FILE *f, const char *fmt, va_list args)
+{
+    int written = 0;
+
+    for (size_t i = 0; fmt[i] != '\0'; )
+    {
+        char c = fmt[i];
+        switch (c)
+        {
+        case '%':
+        {
+            ++written;
+            char next = fmt[++i];
+
+            switch (next)
+            {
+            case '%':
+                putc('%', f);
+                ++written;
+                break;
+
+            case 's':
+                written += printf_string(f, va_arg(args, char*));
+                break;
+
+            case 'd':
+            case 'i':
+                written += printf_int32(f, va_arg(args, int32_t));
+                break;
+
+            case 'c':
+                ++written;
+                putc(va_arg(args, int), f);
+                break;
+
+            case 'u':
+                written += printf_uint32(f, va_arg(args, uint32_t));
+                break;
+
+            case 'x':
+            case 'X':
+            case 'p':
+                written += printf_hex(f, va_arg(args, uint32_t), next == 'X', next == 'p');
+                break;
+
+            default:
+                return -1;
+            }
+        }
+            break;
+
+        default:
+            putc(c, f);
+            ++written;
+            break;
+        }
+
+        ++i;
+    }
+
+    return written;
 }

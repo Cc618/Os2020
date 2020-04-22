@@ -314,7 +314,7 @@ static void userAct()
 
     // write(2, "\nI am an error", 14);
 
-    printf("Hello world !\n");
+    fprintf(stderr, "Hello world ! 0x%X %d %s\n", 0x46454443, 42, "Hey world !");
 
 
 
