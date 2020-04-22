@@ -1,6 +1,8 @@
 #include "stdio.h"
 
 #include "_libc.h"
+#include <k/syscalls.h>
+#include <k/types.h>
 #include <stddef.h>
 #include <string.h>
 
@@ -137,3 +139,50 @@ char *gets(char *s)
         return s;
     */
 }
+
+
+// TODO : Remove other functions
+
+char *fgets(char *s, int n, FILE *f)
+{
+    // TODO : Check EOF
+    if (n == 0)
+        return s;
+
+    char *oldS = s;
+    size_t totalRead = 0;
+    do
+    {
+        ssize_t result = read(f->_fileno, s, n - 1 - totalRead);
+
+        // Error encountered
+        if (result < 0)
+            goto ret;
+
+        // Test end
+        for (size_t i = 0; i < result; ++i)
+        {
+            if (s[i] == '\n')
+            {
+                totalRead += i + 1;
+                goto ret;
+            }
+        }
+
+        totalRead += result;
+        s += result;
+    }
+    while (totalRead < n - 1);
+
+ret:;
+    oldS[totalRead] = '\0';
+
+    return oldS;
+}
+
+
+
+
+
+
+

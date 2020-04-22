@@ -324,15 +324,11 @@ static void userAct()
 
 
     char buf[64];
-    fputs("TEST\n", stdin);
+    // fputs("TEST\n", stdin);
 
-    Queue *q = getFile(0)->data;
-    // printf("%d chars in stdin\n", q->end - q->start);
-    
     fgets(buf, 8, stdin);
-    // printf("%p %p\n", buf, );
 
-    // puts("---");
+    puts(">>>");
     puts(buf);
 
 

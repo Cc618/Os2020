@@ -18,3 +18,6 @@ typedef uint32_t    u32;
 
 // File descriptor type
 typedef u32 fd_t;
+
+// Signed size_t
+typedef i32 ssize_t;

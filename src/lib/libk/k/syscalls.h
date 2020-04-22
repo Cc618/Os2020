@@ -39,11 +39,11 @@ extern void strcon(int fd, void (*cb)(void *s, uint8_t *data, size_t count));
 
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read
-extern size_t read(fd_t fd, void *buffer, size_t count);
+extern ssize_t read(fd_t fd, void *buffer, size_t count);
 
 // Writes count bytes of buffer in the file associated to fd
 // * Returns how many bytes written
-extern size_t write(fd_t fd, void *buffer, size_t count);
+extern ssize_t write(fd_t fd, void *buffer, size_t count);
 
 // Closes a file
 extern void close(fd_t fd);

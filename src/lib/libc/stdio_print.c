@@ -160,8 +160,7 @@ int fputs(const char *s, FILE *f)
     int ret = 0;
     while (*s != '\0')
     {
-        int status;
-        if ((status = fputc(*s, f)) == EOF)
+        if (fputc(*s, f) == EOF)
             return EOF;
 
         ++s;
