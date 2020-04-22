@@ -25,22 +25,26 @@ FileOps *Pipe_ops()
     return ops;
 }
 
-size_t Pipe_read(File *f, void *buffer, size_t count)
+ssize_t Pipe_read(File *f, void *buffer, size_t count)
 {
     Queue *q = f->data;
+
+    if (Queue_empty(q))
+        return 0;
+
     size_t n = 0;
     for ( ; n < count; ++n)
     {
+        ((u8*) buffer)[n] = Queue_pop(q);
+
         if (Queue_empty(q))
             break;
-
-        ((u8*) buffer)[n] = Queue_pop(q);
     }
     
     return ++n;
 }
 
-size_t Pipe_write(File *f, void *buffer, size_t count)
+ssize_t Pipe_write(File *f, void *buffer, size_t count)
 {
     size_t n = 0;
     Queue *q = f->data;

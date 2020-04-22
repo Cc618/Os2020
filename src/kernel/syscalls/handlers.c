@@ -72,24 +72,24 @@ void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count))
     }
 }
 
-size_t sys_read(fd_t fd, void *buffer, size_t count)
+ssize_t sys_read(fd_t fd, void *buffer, size_t count)
 {
     File *f = getFile(fd);
 
     // Not found
     if (!f)
-        return 0;
+        return -1;
 
     return File_read(f, buffer, count);
 }
 
-size_t sys_write(fd_t fd, void *buffer, size_t count)
+ssize_t sys_write(fd_t fd, void *buffer, size_t count)
 {
     File *f = getFile(fd);
 
     // Not found
     if (!f)
-        return 0;
+        return -1;
 
     return File_write(f, buffer, count);
 }

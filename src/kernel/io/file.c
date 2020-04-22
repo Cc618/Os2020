@@ -29,22 +29,22 @@ void File_del(File *f)
 
 // Reads count bytes in buffer
 // Returns how many bytes read
-size_t File_read(File *f, void *buffer, size_t count)
+ssize_t File_read(File *f, void *buffer, size_t count)
 {
     // Not readable
     if (f->ops->read == NULL)
-        return 0;
+        return -1;
 
     return f->ops->read(f, buffer, count);
 }
 
 // Writes count bytes of buffer
 // Returns how many bytes written
-size_t File_write(File *f, void *buffer, size_t count)
+ssize_t File_write(File *f, void *buffer, size_t count)
 {
     // Not writable
     if (f->ops->write == NULL)
-        return 0;
+        return -1;
 
     return f->ops->write(f, buffer, count);
 }

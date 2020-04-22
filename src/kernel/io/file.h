@@ -20,11 +20,11 @@ typedef struct FileOps_t
 {
     // See File_read
     // If NULL, the file is not readable
-    size_t (*read)(File *f, void *buffer, size_t count);
+    ssize_t (*read)(File *f, void *buffer, size_t count);
 
     // See File_write
     // If NULL, the file is not writable
-    size_t (*write)(File *f, void *buffer, size_t count);
+    ssize_t (*write)(File *f, void *buffer, size_t count);
 
     // Like a destructor
     void (*close)(File *f);
@@ -38,11 +38,11 @@ void File_del(File *f);
 
 // Reads count bytes in buffer
 // Returns how many bytes read
-size_t File_read(File *f, void *buffer, size_t count);
+ssize_t File_read(File *f, void *buffer, size_t count);
 
 // Writes count bytes of buffer
 // Returns how many bytes written
-size_t File_write(File *f, void *buffer, size_t count);
+ssize_t File_write(File *f, void *buffer, size_t count);
 
 // Like a destructor
 void File_close(File *f);

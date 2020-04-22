@@ -14,8 +14,8 @@ File *Pipe_new();
 // Returns file ops for a pipe
 FileOps *Pipe_ops();
 
-size_t Pipe_read(File *f, void *buffer, size_t count);
+ssize_t Pipe_read(File *f, void *buffer, size_t count);
 
-size_t Pipe_write(File *f, void *buffer, size_t count);
+ssize_t Pipe_write(File *f, void *buffer, size_t count);
 
 void Pipe_close(File *f);

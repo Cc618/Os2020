@@ -315,11 +315,26 @@ static void userAct()
     // write(2, "\nI am an error", 14);
 
 
-    // stdio test
-    fprintf(stderr, "Hello world ! 0x%X %d %s %p\n", 0x46454443, 42, "Hey world !", 0);
+    // // stdio test
+    // fprintf(stderr, "Hello world ! 0x%X %d %s %p\n", 0x46454443, 42, "Hey world !", 0);
 
-    fputs("This is an error\n", stderr);
-    puts("This is NOT an error");
+    // fputs("This is an error\n", stderr);
+    // puts("This is NOT an error");
+
+
+
+    char buf[64];
+    fputs("TEST\n", stdin);
+
+    Queue *q = getFile(0)->data;
+    printf("%d chars in stdin\n", q->end - q->start);
+    
+    printf("%p %p\n", buf, fgets(buf, 8, stdin));
+
+    puts("---");
+    puts(buf);
+
+
 
     // TMP
     for (;;);
@@ -327,7 +342,7 @@ static void userAct()
 
 
 
-    // TODO : remove execApp
+    // TODO : remove execApp files
     // TODO : add shell as app
 
     // Launch the shell

@@ -27,11 +27,11 @@ extern void sys_terminate();
 // --- IO --- //
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read
-size_t sys_read(fd_t fd, void *buffer, size_t count);
+ssize_t sys_read(fd_t fd, void *buffer, size_t count);
 
 // Writes count bytes of buffer in the file associated to fd
 // * Returns how many bytes written
-size_t sys_write(fd_t fd, void *buffer, size_t count);
+ssize_t sys_write(fd_t fd, void *buffer, size_t count);
 
 // Closes a file
 void sys_close(fd_t fd);

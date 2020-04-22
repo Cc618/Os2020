@@ -6,6 +6,7 @@
 #include "apps/shell.h"
 #include "apps/app.h"
 #include "syscalls/syscalls.h"
+#include <k/io.h>
 #include <stdio.h>
 
 #define KBD_DATA 0x60
@@ -120,7 +121,7 @@ bool keyboardEnabled = false;
 
 
 // All displayable keys (without shift pressed)
-key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
+static key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '1', '2', '3', '4', '5', '6',
     // 0x08
@@ -156,7 +157,7 @@ key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
 };
 
 // When shift is pressed
-key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
+static key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     // 0x00
     0, 0, '!', '@', '#', '$', '%', '^',
     // 0x08
@@ -191,11 +192,36 @@ key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     0, 0, 0, 0, 0, 0, 0, 0,
 };
 
+static char *lineBuffer;
+static size_t lineBufferI;
+
+// Sends the buffer to stdin
+static void flushBuffer()
+{
+    // Useless
+    if (lineBufferI == 0)
+        return;
+
+    sys_write(STDIN_FD, lineBuffer, lineBufferI);
+    lineBufferI = 0;
+}
+
+// Pushes a char to lineBuffer, can send to stdin if the buffer is full
+static bool pushChar(char c)
+{
+    lineBuffer[lineBufferI] = c;
+    ++lineBufferI;
+
+    // Flush
+    if (lineBufferI >= KBD_BUFFER_SIZE)
+        flushBuffer();
+}
+
 void keyboardInit()
 {
-    keyboardEnabled = true;
+    lineBuffer = malloc(KBD_BUFFER_SIZE);
 
-    // TODO : Use pipe
+    keyboardEnabled = true;
 }
 
 void keyboardTerminate()
@@ -203,6 +229,8 @@ void keyboardTerminate()
     // TODO : Disable cursor
 
     keyboardEnabled = false;
+
+    free(lineBuffer);
 }
 
 void onKeyPressed()
@@ -233,16 +261,16 @@ void onKeyPressed()
     switch (data)
     {
     case KEY_PRESSED_BACKSPACE:
-        // TODO : Update with line buffering
-        // Delete (may be) the char in the console
-        if (shellDelete())
-            // Delete the char in stdin
-            putc(0x08, stdin);
+        // Delete (maybe) the char in the console
+        if (lineBufferI > 0 && shellDelete())
+            // Ignore last char
+            --lineBufferI;
 
         return;
     
     case KEY_PRESSED_ENTER:
-        putc('\n', stdin);
+        pushChar('\n');
+        flushBuffer();
         consoleNewLine();
 
         return;
@@ -289,6 +317,9 @@ void onKeyPressed()
                 consolePut('C');
                 consoleNewLine();
 
+                // Ignore buffer
+                lineBufferI = 0;
+
                 sys_terminate();
                 break;
             }
@@ -298,8 +329,7 @@ void onKeyPressed()
             // Display key
             consolePut(key);
 
-            // Output this char to stdin
-            putc(key, stdin);
+            pushChar(key);
         }
 
         return;
