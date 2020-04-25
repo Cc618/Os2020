@@ -1,20 +1,60 @@
 # Syscalls
 
-**This section is in WIP and will change in v0.2**
-
 Syscalls are the only way to call kernel functions.
 
-To syscall, include syscalls/syscalls.h
+To syscall, include k/syscalls.h and call the associated function (see list below).
 
-## Syscalls Table
+If the syscall has to occur in kernel mode, call sys_**ID**, this function avoid using interrupts.
 
-All syscalls are named like SYS_**ID**.
+## Syscalls List
+
+All syscalls IDs like SYS_**ID** in k/syscalls.h.
 
 Here is the list of syscalls.
 
-| ID | Arg1 | Arg2 | Arg3 | Arg4 | Description |
-| -- | ---- | ---- | ---- | ---- | ----------- |
-| EXIT |  |  |  |  | Powers off the computer |
-| PUTC | c | fd |  |  | Puts the character c at the end of the file with file descriptor fd |
-| STRCON | fd | cb |  |  | Connects the stream to the callback cb, functor (*)(FILE *f, uint8_t *data, size_t count) |
+### System
+#### fatal
+- Fatal error
+```c
+void fatal(const char *msg);
+```
 
+#### enter
+- Calls the entry of an application
+```c
+int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+```
+
+#### terminate
+- Terminates the current program
+```c
+int terminate();
+```
+
+### IO
+#### read
+- Reads count bytes of the file associated to fd in buffer
+- Returns how many bytes read
+```c
+ssize_t read(fd_t fd, void *buffer, size_t count);
+```
+
+#### write
+- Writes count bytes of buffer in the file associated to fd
+- Returns how many bytes written
+```c
+ssize_t write(fd_t fd, void *buffer, size_t count);
+```
+
+#### close
+- Closes a file
+```c
+void close(fd_t fd);
+```
+
+#### pipe
+- Creates a pipe
+- Returns its file descriptor
+```c
+fd_t pipe();
+```

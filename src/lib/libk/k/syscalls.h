@@ -30,12 +30,6 @@ extern int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
 extern int terminate();
 
 // --- IO --- //
-// TODO : rm
-// Connects the stream to the callback cb
-// - arg1 = fd : File descriptor 
-// - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)
-extern void strcon(int fd, void (*cb)(void *s, uint8_t *data, size_t count));
-
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read
 extern ssize_t read(fd_t fd, void *buffer, size_t count);
