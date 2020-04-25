@@ -6,11 +6,11 @@
 - Added Virtual File System (vfs)
 - Added Fat32 driver
 - Added the k library, syscalls + types...
-- Moved libc and kernel/k to lib
 - Remade syscalls
 - Added data structures like vector and queue to k
 - Added pipes in kernel
 - Added app entry / termination (Ctrl + C works)
+- Updated stdio with main functions
 
 ## 0.1
 
