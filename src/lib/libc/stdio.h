@@ -16,9 +16,13 @@ extern FILE *stdin;
 extern FILE *stdout;
 extern FILE *stderr;
 
+int fclose(FILE *f);
+
 int fgetc(FILE *f);
 
 char *fgets(char *s, int n, FILE *f);
+
+FILE *fopen(const char *path, const char *mode);
 
 // See printf for implemented flags
 int fprintf(FILE *f, const char *fmt, ...);

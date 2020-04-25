@@ -326,27 +326,33 @@ static void userAct()
 
 
 
-    // TMP : Syscall fstat to have file size
+    // // TMP : Syscall fstat to have file size
 
-    // Cat file using syscalls
-    // TMP : open()
-    // FSEntry *f = getEntry("/dir/../dir/second");
-    // printf("File size : %d\n", f->size);
-    fd_t *f = open("/dir/../dir/second");
+    // // Cat file using syscalls
+    // // FSEntry *f = getEntry("/dir/../dir/second");
+    // // printf("File size : %d\n", f->size);
+    // fd_t *f = open("/dir/../dir/second");
 
+
+    // char buf[4096];
+    // size_t n = read(f, buf, 4096);
+    
+    // printf("Read %d bytes\n", n);
+    // buf[n] = '\0';
+    // printf("Content :\n%s\n", buf);
+
+    // close(f);
+
+
+    FILE *f = fopen("/dir/second", 0);
 
     char buf[4096];
-    size_t n = read(f, buf, 4096);
+    fgets(buf, 4096, f);
+
+    printf("Content : %s\n", buf);
+
+    fclose(f);
     
-    printf("Read %d bytes\n", n);
-    buf[n] = '\0';
-    printf("Content :\n%s\n", buf);
-
-    // TMP : close()
-    close(f);
-
-
-
 
 
 
