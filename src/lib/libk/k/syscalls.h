@@ -12,7 +12,7 @@
 #define SYS_ENTER       0x03
 #define SYS_TERMINATE   0x04
 
-// Stream connect
+#define SYS_OPEN        0x10
 #define SYS_READ        0x11
 #define SYS_WRITE       0x12
 #define SYS_CLOSE       0x13
@@ -30,6 +30,9 @@ extern int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
 extern int terminate();
 
 // --- IO --- //
+// Opens a file
+extern fd_t open(const char *path);
+
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read
 extern ssize_t read(fd_t fd, void *buffer, size_t count);

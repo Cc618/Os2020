@@ -32,6 +32,12 @@ int terminate();
 ```
 
 ### IO
+#### open
+- Opens a file at the absolute path 'path'
+```c
+fd_t open(const char *path);
+```
+
 #### read
 - Reads count bytes of the file associated to fd in buffer
 - Returns how many bytes read
@@ -58,3 +64,14 @@ void close(fd_t fd);
 ```c
 fd_t pipe();
 ```
+
+## How to add a syscall
+
+Here is what to update to add a new syscall named **ID** with **NARG** arguments :
+
+- lib/libk/k/syscalls.h : Add the define SYS_**ID** with a new value and the extern prototype **ID**
+- lib/libk/k/syscalls.inc : Add the same define as above with the same value
+- lib/libk/k/syscalls.asm : Add the declaration DEF_SYSC_**NARG** **ID**, SYS_**ID**
+- kernel/syscalls/syscall_request.c : Add the entry [SYS_**ID**] = sys_**ID** to the syscalls array
+- kernel/syscalls/syscalls.h : Add the function prototype sys_**ID**
+- This file : Update the documentation

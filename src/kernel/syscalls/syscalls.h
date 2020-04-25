@@ -6,7 +6,6 @@
 #include <stddef.h>
 #include <k/types.h>
 
-// TODO : Update all
 // --- Interrupts --- //
 // When we do int 0x80 or syscall this interrupt handler is called
 u32 onSyscall();
@@ -25,6 +24,9 @@ extern int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv)
 extern void sys_terminate();
 
 // --- IO --- //
+// Opens a file at the absolute path 'path'
+fd_t sys_open(const char *path);
+
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read
 ssize_t sys_read(fd_t fd, void *buffer, size_t count);

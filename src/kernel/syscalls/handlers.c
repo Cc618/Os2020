@@ -2,6 +2,7 @@
 
 #include "drivers/screen.h"
 #include "io/file.h"
+#include "io/fs_file.h"
 #include "io/pipe.h"
 #include <k/vector.h>
 #include <k/io.h>
@@ -48,6 +49,11 @@ void sys_fatal(const char *msg)
 }
 
 // --- IO --- //
+fd_t sys_open(const char *path)
+{
+    return FSFile_new(path)->fd;
+}
+
 ssize_t sys_read(fd_t fd, void *buffer, size_t count)
 {
     File *f = getFile(fd);

@@ -332,18 +332,18 @@ static void userAct()
     // TMP : open()
     // FSEntry *f = getEntry("/dir/../dir/second");
     // printf("File size : %d\n", f->size);
-    File *f = FSFile_new("/dir/../dir/second");
+    fd_t *f = open("/dir/../dir/second");
 
 
     char buf[4096];
-    size_t n = read(f->fd, buf, 4096);
+    size_t n = read(f, buf, 4096);
     
     printf("Read %d bytes\n", n);
     buf[n] = '\0';
     printf("Content :\n%s\n", buf);
 
     // TMP : close()
-    close(f->fd);
+    close(f);
 
 
 

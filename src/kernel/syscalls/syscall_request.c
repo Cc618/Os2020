@@ -11,6 +11,7 @@ u32 (*syscalls[256])() = {
     [SYS_TERMINATE] = sys_terminate,
 
     // Io //
+    [SYS_OPEN] = sys_open,
     [SYS_READ] = sys_read,
     [SYS_WRITE] = sys_write,
     [SYS_CLOSE] = sys_close,
