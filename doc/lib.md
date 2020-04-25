@@ -11,7 +11,7 @@ To include libk files use k/*.c, libk provides system related functions like sys
 
 libc is the traditionnal C standard library, not every function is implemented, see implemented functions above.
 
-In addition, there is some definitions like NULL, stdint.h and stdarg.h are implemented.
+In addition, there is some definitions / structs like NULL, stdint.h and stdarg.h are also implemented.
 
 ### string.h
 
