@@ -46,6 +46,7 @@ static void initKernel()
 // TODO : rm
 #include "io/pipe.h"
 #include "io/file.h"
+#include "io/fs_file.h"
 #include "k/syscalls.h"
 #include "k/vector.h"
 #include "k/queue.h"
@@ -325,6 +326,24 @@ static void userAct()
 
 
 
+    // TMP : Syscall fstat to have file size
+
+    // Cat file using syscalls
+    // TMP : open()
+    // FSEntry *f = getEntry("/dir/../dir/second");
+    // printf("File size : %d\n", f->size);
+    File *f = FSFile_new("/dir/../dir/second");
+
+
+    char buf[4096];
+    size_t n = read(f->fd, buf, 4096);
+    
+    printf("Read %d bytes\n", n);
+    buf[n] = '\0';
+    printf("Content :\n%s\n", buf);
+
+    // TMP : close()
+    close(f->fd);
 
 
 
@@ -333,62 +352,17 @@ static void userAct()
 
 
 
-    char buf[64];
-    // fputs("TEST\n", stdin);
-
-    // printf("<%c> ", fgetc(stdin));
-    // printf("<%c> ", fgetc(stdin));
-    // printf("<%c> ", fgetc(stdin));
-    // printf("<%c> ", fgetc(stdin));
-
-    // char c;
-    // read(0, &c, 1);
-    // printf("<%c> ", c);
-    // read(0, &c, 1);
-    // printf("<%c> ", c);
-    // read(0, &c, 1);
-    // printf("<%c> ", c);
-    // read(0, &c, 1);
-    // printf("<%c> ", c);
-
-
-    // gets(buf);
-
-    gets(buf);
-
-    printf("buf = %s", buf);
 
 
 
 
-    // char buf[64];
-    // char dummy;
-    // buf[0] = 'A';
-    // buf[1] = 'B';
-    // buf[2] = 'C';
-    // buf[3] = '\0';
-    // File *p = Pipe_new();
-
-    // // FILE *f = malloc(sizeof(FILE));
-    // // f->_fileno = p->fd;
-
-    // write(p->fd, buf, 4);
-
-    // printf("Read %d\n", read(p->fd, buf + 6, 1));
-    // puts(buf + 6);
 
 
-    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
-    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
-    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
 
 
-    // // printf("%c\n", fgetc(f));
-    // // printf("%c\n", fgetc(f));
 
-    // // TODO : Pipes don't delete queue
 
-    // Pipe_close(p);
+
 
 
 

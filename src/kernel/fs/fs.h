@@ -78,13 +78,3 @@ FSEntry *findEntry(FSEntry **entries, const char *name);
 // Returns NULL if not found
 FSEntry *getEntry(const char *path);
 
-// TMP :
-#include <stdio.h>
-static inline void printEntry(FSEntry *entry)
-{
-    printf("- Entry :\n");
-    printf("Name         %s\n", entry->name);
-    printf("Directory    %s\n", entry->flags & FS_DIRECTORY ? "true" : "false");
-    printf("Hidden       %s\n", entry->flags & FS_HIDDEN ? "true" : "false");
-    // printf("Data         %x\n", *(u32*)entry->data);
-}
