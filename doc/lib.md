@@ -33,10 +33,20 @@ In addition, there is some definitions like NULL, stdint.h and stdarg.h are impl
 
 ### stdio.h
 
+- fclose
+- fgetc
+- fgets
+- fopen
+- fprintf
+- fputc
+- fputs
 - gets
+- getchar
+- putc
 - putchar
 - puts
 - printf (partially, see implemented flags in stdio.h)
+- vfprintf
 
 ### ctype.h
 
