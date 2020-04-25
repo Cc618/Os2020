@@ -32,16 +32,17 @@ ssize_t Pipe_read(File *f, void *buffer, size_t count)
     if (Queue_empty(q))
         return 0;
 
-    size_t n = 0;
-    for ( ; ; ++n)
+    for (size_t n = 0; ; )
     {
-        ((u8*) buffer)[n] = Queue_pop(q);
+        ((u8*) buffer)[n] = (u8)Queue_pop(q);
+
+        ++n;
 
         if (n >= count)
             return n;
 
         if (Queue_empty(q))
-            return ++n;       
+            return n;
     }
 }
 
@@ -56,7 +57,7 @@ ssize_t Pipe_write(File *f, void *buffer, size_t count)
         if (Queue_full(q))
             break;
     }
-    
+
     return n;
 }
 

@@ -16,6 +16,8 @@ extern FILE *stdin;
 extern FILE *stdout;
 extern FILE *stderr;
 
+int fgetc(FILE *f);
+
 char *fgets(char *s, int n, FILE *f);
 
 // See printf for implemented flags

@@ -323,13 +323,80 @@ static void userAct()
 
 
 
+
+
+
+
+
+
+
+
+
+
     char buf[64];
     // fputs("TEST\n", stdin);
 
-    fgets(buf, 8, stdin);
+    // printf("<%c> ", fgetc(stdin));
+    // printf("<%c> ", fgetc(stdin));
+    // printf("<%c> ", fgetc(stdin));
+    // printf("<%c> ", fgetc(stdin));
 
-    puts(">>>");
-    puts(buf);
+    // char c;
+    // read(0, &c, 1);
+    // printf("<%c> ", c);
+    // read(0, &c, 1);
+    // printf("<%c> ", c);
+    // read(0, &c, 1);
+    // printf("<%c> ", c);
+    // read(0, &c, 1);
+    // printf("<%c> ", c);
+
+
+    gets(buf);
+
+    printf("buf = %s\n", buf);
+
+
+
+
+    // char buf[64];
+    // char dummy;
+    // buf[0] = 'A';
+    // buf[1] = 'B';
+    // buf[2] = 'C';
+    // buf[3] = '\0';
+    // File *p = Pipe_new();
+
+    // // FILE *f = malloc(sizeof(FILE));
+    // // f->_fileno = p->fd;
+
+    // write(p->fd, buf, 4);
+
+    // printf("Read %d\n", read(p->fd, buf + 6, 1));
+    // puts(buf + 6);
+
+
+    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
+    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
+    // // read(p->fd, &dummy, 1); printf("%c\n", dummy);
+
+
+    // // printf("%c\n", fgetc(f));
+    // // printf("%c\n", fgetc(f));
+
+    // // TODO : Pipes don't delete queue
+
+    // Pipe_close(p);
+
+
+
+
+
+
+
+
+
+
 
 
 

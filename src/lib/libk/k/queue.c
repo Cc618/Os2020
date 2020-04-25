@@ -3,6 +3,15 @@
 #include <k/syscalls.h>
 #include <stdlib.h>
 
+// To avoid to free empty items
+static void tryFree(void *data)
+{
+    if (data == NULL)
+        return;
+    
+    free(data);
+}
+
 Queue *Queue_new(size_t capacity)
 {
     Queue *q = malloc(sizeof(Queue));
@@ -13,7 +22,7 @@ Queue *Queue_new(size_t capacity)
 
 void Queue_del(Queue *q)
 {
-    Queue_iter(q, free);
+    Queue_iter(q, tryFree);
     
     free(q);
 }

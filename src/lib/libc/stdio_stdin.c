@@ -74,74 +74,45 @@ int getchar()
 
 char *gets(char *s)
 {
-    // Wait for CRLF in stdin
-    while (stdinBufferStart == stdinBufferEnd ||
-        stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
-
-    // Remove crlf
-    stdinBufferEnd = (stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE;
-
-    size_t end = stdinBufferEnd;
-
-    // Copy string
-    size_t i = 0;
-    while (stdinBufferStart != end)
+    char *oldS = s;
+    for (;;)
     {
-        s[i] = stdinBuffer[stdinBufferStart];
+        int c = fgetc(stdin);
 
-        ++i;
-
-        stdinBufferStart = (stdinBufferStart + 1) % STDIN_BUFFER_SIZE;
-    }
-
-    // Terminate string
-    s[i] = '\0';
-
-    return s;
-
-    // TODO : Merge this code when there will be possibly multiple lines in stdin
-    /*
-        // End of string (without crlf)
-        size_t end = STDIN_BUFFER_SIZE + 1;
-
-        // Check for lines before buffer end
-        for (size_t i = stdinBufferStart; i != stdinBufferEnd; i = (i + 1) % STDIN_BUFFER_SIZE)
-            if (stdinBuffer[i] == '\n')
-                end = i;
-
-        // We haven't found line end in the current buffer
-        // Wait for end of line
-        if (end == STDIN_BUFFER_SIZE + 1)
+        if (c == EOF)
         {
-            while (stdinBuffer[(stdinBufferEnd + STDIN_BUFFER_SIZE - 1) % STDIN_BUFFER_SIZE] != '\n');
-
-            end = stdinBufferEnd;
+            *s = '\0';
+            return s == oldS ? NULL : oldS;
         }
 
-        size_t length = end - 1 - stdinBufferStart;
+        *s = (char)c;
 
-        // Start is after end so update
-        if (stdinBufferStart > end)
-            length += STDIN_BUFFER_SIZE;
+        ++s;
 
-        // Copy string
-        size_t j = 0;
-        for (size_t i = stdinBufferStart; i != end; i = (i + 1) % STDIN_BUFFER_SIZE)
-            s[j++] = stdinBuffer[i];
+        if (c == '\n')
+        {
+            *s = '\0';
 
-        // Terminate string
-        // s[j] = '\0';
-
-        // Remove crlf and update buffer start
-        // stdinBuffer[end] = '\0';
-        stdinBufferStart = end + 1;
-
-        return s;
-    */
+            return oldS;
+        }
+    }
 }
 
+int fgetc(FILE *f)
+{
+    char c;
 
-// TODO : Remove other functions
+    ssize_t result;
+    do
+    {
+        result = read(f->_fileno, &c, 1);
+
+        if (result == -1)
+            return EOF;
+    } while (result != 1);
+
+    return (int)c;
+}
 
 char *fgets(char *s, int n, FILE *f)
 {
