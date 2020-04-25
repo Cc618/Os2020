@@ -13,7 +13,6 @@
 #define SYS_TERMINATE   0x04
 
 // Stream connect
-#define SYS_STRCON      0x20
 #define SYS_READ        0x11
 #define SYS_WRITE       0x12
 #define SYS_CLOSE       0x13

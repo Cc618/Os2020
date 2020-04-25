@@ -14,9 +14,4 @@ void __libc_init()
     stdin->_fileno = 0;
     stdout->_fileno = 1;
     stderr->_fileno = 2;
-
-
-    // TODO : rm
-    // Bind stdin to libc stdin
-    strcon(0, __libc_stdinCallback);
 }

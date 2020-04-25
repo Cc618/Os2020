@@ -39,11 +39,3 @@ void sys_close(fd_t fd);
 // Creates a pipe
 // * Returns the file descriptor of the pipe
 fd_t sys_pipe();
-
-
-// Connects the stream to the callback cb
-// - arg1 = fd : File descriptor 
-// - arg2 = cb : Callback, functor (*)(FILE *f, uint8_t *data, size_t count)
-// TODO : rm
-#include "io/stdstream.h"
-void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count));

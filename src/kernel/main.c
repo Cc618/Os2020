@@ -352,9 +352,11 @@ static void userAct()
     // printf("<%c> ", c);
 
 
+    // gets(buf);
+
     gets(buf);
 
-    printf("buf = %s\n", buf);
+    printf("buf = %s", buf);
 
 
 

@@ -48,30 +48,6 @@ void sys_fatal(const char *msg)
 }
 
 // --- IO --- //
-void sys_strcon(int fd, void (*cb)(Stream *f, u8 *data, size_t count))
-{
-
-    // TODO : Table
-    switch (fd)
-    {
-    case STDIN_FD:
-        stdinStream.push = cb;
-        break;
-    
-    case STDOUT_FD:
-        stdoutStream.push = cb;
-        break;
-
-    case STDERR_FD:
-        stderrStream.push = cb;
-        break;
-    
-    default:
-        sys_fatal("No file associated with this descriptor");
-        break;
-    }
-}
-
 ssize_t sys_read(fd_t fd, void *buffer, size_t count)
 {
     File *f = getFile(fd);
