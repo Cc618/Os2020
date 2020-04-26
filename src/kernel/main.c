@@ -344,14 +344,14 @@ static void userAct()
     // close(f);
 
 
-    FILE *f = fopen("/dir/second", 0);
+    // FILE *f = fopen("/dir/second", 0);
 
-    char buf[4096];
-    fgets(buf, 4096, f);
+    // char buf[4096];
+    // fgets(buf, 4096, f);
 
-    printf("Content : %s\n", buf);
+    // printf("Content : %s\n", buf);
 
-    fclose(f);
+    // fclose(f);
     
 
 
@@ -363,7 +363,8 @@ static void userAct()
 
 
 
-
+    // Write tests
+    writeTest();
 
 
 
@@ -383,7 +384,7 @@ static void userAct()
 
 
     // TMP
-    for (;;);
+    return;
 
 
 

@@ -1,6 +1,7 @@
 #include "fat32.h"
 
 #include "hdd.h"
+#include "syscalls/syscalls.h"
 #include <stdio.h>
 #include <string.h>
 #include <stddef.h>
@@ -255,6 +256,84 @@ static FSEntry *genEntry(size_t *entryIndex)
     return fatFSEntry_new(entryName, entryFlags, entrySize, entryData);
 }
 
+// Returns the next free cluster
+// * Changes fsInfo->nextFree and mark this cluster as terminal in the FAT
+static size_t allocateCluster()
+{
+    u32 *fatEntries = malloc(FAT_CLUSTER_SIZE);
+
+    // Current loaded sector in fatEntries
+    size_t loadedFatSector = -1;
+    size_t nextFree = fsInfo->nextFree;
+    
+    // Default value
+    if (nextFree == -1)
+        nextFree = 2;
+
+    // Index of nextFree in fatEntries
+    size_t fatEntry;
+
+    do
+    {
+        // Check whether we have to update the loaded sector
+        size_t sectorToLoad = nextFree * sizeof(u32) / HDD_SECTOR_SIZE;
+        if (sectorToLoad != loadedFatSector)
+        {
+            loadedFatSector = sectorToLoad;
+            hddRead(fatSector + loadedFatSector, fatEntries, 1);
+        }
+
+        // Index of the entry
+        fatEntry = nextFree % (HDD_SECTOR_SIZE / sizeof(u32));
+
+        // Empty cluster found
+        if (fatEntries[fatEntry] == 0)
+            break;
+
+        ++nextFree;
+
+        if (nextFree > bpb->nbSectors)
+            sys_fatal("Can't write Fat32 hard drive (no empty space)");
+    } while (1);
+
+    // Update fsInfo
+    fsInfo->nextFree = nextFree;
+
+    // Mark this cluster as terminal
+    fatEntries[fatEntry] = 0x0FFFFFF8;
+
+    // Update fat
+    hddWrite(fatEntries, fatSector + loadedFatSector, 1);
+
+    free(fatEntries);
+
+    return nextFree;
+}
+
+
+
+
+
+// TMP : rm
+void writeTest()
+{
+    // TMP : Write fsInfo to disk when terminate
+    // TODO : Special case nextFree == 0xFFFFFFFF 
+
+    printf("Next free cluster = %d\n", fsInfo->nextFree);
+    printf("Allocated %d\n", allocateCluster());
+
+}
+
+
+
+
+
+
+
+
+
+
 // --- Methods --- //
 void fatInit()
 {
@@ -280,6 +359,9 @@ void fatInit()
 
 void fatTerminate()
 {
+    // Update fsInfo
+    hddWrite(fsInfo, FS_SECTOR + bpb->fsInfoCluster, 1);
+
     free(bpb);
     free(root);
     free(fsInfo);
@@ -291,7 +373,7 @@ FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData 
     return FSEntry_new(name, flags, size, data, fatGenFSEntryOps());
 }
 
-// TODO : rm when use FSEntryOps
+// TMP : rm when use FSEntryOps ?
 void fatFSEntry_del(FSEntry *entry)
 {
     // Free data

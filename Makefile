@@ -129,6 +129,12 @@ endif
 
 	$(TOOL_VM) $(FLAGS_RUN) -drive format=raw,if=ide,index=0,file=$(BIN)
 
+# Used to avoid a compilation when programming FS
+.PHONY: forcerun
+forcerun:
+	$(TOOL_VM) $(FLAGS_RUN) -drive format=raw,if=ide,index=0,file=$(BIN)
+
+
 .PHONY: mkdirs
 mkdirs:
 	@echo DIRS $(OBJ_DIRS)
