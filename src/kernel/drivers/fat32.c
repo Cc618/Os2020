@@ -311,6 +311,54 @@ static size_t allocateCluster()
 }
 
 
+// Used to follow a cluster chain in an iterator way.
+// * To close the iterator, just set clusterId to -1
+// !!! fat is automatically allocated but not clusterContent
+// Example :
+// * void *fat = NULL;
+// * u32 clusterId = 5;
+// * char *clusterContent = malloc(FAT_CLUSTER_SIZE);
+// * while (clusterIter(&fat, &clusterId, clusterContent))
+// *    // Do something with clusterContent
+// * free(clusterContent);
+static bool clusterIter(u32 **fat, u32 *clusterId, void *clusterContent)
+{
+    // First call : Read fat
+    if (!*fat)
+    {
+        *fat = malloc(HDD_SECTOR_SIZE);
+        hddRead(fatSector + *clusterId * sizeof(u32) / HDD_SECTOR_SIZE, *fat, 1);
+    }
+    
+    // Terminal / bad cluster
+    if (*clusterId >= 0x0FFFFFF7)
+    {
+        free(*fat);
+        *fat = NULL;
+
+        return false;
+    }
+
+    // The entry describing the next cluster or terminal cluster
+    u32 fatValue = (*fat)[(*clusterId) % (HDD_SECTOR_SIZE / sizeof(u32))];
+
+    // Terminal / bad cluster
+    if (fatValue < 0x0FFFFFF7)
+    {
+        // Update fat if necessary
+        size_t fatEntryCluster = fatValue * sizeof(u32) / HDD_SECTOR_SIZE;
+        if (*clusterId * sizeof(u32) / HDD_SECTOR_SIZE != fatEntryCluster)
+            hddRead(fatSector + fatEntryCluster, *fat, 1);
+    }
+
+    // Load the content of the current cluster
+    hddRead(dataSector + *clusterId, clusterContent, 1);
+
+    *clusterId = fatValue;
+
+    // Continue to iterate
+    return true;
+}
 
 
 
@@ -330,36 +378,33 @@ void pE(FatEntry *e)
 
 
 
-#include <string.h>
 
-// TODO : Return FSEntry ?
-// Adds a new file without content
-// * name is assumed valid (valid chars and non zero length)
-// * dir is assumed to be a directory
-void fatTouch(FSEntry *dir, const char *name, bool directory)
+
+// Generates an entry of a directory
+// - outEntryLength is the number of items in outEntry
+// * Returns are out*
+static void genDirEntry(const char *name, bool directory, FatEntry **outEntry, size_t *outEntryLength)
 {
-    // TMP : Check cluster overflow
-
     size_t nameLength = strlen(name);
 
     // Required entries
-    size_t nEntries = (nameLength - 1) / 13 + 2;
+    *outEntryLength = (nameLength - 1) / 13 + 2;
 
-    FatEntry *entries = malloc(sizeof(FatEntry) * nEntries);
+    *outEntry = malloc(sizeof(FatEntry) * *outEntryLength);
 
-    memset(entries, 0, sizeof(FatEntry) * nEntries);
+    memset(*outEntry, 0, sizeof(FatEntry) * *outEntryLength);
 
     size_t nameI = 0;
 
-    // All indices of chars in LFN entries
+    // All indices of chars in LFN entry
     size_t charPos[] = {
         1, 3, 5, 7, 9,
         14, 16, 18, 20, 22, 24,
         28, 30
     };
 
-    // Long name entries
-    for (size_t i = 0; i < nEntries - 1; ++i)
+    // Long name entry
+    for (size_t i = 0; i < *outEntryLength - 1; ++i)
     {
         // Name
         for (size_t j = 0; j < 13; ++j)
@@ -368,62 +413,159 @@ void fatTouch(FSEntry *dir, const char *name, bool directory)
                 break;
 
             // Set letter
-            ((u8*)&entries[i])[charPos[j]] = name[nameI];
+            ((u8*)&(*outEntry)[i])[charPos[j]] = name[nameI];
 
             ++nameI;
         }
 
         // Order
-        ((FatEntryLFN*)entries)[i].order = 0x41 + i;
+        ((FatEntryLFN*)*outEntry)[i].order = 0x41 + i;
 
         // Flags
-        ((FatEntryLFN*)entries)[i].flags = FAT_LONG_NAME;
+        ((FatEntryLFN*)*outEntry)[i].flags = FAT_LONG_NAME;
     }
 
     // Last entry
-    entries[nEntries - 1].flags = directory ? FAT_DIR : 0;
+    (*outEntry)[*outEntryLength - 1].flags = directory ? FAT_DIR : 0;
 
     // No content
-    entries[nEntries - 1].firstClusterHigh =
-        entries[nEntries - 1].firstClusterLow =
-        entries[nEntries - 1].fileSize = 0;
+    (*outEntry)[*outEntryLength - 1].firstClusterHigh =
+        (*outEntry)[*outEntryLength - 1].firstClusterLow =
+        (*outEntry)[*outEntryLength - 1].fileSize = 0;
 
     // Name
     size_t shortNameLength = nameLength > 8 ? 8 : nameLength;
 
-    memcpy(entries[nEntries - 1].name, name, shortNameLength);
+    memcpy((*outEntry)[*outEntryLength - 1].name, name, shortNameLength);
     if (shortNameLength != 8)
-        memset(entries[nEntries - 1].name + shortNameLength, ' ', 8 - shortNameLength);
+        memset((*outEntry)[*outEntryLength - 1].name + shortNameLength, ' ', 8 - shortNameLength);
 
-    entries[nEntries - 1].ext[0] =
-        entries[nEntries - 1].ext[1] =
-        entries[nEntries - 1].ext[2] = ' ';
-
-    // // TMP
-    // for (size_t i = 0; i < nEntries; ++i)
-    //     pE(&entries[i]);
-
-
-    // TMP : Write to disk
-
-    free(entries);
-
-
-    // TODO : 1. Function to allocate entries in the directory (can overflow cluster)
-    // TODO : 2. Add more abstract function : Touch with content = cluster (set it to 0) + file size
+    (*outEntry)[*outEntryLength - 1].ext[0] =
+        (*outEntry)[*outEntryLength - 1].ext[1] =
+        (*outEntry)[*outEntryLength - 1].ext[2] = ' ';
 }
+
+// Adds an entry (may be a stack of entries for long file names)
+// and writes it to dir
+static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
+{
+    // We have to find a string of 'entryLength' entries in dirCluster
+
+    // Index within the directory
+    size_t i = 0;
+
+    FatEntry *dirEntries = malloc(HDD_SECTOR_SIZE);
+    // TMP hddRead(dirEntries)
+
+    // Try to place it in the current cluster
+    for (; i < FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength; ++i)
+    {
+        
+    }
+
+
+    // void *fat;
+    // for (var i = clusterIter(&dirCluster, dirEntries); clusterIter(&dirCluster, dirEntries); clusterIterNext(i, dirEntries))
+    // {
+
+    // }
+
+
+    // Not enough place in this cluster, allocate another one
+    // TMP : Read
+
+    // TMP : Write
+
+
+    free(dirEntries);
+}
+
+
+
+// TODO : Return FSEntry ?
+// Creates a file to the directory
+// * name is assumed valid (valid chars and non zero length)
+// * dir is assumed to be a directory
+static void fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size, void *content)
+{
+    // TODO : content
+
+    FatEntry *entry;
+    size_t entryLength;
+
+    // Generate in RAM the directory entry (can be multiple entries for long file names)    
+    genDirEntry(name, directory, &entry, &entryLength);
+
+    // Add it to dir
+    addDirEntry(((FatFSEntryData*)dir->data)->cluster, entry, entryLength);
+
+
+    free(entry);
+
+
+    // TMP : Check cluster overflow
+
+
+
+
+    // TMP : 1. Function to allocate entries in the directory (can overflow cluster)
+    // TMP : 2. Add more abstract function : Touch with content = cluster (set it to 0) + file size
+}
+
+
+
+
+
+// Adds a new file without content
+// * name is assumed valid (valid chars and non zero length)
+// * dir is assumed to be a directory
+void fatTouch(FSEntry *dir, const char *name, bool directory)
+{
+    fatAllocate(dir, name, directory, 0, NULL);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // TMP : rm
 void writeTest()
 {
-    FSEntry *dir = getEntry("/dir");
+    // FSEntry *dir = getEntry("/dir");
 
-    fatTouch(dir, "AAAAAAAAAAABBBBBBBBBBBB.ext", false);
+    // fatTouch(dir, "AAAAAAAAAAABBBBBBBBBBBB.ext", false);
 
-    // TODO :
-    // fatTouch(dir, "New_dir", true);
+    // // TODO :
+    // // fatTouch(dir, "New_dir", true);
 
+
+
+    // // ClusterIter
+    // void *fat = NULL;
+    // u32 clusterId = 5;
+    // char *clusterContent = malloc(FAT_CLUSTER_SIZE);
+
+    // for (int i = 0; i < 5 && clusterIter(&fat, &clusterId, clusterContent); ++i)
+    // {
+    //     printf("Cluster %d : %c%c%c%c\n", clusterId, clusterContent[0], clusterContent[1], clusterContent[2], clusterContent[3]);
+    // }
+
+    // free(clusterContent);
 }
 
 
@@ -499,6 +641,7 @@ void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
     memcpy(buffer, cluster, bytesToLoad);
 }
 
+// TODO : Remake with clusterIter
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 {
     if (count == 0)
