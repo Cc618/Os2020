@@ -62,7 +62,7 @@ typedef struct FatBPB_t
 } __attribute__((packed)) FatBPB;
 
 // An entry is a directory or file (32 bytes)
-// Use FatLongEntry for lonf file names
+// Use FatLongEntry for long file names
 typedef struct FatEntry_t
 {
     char name[8];
@@ -265,7 +265,7 @@ static size_t allocateCluster()
     // Current loaded sector in fatEntries
     size_t loadedFatSector = -1;
     size_t nextFree = fsInfo->nextFree;
-    
+
     // Default value
     if (nextFree == -1)
         nextFree = 2;
@@ -314,14 +314,115 @@ static size_t allocateCluster()
 
 
 
+
+// TMP : Print entry
+void pE(FatEntry *e)
+{
+    printf("%p %p %p %p  %p %p %p %p\n",
+        // ((FatEntryLFN*)e)->order,
+        ((u32*)e)[0], ((u32*)e)[1], ((u32*)e)[2], ((u32*)e)[3],
+        ((u32*)e)[4], ((u32*)e)[5], ((u32*)e)[6], ((u32*)e)[7]
+    );
+}
+
+
+
+
+
+
+#include <string.h>
+
+// TODO : Return FSEntry ?
+// Adds a new file without content
+// * name is assumed valid (valid chars and non zero length)
+// * dir is assumed to be a directory
+void fatTouch(FSEntry *dir, const char *name, bool directory)
+{
+    // TMP : Check cluster overflow
+
+    size_t nameLength = strlen(name);
+
+    // Required entries
+    size_t nEntries = (nameLength - 1) / 13 + 2;
+
+    FatEntry *entries = malloc(sizeof(FatEntry) * nEntries);
+
+    memset(entries, 0, sizeof(FatEntry) * nEntries);
+
+    size_t nameI = 0;
+
+    // All indices of chars in LFN entries
+    size_t charPos[] = {
+        1, 3, 5, 7, 9,
+        14, 16, 18, 20, 22, 24,
+        28, 30
+    };
+
+    // Long name entries
+    for (size_t i = 0; i < nEntries - 1; ++i)
+    {
+        // Name
+        for (size_t j = 0; j < 13; ++j)
+        {
+            if (nameI >= nameLength)
+                break;
+
+            // Set letter
+            ((u8*)&entries[i])[charPos[j]] = name[nameI];
+
+            ++nameI;
+        }
+
+        // Order
+        ((FatEntryLFN*)entries)[i].order = 0x41 + i;
+
+        // Flags
+        ((FatEntryLFN*)entries)[i].flags = FAT_LONG_NAME;
+    }
+
+    // Last entry
+    entries[nEntries - 1].flags = directory ? FAT_DIR : 0;
+
+    // No content
+    entries[nEntries - 1].firstClusterHigh =
+        entries[nEntries - 1].firstClusterLow =
+        entries[nEntries - 1].fileSize = 0;
+
+    // Name
+    size_t shortNameLength = nameLength > 8 ? 8 : nameLength;
+
+    memcpy(entries[nEntries - 1].name, name, shortNameLength);
+    if (shortNameLength != 8)
+        memset(entries[nEntries - 1].name + shortNameLength, ' ', 8 - shortNameLength);
+
+    entries[nEntries - 1].ext[0] =
+        entries[nEntries - 1].ext[1] =
+        entries[nEntries - 1].ext[2] = ' ';
+
+    // // TMP
+    // for (size_t i = 0; i < nEntries; ++i)
+    //     pE(&entries[i]);
+
+
+    // TMP : Write to disk
+
+    free(entries);
+
+
+    // TODO : 1. Function to allocate entries in the directory (can overflow cluster)
+    // TODO : 2. Add more abstract function : Touch with content = cluster (set it to 0) + file size
+}
+
+
 // TMP : rm
 void writeTest()
 {
-    // TMP : Write fsInfo to disk when terminate
-    // TODO : Special case nextFree == 0xFFFFFFFF 
+    FSEntry *dir = getEntry("/dir");
 
-    printf("Next free cluster = %d\n", fsInfo->nextFree);
-    printf("Allocated %d\n", allocateCluster());
+    fatTouch(dir, "AAAAAAAAAAABBBBBBBBBBBB.ext", false);
+
+    // TODO :
+    // fatTouch(dir, "New_dir", true);
 
 }
 
