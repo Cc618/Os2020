@@ -310,6 +310,32 @@ static size_t allocateCluster()
     return nextFree;
 }
 
+// Extends 
+static size_t extendCluster(size_t cluster)
+{
+    // Allocate new cluster and add the entry
+    u32 *fat = malloc(HDD_SECTOR_SIZE);
+
+    // Allocate
+    size_t newCluster = allocateCluster();
+
+    // TMP
+    // printf("New cluster 0x%X\n", newCluster);
+    // printf("Extends cluster 0x%X\n", cluster);
+    // printf("Fat loc 0x%X\n", (fatSector - FS_SECTOR + cluster / (HDD_SECTOR_SIZE / sizeof(u32))) * 512);
+
+    // for (;;);
+
+    // Update fat
+    hddRead(fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), fat, 1);
+    fat[cluster % (HDD_SECTOR_SIZE / sizeof(u32))] = newCluster;
+    hddWrite(fat, fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), 1);
+
+    free(fat);
+
+    return newCluster;
+}
+
 // Used to follow a cluster chain in an iterator way.
 // * To close the iterator, just set clusterId to -1
 // !!! fat is automatically allocated but not clusterContent
@@ -451,25 +477,6 @@ static void genDirEntry(const char *name, bool directory, FatEntry **outEntry, s
     // Name
     memcpy((*outEntry)[*outEntryLength - 1].name, tinyName, 11);
     free(tinyName);
-
-
-    // TMP
-    // size_t shortNameLength = nameLength > 8 ? 8 : nameLength;
-
-    // memcpy((*outEntry)[*outEntryLength - 1].name, name, shortNameLength);
-    // if (shortNameLength != 8)
-    //     memset((*outEntry)[*outEntryLength - 1].name + shortNameLength, ' ', 8 - shortNameLength);
-
-
-    // (*outEntry)[*outEntryLength - 1].ext[0] =
-    //     (*outEntry)[*outEntryLength - 1].ext[1] =
-    //     (*outEntry)[*outEntryLength - 1].ext[2] = ' ';
-
-
-
-
-    // for (int i = 0; i < *outEntryLength; ++i)
-    //     pE(&(*outEntry)[i]);
 }
 
 // Adds an entry (may be a stack of entries for long file names)
@@ -478,7 +485,7 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
 {
     // We have to find a string of 'entryLength' entries in dirCluster
 
-    // TMP : put E5 at the start of each empty directory if we allocate a new one + put 0 at end
+    // TMP : put 0 at end
 
     void *fat = NULL;
     FatEntry *clusterContent = malloc(FAT_CLUSTER_SIZE);
@@ -486,6 +493,9 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
 
     // Where to put entry
     size_t i = 0;
+
+    // Whether we have found a suitable place in this entry
+    bool allocated = false;
 
     // For each cluster of this directory
     while (clusterIter(&fat, &dirCluster, clusterContent))
@@ -511,23 +521,45 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
         {
             // Like a break
             dirCluster = -1;
+            allocated = true;
             continue;
         }
 
-        entryCluster = dirCluster;
+        if (dirCluster < 0x0FFFFFF7)
+            entryCluster = dirCluster;
     }
 
+    // Allocate a new cluster
+    if (!allocated)
+    {
+        // Mark terminal entries as deleted
+        for ( ; i < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++i)
+            if (clusterContent[i].name[0] == 0)
+                clusterContent[i].name[0] = 0xE5;
 
+        // Update dir on disk
+        hddWrite(clusterContent, dataSector + entryCluster, 1);
 
-    // TODO : allocateCluster if needed
-    // i = 0;
+        size_t newCluster = extendCluster(entryCluster);
 
+        // Append the entry
+        void *newClusterContent = malloc(FAT_CLUSTER_SIZE);
 
-    memcpy(&clusterContent[i], entry, entryLength * sizeof(FatEntry));
+        // No more entry after
+        memset(newClusterContent, 0, FAT_CLUSTER_SIZE);
 
-    // Write to the hdd
-    hddWrite(clusterContent, dataSector + entryCluster, 1);
+        memcpy(newClusterContent, entry, entryLength * sizeof(FatEntry));
+        hddWrite(newClusterContent, dataSector + newCluster, 1);
 
+        free(newClusterContent);
+    }
+    else
+    {
+        memcpy(&clusterContent[i], entry, entryLength * sizeof(FatEntry));
+
+        // Write to the hdd
+        hddWrite(clusterContent, dataSector + entryCluster, 1);
+    }
 
     free(clusterContent);
 
@@ -635,7 +667,7 @@ void writeTest()
 {
     FSEntry *dir = getEntry("/dir");
 
-    fatTouch(dir, "my_name_is_so_long_wow and contains spaces", true);
+    fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
 
     // TODO :
     // fatTouch(dir, "New_dir", true);
