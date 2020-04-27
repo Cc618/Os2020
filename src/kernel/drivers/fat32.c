@@ -319,13 +319,6 @@ static size_t extendCluster(size_t cluster)
     // Allocate
     size_t newCluster = allocateCluster();
 
-    // TMP
-    // printf("New cluster 0x%X\n", newCluster);
-    // printf("Extends cluster 0x%X\n", cluster);
-    // printf("Fat loc 0x%X\n", (fatSector - FS_SECTOR + cluster / (HDD_SECTOR_SIZE / sizeof(u32))) * 512);
-
-    // for (;;);
-
     // Update fat
     hddRead(fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), fat, 1);
     fat[cluster % (HDD_SECTOR_SIZE / sizeof(u32))] = newCluster;
@@ -334,6 +327,29 @@ static size_t extendCluster(size_t cluster)
     free(fat);
 
     return newCluster;
+}
+
+// Allocates a chain of clusters and writes content into
+// * Returns the first cluster of the chain
+static size_t writeContent(void *content, size_t length)
+{
+    if (length == 0)
+        return 0;
+    
+    size_t count = length / FAT_CLUSTER_SIZE;
+    size_t first = allocateCluster();
+
+    size_t cluster = first;
+    for (size_t i = 0; i < count; ++i)
+    {
+        // Write the content on disk
+        hddWrite((u8*)content + i * FAT_CLUSTER_SIZE, dataSector + cluster, 1);
+
+        // Allocate next cluster
+        cluster = extendCluster(cluster);
+    }
+
+    return first;
 }
 
 // Used to follow a cluster chain in an iterator way.
@@ -385,19 +401,6 @@ static bool clusterIter(u32 **fat, u32 *clusterId, void *clusterContent)
     return true;
 }
 
-
-
-
-// TMP : Print entry
-void pE(FatEntry *e)
-{
-    printf("%p %p %p %p  %p %p %p %p\n",
-        // ((FatEntryLFN*)e)->order,
-        ((u32*)e)[0], ((u32*)e)[1], ((u32*)e)[2], ((u32*)e)[3],
-        ((u32*)e)[4], ((u32*)e)[5], ((u32*)e)[6], ((u32*)e)[7]
-    );
-}
-
 // Returns the checksum for LFN
 // * tinyName has 11 chars
 static u8 lfnSum(const char *tinyName)
@@ -410,9 +413,10 @@ static u8 lfnSum(const char *tinyName)
 }
 
 // Generates an entry of a directory
+// - contentCluster is the id of the first cluster of the content
 // - outEntryLength is the number of items in outEntry
 // * Returns are out*
-static void genDirEntry(const char *name, bool directory, FatEntry **outEntry, size_t *outEntryLength)
+static void genDirEntry(const char *name, bool directory, size_t fileSize, size_t contentCluster, FatEntry **outEntry, size_t *outEntryLength)
 {
     size_t nameLength = strlen(name);
 
@@ -469,10 +473,10 @@ static void genDirEntry(const char *name, bool directory, FatEntry **outEntry, s
     // Last entry
     (*outEntry)[*outEntryLength - 1].flags = directory ? FAT_DIR : 0;
 
-    // No content
-    (*outEntry)[*outEntryLength - 1].firstClusterHigh =
-        (*outEntry)[*outEntryLength - 1].firstClusterLow =
-        (*outEntry)[*outEntryLength - 1].fileSize = 0;
+    // Content
+    (*outEntry)[*outEntryLength - 1].firstClusterLow = contentCluster & 0x0000FFFF;
+    (*outEntry)[*outEntryLength - 1].firstClusterHigh = (contentCluster & 0xFFFF0000) >> 16;
+    (*outEntry)[*outEntryLength - 1].fileSize = fileSize;
 
     // Name
     memcpy((*outEntry)[*outEntryLength - 1].name, tinyName, 11);
@@ -484,8 +488,6 @@ static void genDirEntry(const char *name, bool directory, FatEntry **outEntry, s
 static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
 {
     // We have to find a string of 'entryLength' entries in dirCluster
-
-    // TMP : put 0 at end
 
     void *fat = NULL;
     FatEntry *clusterContent = malloc(FAT_CLUSTER_SIZE);
@@ -562,41 +564,6 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
     }
 
     free(clusterContent);
-
-
-
-
-
-
-
-
-    // // Index within the directory
-    // size_t i = 0;
-
-    // FatEntry *dirEntries = malloc(HDD_SECTOR_SIZE);
-    // // TMP hddRead(dirEntries)
-
-    // // Try to place it in the current cluster
-    // for (; i < FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength; ++i)
-    // {
-
-    // }
-
-
-    // // void *fat;
-    // // for (var i = clusterIter(&dirCluster, dirEntries); clusterIter(&dirCluster, dirEntries); clusterIterNext(i, dirEntries))
-    // // {
-
-    // // }
-
-
-    // // Not enough place in this cluster, allocate another one
-    // // TMP : Read
-
-    // // TMP : Write
-
-
-    // free(dirEntries);
 }
 
 
@@ -607,28 +574,28 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
 // * dir is assumed to be a directory
 static void fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size, void *content)
 {
-    // TODO : content
+    // Write the content
+    size_t contentCluster;
+
+    if (directory && size == 0)
+        // TODO : Dummy, directory with . and ..
+    {}
+    else if (size != 0)
+        contentCluster = writeContent(content, size);
+    else
+        // No content
+        contentCluster = 0;
 
     FatEntry *entry;
     size_t entryLength;
 
     // Generate in RAM the directory entry (can be multiple entries for long file names)
-    genDirEntry(name, directory, &entry, &entryLength);
+    genDirEntry(name, directory, size, contentCluster, &entry, &entryLength);
 
     // Add it to dir
     addDirEntry(((FatFSEntryData*)dir->data)->cluster, entry, entryLength);
 
-
     free(entry);
-
-
-    // TMP : Check cluster overflow
-
-
-
-
-    // TMP : 1. Function to allocate entries in the directory (can overflow cluster)
-    // TMP : 2. Add more abstract function : Touch with content = cluster (set it to 0) + file size
 }
 
 
@@ -667,7 +634,22 @@ void writeTest()
 {
     FSEntry *dir = getEntry("/dir");
 
-    fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
+    // fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
+    // fatTouch(dir, "abc", false);
+
+
+
+
+    char *content = malloc(1200);
+    memset(content, 'A', 1200);
+    // printf("Written at 0x%X\n", writeContent(content, 1200));
+    fatAllocate(dir, "readme", false, 1200, content);
+    free(content);
+
+
+
+
+
 
     // TODO :
     // fatTouch(dir, "New_dir", true);
