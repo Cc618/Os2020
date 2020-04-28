@@ -310,6 +310,45 @@ static size_t allocateCluster()
     return nextFree;
 }
 
+// Unallocates a chain of clusters
+// * Updates fsInfo
+static void unallocateClusters(size_t first)
+{
+    size_t cluster = first;
+    u32 *fat = malloc(HDD_SECTOR_SIZE);
+    
+    // Load FAT
+    hddRead(fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), fat, 1);
+    
+    while (1)
+    {
+        u32 nextCluster = fat[cluster % (HDD_SECTOR_SIZE / sizeof(u32))] & 0x0FFFFFFF;
+
+        // Mark this cluster as free
+        fat[cluster % (HDD_SECTOR_SIZE / sizeof(u32))] = 0;
+        if (cluster < fsInfo->nextFree)
+            fsInfo->nextFree = cluster;
+
+        // End of chain
+        if (nextCluster >= 0x0FFFFFF7)
+            break;
+
+        if (cluster % (HDD_SECTOR_SIZE / sizeof(u32)) != nextCluster % (HDD_SECTOR_SIZE / sizeof(u32)))
+        {
+            // Update FAT
+            hddWrite(fat, fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), 1);
+            hddRead(fatSector + nextCluster / (HDD_SECTOR_SIZE / sizeof(u32)), fat, 1);
+        }
+
+        cluster = nextCluster;
+    }
+    
+    // Update FAT
+    hddWrite(fat, fatSector + cluster / (HDD_SECTOR_SIZE / sizeof(u32)), 1);
+    
+    free(fat);
+}
+
 // Extends 
 static size_t extendCluster(size_t cluster)
 {
@@ -340,6 +379,8 @@ static size_t writeContent(void *content, size_t length)
     size_t first = allocateCluster();
 
     size_t cluster = first;
+
+    // First clusters
     for (size_t i = 0; i < count; ++i)
     {
         // Write the content on disk
@@ -348,6 +389,9 @@ static size_t writeContent(void *content, size_t length)
         // Allocate next cluster
         cluster = extendCluster(cluster);
     }
+
+    // Last one
+    hddWrite((u8*)content + count * FAT_CLUSTER_SIZE, dataSector + cluster, 1);
 
     return first;
 }
@@ -633,17 +677,23 @@ void fatTouch(FSEntry *dir, const char *name, bool directory)
 void writeTest()
 {
     FSEntry *dir = getEntry("/dir");
+    // FSEntry *f = getEntry("/dir/readme");
+
+    // FatFSEntryData *data = f->data;
+
+    // unallocateClusters(data->cluster);
+
+
 
     // fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
-    // fatTouch(dir, "abc", false);
 
 
 
 
-    char *content = malloc(1200);
-    memset(content, 'A', 1200);
+    char *content = malloc(24);
+    memset(content, 'A', 24);
     // printf("Written at 0x%X\n", writeContent(content, 1200));
-    fatAllocate(dir, "readme", false, 1200, content);
+    fatAllocate(dir, "readme", false, 24, content);
     free(content);
 
 
