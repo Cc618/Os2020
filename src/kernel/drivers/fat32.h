@@ -15,6 +15,10 @@ typedef struct FatFSEntryData_t
 {
     // Where the content is
     u32 cluster;
+
+    // Where the entry is
+    u32 entryCluster;
+    u32 entryI;
 } FatFSEntryData;
 
 FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData *data);

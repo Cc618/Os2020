@@ -119,10 +119,10 @@ static size_t rootSector;
 
 // --- Internal --- //
 // Generates the entry at index i in the current cluster
-// !!! Unsafe : i MUST be within the cluster
+// !!! Unsafe : entryIndex MUST be within the cluster
 // * entryIndex is modified such as it points to the next entry
 // * May returns NULL if the entry is end of directory
-static FSEntry *genEntry(size_t *entryIndex)
+static FSEntry *genEntry(size_t entryCluster, size_t *entryIndex)
 {
     // Check end of listing
     for (;; ++*entryIndex)
@@ -248,6 +248,8 @@ static FSEntry *genEntry(size_t *entryIndex)
 
     // Data
     entryData->cluster = (rawEntry->firstClusterHigh << 16) | rawEntry->firstClusterLow;
+    entryData->entryI = *entryIndex - 1;
+    entryData->entryCluster = entryCluster;
 
     // To .. to root
     if (entryData->cluster == 0)
@@ -677,12 +679,7 @@ void fatTouch(FSEntry *dir, const char *name, bool directory)
 void writeTest()
 {
     FSEntry *dir = getEntry("/dir");
-    // FSEntry *f = getEntry("/dir/readme");
-
-    // FatFSEntryData *data = f->data;
-
-    // unallocateClusters(data->cluster);
-
+    
 
 
     // fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
@@ -690,11 +687,33 @@ void writeTest()
 
 
 
-    char *content = malloc(24);
-    memset(content, 'A', 24);
+    char *content = malloc(600);
+    memset(content, 'A', 600);
     // printf("Written at 0x%X\n", writeContent(content, 1200));
-    fatAllocate(dir, "readme", false, 24, content);
+    fatAllocate(dir, "readme", false, 600, content);
     free(content);
+
+
+
+    FSEntry *f = getEntry("/dir/readme");
+
+    FatFSEntryData *data = f->data;
+
+
+    // Update size & cluster
+    hddRead(dataSector + data->entryCluster, cluster, 1);
+    ((FatEntry*) cluster)[data->entryI].fileSize = 0;
+    ((FatEntry*) cluster)[data->entryI].firstClusterHigh = 0;
+    ((FatEntry*) cluster)[data->entryI].firstClusterLow = 0;
+    hddWrite(cluster, dataSector + data->entryCluster, 1);
+
+    // Remove content
+    unallocateClusters(data->cluster);
+
+    printf("Content cluster : %d, Entry cluster : %d, Entry I : %d\n",
+        data->cluster, data->entryCluster, data->entryI);
+
+
 
 
 
@@ -860,8 +879,10 @@ size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 // The array is NULL terminated
 FSEntry **fatFSEntry_list(FSEntry *dir)
 {
+    size_t dirCluster = ((FatFSEntryData*) dir->data)->cluster;
+
     // Load the good cluster
-    hddRead(dataSector + ((FatFSEntryData*) dir->data)->cluster, cluster, 1);
+    hddRead(dataSector + dirCluster, cluster, 1);
 
     // TODO : Multiple clusters
     size_t maxCount = FAT_CLUSTER_SIZE / sizeof(FatEntry);
@@ -871,7 +892,7 @@ FSEntry **fatFSEntry_list(FSEntry *dir)
     for (size_t i = 0; i < maxCount; ++i)
     {
         // May be NULL to terminate the buffer (end of listing)
-        entries[i] = genEntry(&entryIndex);
+        entries[i] = genEntry(dirCluster, &entryIndex);
 
         if (entries[i] == NULL)
             break;
@@ -888,7 +909,7 @@ FSEntry *fatGenRoot()
     hddRead(rootSector, cluster, 1);
 
     size_t i = 0;
-    FSEntry *root = genEntry(&i);
+    FSEntry *root = genEntry(2, &i);
 
     // Root is not at cluster 0
     ((FatFSEntryData*) root->data)->cluster = rootSector - dataSector;
