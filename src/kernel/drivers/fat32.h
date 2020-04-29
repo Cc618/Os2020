@@ -29,6 +29,8 @@ void FatFSEntryData_del(FatFSEntryData *data);
 
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count);
 
+size_t fatFSEntry_write(FSEntry *file, void *buffer, size_t count);
+
 FSEntry **fatFSEntry_list(FSEntry *dir);
 
 // Generates the root entry

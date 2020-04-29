@@ -644,8 +644,26 @@ static void fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size
     free(entry);
 }
 
+// Unallocates and replaces the content of
+// the entry
+// * To remove content : firstCluster = 0 and size = 0
+static void replaceContent(FSEntry *f, u32 firstCluster, u32 size)
+{
+    FatFSEntryData *data = f->data;
 
+    // Remove content
+    if (data->cluster > 2)
+        unallocateClusters(data->cluster);
 
+    // Update size & cluster
+    hddRead(dataSector + data->entryCluster, cluster, 1);
+
+    ((FatEntry*) cluster)[data->entryI].fileSize = size;
+    ((FatEntry*) cluster)[data->entryI].firstClusterHigh = (firstCluster & 0xFF00) >> 16;
+    ((FatEntry*) cluster)[data->entryI].firstClusterLow = firstCluster & 0xFF;
+    
+    hddWrite(cluster, dataSector + data->entryCluster, 1);
+}
 
 
 // Adds a new file without content
@@ -655,18 +673,6 @@ void fatTouch(FSEntry *dir, const char *name, bool directory)
 {
     fatAllocate(dir, name, directory, 0, NULL);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -685,33 +691,38 @@ void writeTest()
     // fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
 
 
+    FSEntry *f = getEntry("/dir/second");
 
+    char *content = malloc(32);
+    memset(content, '!', 32);
 
-    char *content = malloc(600);
-    memset(content, 'A', 600);
-    // printf("Written at 0x%X\n", writeContent(content, 1200));
-    fatAllocate(dir, "readme", false, 600, content);
+    size_t newContent = writeContent(content, 32);
+    replaceContent(f, newContent, 32);
+
     free(content);
 
 
 
-    FSEntry *f = getEntry("/dir/readme");
 
-    FatFSEntryData *data = f->data;
+    // replaceContent();
 
 
-    // Update size & cluster
-    hddRead(dataSector + data->entryCluster, cluster, 1);
-    ((FatEntry*) cluster)[data->entryI].fileSize = 0;
-    ((FatEntry*) cluster)[data->entryI].firstClusterHigh = 0;
-    ((FatEntry*) cluster)[data->entryI].firstClusterLow = 0;
-    hddWrite(cluster, dataSector + data->entryCluster, 1);
 
-    // Remove content
-    unallocateClusters(data->cluster);
+    // FatFSEntryData *data = f->data;
 
-    printf("Content cluster : %d, Entry cluster : %d, Entry I : %d\n",
-        data->cluster, data->entryCluster, data->entryI);
+
+    // // Update size & cluster
+    // hddRead(dataSector + data->entryCluster, cluster, 1);
+    // ((FatEntry*) cluster)[data->entryI].fileSize = 0;
+    // ((FatEntry*) cluster)[data->entryI].firstClusterHigh = 0;
+    // ((FatEntry*) cluster)[data->entryI].firstClusterLow = 0;
+    // hddWrite(cluster, dataSector + data->entryCluster, 1);
+
+    // // Remove content
+    // unallocateClusters(data->cluster);
+
+    // printf("Content cluster : %d, Entry cluster : %d, Entry I : %d\n",
+    //     data->cluster, data->entryCluster, data->entryI);
 
 
 
@@ -811,7 +822,6 @@ void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
     memcpy(buffer, cluster, bytesToLoad);
 }
 
-// TODO : Remake with clusterIter
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 {
     if (count == 0)
@@ -875,6 +885,16 @@ size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
     return n;
 }
 
+size_t fatFSEntry_write(FSEntry *f, void *buffer, size_t n)
+{
+    // Overwrite content
+    size_t newContent = writeContent(buffer, n);
+
+    replaceContent(f, newContent, n);
+
+    return n;
+}
+
 // Returns an array of entry
 // The array is NULL terminated
 FSEntry **fatFSEntry_list(FSEntry *dir)
@@ -925,6 +945,7 @@ FSEntryOps *fatGenFSEntryOps()
         .del = fatFSEntry_del,
         .list = fatFSEntry_list,
         .read = fatFSEntry_read,
+        .write = fatFSEntry_write,
     };
 
     return ops;
