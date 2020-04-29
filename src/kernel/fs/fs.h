@@ -36,6 +36,10 @@ typedef struct FSEntryOps_t
     // * The entry is always a file
     size_t (*read)(FSEntry *entry, void *buffer, size_t count);
 
+    // See FSEntry_write for details
+    // * The entry is always a file
+    size_t (*write)(FSEntry *entry, void *buffer, size_t count);
+
     // See FSEntry_list for details
     // * The entry is always a directory
     FSEntry **(*list)(FSEntry *entry);
@@ -56,6 +60,11 @@ FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntr
 // Returns how many bytes read
 // * If entry is a directory, returns 0 
 size_t FSEntry_read(FSEntry *entry, void *buffer, size_t count);
+
+// Writes count bytes of entry in buffer
+// Returns how many bytes written
+// * If entry is a directory, returns 0 
+size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count);
 
 // Returns a null terminated
 // array of entries within this

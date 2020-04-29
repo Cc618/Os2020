@@ -364,18 +364,27 @@ static void userAct()
 
 
     // Write tests
-    writeTest();
+
+    // FSEntry *f = getEntry("/dir/second");
+
+    // FSEntry_write(f, "Os2020 written this data...", 27);
+
+    FILE *f = fopen("/dir/second", "w");
+
+    // fputs("Wow, this data comes from Os2020 !", f);
+
+    write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
+
+    fclose(f);
 
 
-
-
-
-
-
-
-
-
-
+    // TODO : Change FSFile_write : Append to a buffer -> Buffer with more than 32 delta capacity
+    // TODO : Change FSFile_close : Write this buffer
+    // TODO : Open : Add modes, can touch file
+    // TODO : Touch directory
+    // TODO : Relative paths from apps
+    // TODO : cat
+    // TODO : v0.2 !
 
 
 

@@ -19,7 +19,7 @@ FileOps *FSFile_ops()
 
     *ops = (FileOps) {
         .read = FSFile_read,
-        .write = NULL, // TMP : FSFile_write,
+        .write = FSFile_write,
         .close = FSFile_close,
     };
 
@@ -33,7 +33,7 @@ ssize_t FSFile_read(File *f, void *buffer, size_t count)
 
 ssize_t FSFile_write(File *f, void *buffer, size_t count)
 {
-    // TMP : return FSEntry_write(f->data, buffer, count);
+    return FSEntry_write(f->data, buffer, count);
 }
 
 void FSFile_close(File *f)

@@ -40,6 +40,15 @@ size_t FSEntry_read(FSEntry *entry, void *buffer, size_t count)
     return entry->ops->read(entry, buffer, count);
 }
 
+size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count)
+{
+    // Not a file
+    if (entry->flags & FS_DIRECTORY)
+        return 0;
+    
+    return entry->ops->write(entry, buffer, count);
+}
+
 FSEntry **FSEntry_list(FSEntry *dir)
 {
     // Not a directory
