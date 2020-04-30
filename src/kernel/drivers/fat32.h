@@ -33,6 +33,8 @@ size_t fatFSEntry_write(FSEntry *file, void *buffer, size_t count);
 
 FSEntry **fatFSEntry_list(FSEntry *dir);
 
+FSEntry *fatFSEntry_touch(FSEntry *dir, const char *name, u8 flags);
+
 // Generates the root entry
 FSEntry *fatGenRoot();
 

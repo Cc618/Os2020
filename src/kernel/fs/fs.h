@@ -43,6 +43,10 @@ typedef struct FSEntryOps_t
     // See FSEntry_list for details
     // * The entry is always a directory
     FSEntry **(*list)(FSEntry *entry);
+
+    // See FSEntry_touch for details
+    // * The entry is always a directory
+    FSEntry *(*touch)(FSEntry *entry, const char *name, u8 flags);
 } FSEntryOps;
 
 extern FSEntry *root;
@@ -72,6 +76,10 @@ size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count);
 // directory, returns NULL if
 // not a directory
 FSEntry **FSEntry_list(FSEntry *dir);
+
+// Creates a new file / directory
+// Returns NULL if not a directory
+FSEntry *FSEntry_touch(FSEntry *entry, const char *name, u8 flags);
 
 // !!! Doesn't frees data
 void FSEntry_del(FSEntry *entry);

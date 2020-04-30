@@ -676,15 +676,6 @@ static void replaceContent(FSEntry *f, u32 firstCluster, u32 size)
 }
 
 
-// Adds a new file without content
-// * name is assumed valid (valid chars and non zero length)
-// * dir is assumed to be a directory
-FSEntry *fatTouch(FSEntry *dir, const char *name, bool directory)
-{
-    return fatAllocate(dir, name, directory, 0, NULL);
-}
-
-
 
 
 
@@ -933,6 +924,14 @@ FSEntry **fatFSEntry_list(FSEntry *dir)
     return entries;
 }
 
+// Adds a new file without content
+// * name is assumed valid (valid chars and non zero length)
+// * dir is assumed to be a directory
+FSEntry *fatFSEntry_touch(FSEntry *dir, const char *name, u8 flags)
+{
+    return fatAllocate(dir, name, (flags & FS_DIRECTORY) != 0, 0, NULL);
+}
+
 FSEntry *fatGenRoot()
 {
     // Read the root cluster
@@ -956,6 +955,7 @@ FSEntryOps *fatGenFSEntryOps()
         .list = fatFSEntry_list,
         .read = fatFSEntry_read,
         .write = fatFSEntry_write,
+        .touch = fatFSEntry_touch,
     };
 
     return ops;

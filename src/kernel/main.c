@@ -362,21 +362,21 @@ static void userAct()
 
 
 
-
-
-    // Write tests
-
-    // FSEntry *f = getEntry("/dir/second");
+    FSEntry *f = getEntry("/dir");
 
     // FSEntry_write(f, "Os2020 written this data...", 27);
 
-    FILE *f = fopen("/dir/new", "w");
+    FSEntry_touch(f, "newfile", 0);
 
-    fputs("Wow, this data comes from Os2020 !\n", f);
 
-    fprintf(f, "printf(0x42, 618, -68, A) = printf(0x%X, %u, %d, %c)", 0x42, 618, -68, 'A');
+    // Write tests
+    // FILE *f = fopen("/dir/new", "w");
 
-    fclose(f);
+    // fputs("Wow, this data comes from Os2020 !\n", f);
+
+    // fprintf(f, "printf(0x42, 618, -68, A) = printf(0x%X, %u, %d, %c)", 0x42, 618, -68, 'A');
+
+    // fclose(f);
 
 
 

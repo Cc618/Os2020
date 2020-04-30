@@ -58,6 +58,15 @@ FSEntry **FSEntry_list(FSEntry *dir)
     return dir->ops->list(dir);
 }
 
+FSEntry *FSEntry_touch(FSEntry *dir, const char *name, u8 flags)
+{
+    // Not a directory
+    if (!(dir->flags & FS_DIRECTORY))
+        return NULL;
+    
+    return dir->ops->touch(dir, name, flags);
+}
+
 void FSEntry_del(FSEntry *entry)
 {
     free((void*) entry->name);
