@@ -649,10 +649,8 @@ static FSEntry *fatAllocate(FSEntry *dir, const char *name, bool directory, u32 
     FatFSEntryData *data = malloc(sizeof(FatFSEntryData));
     data->cluster = contentCluster;
     data->entryCluster = entryCluster;
+    // Last entry
     data->entryI = entryI + entryLength - 1;
-
-    printf("Created: %d, %d, %d, %d\n", entryLength, contentCluster, entryCluster, entryI);
-
 
     return FSEntry_new(name, directory ? FS_DIRECTORY : 0, size, data, fatGenFSEntryOps());
 }

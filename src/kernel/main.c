@@ -371,11 +371,18 @@ static void userAct()
 
 
     // Write tests
-    int f = open("/dir/new3", F_WRITE);
+    int f = open("/dir/new3", F_READ);
 
-    write(f, "ABCDEF", 6);
+    if (f == -1)
+    {
+        puts("ERROR");
+    }
+    else
+    {
+        write(f, "ABCDEF", 6);
 
-    close(f);
+        close(f);
+    }
 
     // FILE *f = fopen("/dir/new2", "w");
 

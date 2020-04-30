@@ -51,7 +51,13 @@ void sys_fatal(const char *msg)
 // --- IO --- //
 fd_t sys_open(const char *path, u8 mode)
 {
-    return FSFile_new(path, mode)->fd;
+    File *f = FSFile_new(path, mode);
+
+    // Error
+    if (f == NULL)
+        return -1;
+
+    return f->fd;
 }
 
 ssize_t sys_read(fd_t fd, void *buffer, size_t count)
