@@ -16,8 +16,10 @@ typedef struct FatFSEntryData_t
     // Where the content is
     u32 cluster;
 
-    // Where the entry is
+    // Where the directory cluster is
     u32 entryCluster;
+
+    // Index within the directory (last entry for LFN, where there are flags)
     u32 entryI;
 } FatFSEntryData;
 

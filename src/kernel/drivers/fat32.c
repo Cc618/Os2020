@@ -532,7 +532,7 @@ static void genDirEntry(const char *name, bool directory, size_t fileSize, size_
 // Adds an entry (may be a stack of entries for long file names)
 // and writes it to dir
 // - outEntryCluster : Cluster of the directory where the entry
-// - outEntryI : Index of the entry within this cluster
+// - outEntryI : Index of the entry within this cluster (first entry if LFN)
 static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength, size_t *outEntryCluster, size_t *outEntryI)
 {
     // We have to find a string of 'entryLength' entries in dirCluster
@@ -649,7 +649,10 @@ static FSEntry *fatAllocate(FSEntry *dir, const char *name, bool directory, u32 
     FatFSEntryData *data = malloc(sizeof(FatFSEntryData));
     data->cluster = contentCluster;
     data->entryCluster = entryCluster;
-    data->entryI = entryI;
+    data->entryI = entryI + entryLength - 1;
+
+    printf("Created: %d, %d, %d, %d\n", entryLength, contentCluster, entryCluster, entryI);
+
 
     return FSEntry_new(name, directory ? FS_DIRECTORY : 0, size, data, fatGenFSEntryOps());
 }

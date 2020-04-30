@@ -50,6 +50,7 @@ static void initKernel()
 #include "k/syscalls.h"
 #include "k/vector.h"
 #include "k/queue.h"
+#include "k/io.h"
 
 
 static void p(void *item)
@@ -362,15 +363,21 @@ static void userAct()
 
 
 
-    FSEntry *f = getEntry("/dir");
+    // FSEntry *f = getEntry("/dir");
 
-    // FSEntry_write(f, "Os2020 written this data...", 27);
+    // // FSEntry_write(f, "Os2020 written this data...", 27);
 
-    FSEntry_touch(f, "newfile", 0);
+    // FSEntry_touch(f, "newfile", 0);
 
 
     // Write tests
-    // FILE *f = fopen("/dir/new", "w");
+    int f = open("/dir/new3", F_WRITE);
+
+    write(f, "ABCDEF", 6);
+
+    close(f);
+
+    // FILE *f = fopen("/dir/new2", "w");
 
     // fputs("Wow, this data comes from Os2020 !\n", f);
 
@@ -404,12 +411,11 @@ static void userAct()
 
 
 
-    // TODO : Change FSFile_write : Append to a buffer -> Buffer with more than 32 delta capacity
-    // TODO : Change FSFile_close : Write this buffer
-    // TODO : Open : Add modes, can touch file
+    // TODO : Append mode
     // TODO : Touch directory
     // TODO : Relative paths from apps
     // TODO : cat
+    // TODO : Clean code
     // TODO : v0.2 !
 
 
