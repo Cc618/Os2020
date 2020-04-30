@@ -32,7 +32,7 @@ static void initKernel()
     // File system init
     fatInit();
     fsInit();
-    
+
     filesInit();
 
     // Inputs init
@@ -80,6 +80,7 @@ int myApp(int argc, char **argv)
     return 42;
 }
 
+#include <k/buffer.h>
 
 // After init, the user can access the kernel
 static void userAct()
@@ -195,7 +196,7 @@ static void userAct()
     // printf("OK 0x%X", 0x42);
     // fatal("This works !");
 
-    // // Test : terminate 
+    // // Test : terminate
     // char *argv[2];
     // argv[0] = "ABC";
     // argv[1] = "DEF";
@@ -336,7 +337,7 @@ static void userAct()
 
     // char buf[4096];
     // size_t n = read(f, buf, 4096);
-    
+
     // printf("Read %d bytes\n", n);
     // buf[n] = '\0';
     // printf("Content :\n%s\n", buf);
@@ -352,7 +353,6 @@ static void userAct()
     // printf("Content : %s\n", buf);
 
     // fclose(f);
-    
 
 
 
@@ -363,19 +363,44 @@ static void userAct()
 
 
 
-    // Write tests
 
-    // FSEntry *f = getEntry("/dir/second");
+    // // Write tests
 
-    // FSEntry_write(f, "Os2020 written this data...", 27);
+    // // FSEntry *f = getEntry("/dir/second");
 
-    FILE *f = fopen("/dir/second", "w");
+    // // FSEntry_write(f, "Os2020 written this data...", 27);
 
-    // fputs("Wow, this data comes from Os2020 !", f);
+    // FILE *f = fopen("/dir/second", "w");
 
-    write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
+    // // fputs("Wow, this data comes from Os2020 !", f);
 
-    fclose(f);
+    // write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
+
+    // fclose(f);
+
+
+
+
+
+
+
+
+    // Buffer tests
+    // Buffer *buf = Buffer_new(4);
+
+    // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
+
+    // Buffer_write(buf, "123456789ABCDEFG", 16);
+
+    // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
+
+    // for (int i = 0; i < buf->size; ++i)
+    //     printf("%c ", buf->data[i]);
+
+    // Buffer_del(buf);
+
+
+
 
 
     // TODO : Change FSFile_write : Append to a buffer -> Buffer with more than 32 delta capacity
