@@ -1,15 +1,19 @@
 #include "fs_file.h"
 
-#include "fs/fs.h"
+#include "drivers/hdd.h"
 
 File *FSFile_new(const char *path)
 {
-    FSEntry *data = getEntry(path);
+    FSEntry *file = getEntry(path);
 
     // Not found
-    if (!data)
+    if (!file)
         return NULL;
     
+    FSFileData *data = malloc(sizeof(FSFileData));
+    data->file = file;
+    data->buf = Buffer_new(4 * HDD_SECTOR_SIZE);
+
     return File_new(data, FSFile_ops());
 }
 
@@ -28,15 +32,22 @@ FileOps *FSFile_ops()
 
 ssize_t FSFile_read(File *f, void *buffer, size_t count)
 {
-    return FSEntry_read(f->data, buffer, count);
+    // Read directly from the file
+    return FSEntry_read(((FSFileData*) f->data)->file, buffer, count);
 }
 
 ssize_t FSFile_write(File *f, void *buffer, size_t count)
 {
-    return FSEntry_write(f->data, buffer, count);
+    return Buffer_write(((FSFileData*) f->data)->buf, buffer, count);
 }
 
 void FSFile_close(File *f)
 {
-    FSEntry_del(f->data);
+    // Write to the file its content
+    FSEntry_write(((FSFileData*) f->data)->file, ((FSFileData*) f->data)->buf->data, ((FSFileData*) f->data)->buf->size);
+
+    // Delete
+    Buffer_del(((FSFileData*) f->data)->buf);
+    FSEntry_del(((FSFileData*) f->data)->file);
+    free(f->data);
 }

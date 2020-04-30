@@ -364,38 +364,40 @@ static void userAct()
 
 
 
-    // // Write tests
+    // Write tests
 
-    // // FSEntry *f = getEntry("/dir/second");
+    // FSEntry *f = getEntry("/dir/second");
 
-    // // FSEntry_write(f, "Os2020 written this data...", 27);
+    // FSEntry_write(f, "Os2020 written this data...", 27);
 
-    // FILE *f = fopen("/dir/second", "w");
+    FILE *f = fopen("/dir/second", "w");
 
-    // // fputs("Wow, this data comes from Os2020 !", f);
+    // fputs("Wow, this data comes from Os2020 !", f);
 
-    // write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
+    write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
+    write(f->_fileno, "\nWow, this data comes from Os2020 !", 35);
 
-    // fclose(f);
-
-
-
+    fclose(f);
 
 
 
 
 
-    // Buffer tests
+
+
+
+    // // Buffer tests
     // Buffer *buf = Buffer_new(4);
 
     // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
 
-    // Buffer_write(buf, "123456789ABCDEFG", 16);
+    // Buffer_write(buf, "123456789", 9);
+    // Buffer_write(buf, "ABCDEFG", 6);
 
     // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
 
     // for (int i = 0; i < buf->size; ++i)
-    //     printf("%c ", buf->data[i]);
+    //     printf("%c, ", buf->data[i]);
 
     // Buffer_del(buf);
 

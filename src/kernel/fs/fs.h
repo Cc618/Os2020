@@ -61,8 +61,9 @@ FSEntry *FSEntry_new(const char *name, u8 flags, size_t size, void *data, FSEntr
 // * If entry is a directory, returns 0 
 size_t FSEntry_read(FSEntry *entry, void *buffer, size_t count);
 
-// Writes count bytes of entry in buffer
+// Writes count bytes of buffer in entry
 // Returns how many bytes written
+// * Overwrites the data
 // * If entry is a directory, returns 0 
 size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count);
 
