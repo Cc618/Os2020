@@ -531,16 +531,18 @@ static void genDirEntry(const char *name, bool directory, size_t fileSize, size_
 
 // Adds an entry (may be a stack of entries for long file names)
 // and writes it to dir
-static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
+// - outEntryCluster : Cluster of the directory where the entry
+// - outEntryI : Index of the entry within this cluster
+static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength, size_t *outEntryCluster, size_t *outEntryI)
 {
     // We have to find a string of 'entryLength' entries in dirCluster
 
     void *fat = NULL;
     FatEntry *clusterContent = malloc(FAT_CLUSTER_SIZE);
-    size_t entryCluster = dirCluster;
+    *outEntryCluster = dirCluster;
 
     // Where to put entry
-    size_t i = 0;
+    *outEntryI = 0;
 
     // Whether we have found a suitable place in this entry
     bool allocated = false;
@@ -548,24 +550,24 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
     // For each cluster of this directory
     while (clusterIter(&fat, &dirCluster, clusterContent))
     {
-        for (i = 0; i < FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength; ++i)
+        for (*outEntryI = 0; *outEntryI < FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength; ++*outEntryI)
         {
             size_t j = 0;
             for ( ; j < entryLength; ++j)
                 // If this string is not empty
-                if (!(clusterContent[i + j].name[0] == 0 ||
-                    clusterContent[i + j].name[0] == 0xE5))
+                if (!(clusterContent[*outEntryI + j].name[0] == 0 ||
+                    clusterContent[*outEntryI + j].name[0] == 0xE5))
                     goto notEmpty;
 
             // This string is suitable
             break;
 
         notEmpty:;
-            i += j;
+            *outEntryI += j;
         }
 
-        // We have found a suitable place at index i
-        if (i != FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength)
+        // We have found a suitable place at index *outEntryI
+        if (*outEntryI != FAT_CLUSTER_SIZE / sizeof(FatEntry) - entryLength)
         {
             // Like a break
             dirCluster = -1;
@@ -574,21 +576,21 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
         }
 
         if (dirCluster < 0x0FFFFFF7)
-            entryCluster = dirCluster;
+            *outEntryCluster = dirCluster;
     }
 
     // Allocate a new cluster
     if (!allocated)
     {
         // Mark terminal entries as deleted
-        for ( ; i < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++i)
-            if (clusterContent[i].name[0] == 0)
-                clusterContent[i].name[0] = 0xE5;
+        for ( ; *outEntryI < FAT_CLUSTER_SIZE / sizeof(FatEntry); ++*outEntryI)
+            if (clusterContent[*outEntryI].name[0] == 0)
+                clusterContent[*outEntryI].name[0] = 0xE5;
 
         // Update dir on disk
-        hddWrite(clusterContent, dataSector + entryCluster, 1);
+        hddWrite(clusterContent, dataSector + *outEntryCluster, 1);
 
-        size_t newCluster = extendCluster(entryCluster);
+        size_t newCluster = extendCluster(*outEntryCluster);
 
         // Append the entry
         void *newClusterContent = malloc(FAT_CLUSTER_SIZE);
@@ -603,22 +605,19 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength)
     }
     else
     {
-        memcpy(&clusterContent[i], entry, entryLength * sizeof(FatEntry));
+        memcpy(&clusterContent[*outEntryI], entry, entryLength * sizeof(FatEntry));
 
         // Write to the hdd
-        hddWrite(clusterContent, dataSector + entryCluster, 1);
+        hddWrite(clusterContent, dataSector + *outEntryCluster, 1);
     }
 
     free(clusterContent);
 }
 
-
-
-// TODO : Return FSEntry ?
 // Creates a file to the directory
 // * name is assumed valid (valid chars and non zero length)
 // * dir is assumed to be a directory
-static void fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size, void *content)
+static FSEntry *fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size, void *content)
 {
     // Write the content
     size_t contentCluster;
@@ -638,10 +637,21 @@ static void fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size
     // Generate in RAM the directory entry (can be multiple entries for long file names)
     genDirEntry(name, directory, size, contentCluster, &entry, &entryLength);
 
+    size_t entryCluster;
+    size_t entryI;
+
     // Add it to dir
-    addDirEntry(((FatFSEntryData*)dir->data)->cluster, entry, entryLength);
+    addDirEntry(((FatFSEntryData*)dir->data)->cluster, entry, entryLength, &entryCluster, &entryI);
 
     free(entry);
+
+    // Generate the entry data
+    FatFSEntryData *data = malloc(sizeof(FatFSEntryData));
+    data->cluster = contentCluster;
+    data->entryCluster = entryCluster;
+    data->entryI = entryI;
+
+    return FSEntry_new(name, directory ? FS_DIRECTORY : 0, size, data, fatGenFSEntryOps());
 }
 
 // Unallocates and replaces the content of
@@ -669,9 +679,9 @@ static void replaceContent(FSEntry *f, u32 firstCluster, u32 size)
 // Adds a new file without content
 // * name is assumed valid (valid chars and non zero length)
 // * dir is assumed to be a directory
-void fatTouch(FSEntry *dir, const char *name, bool directory)
+FSEntry *fatTouch(FSEntry *dir, const char *name, bool directory)
 {
-    fatAllocate(dir, name, directory, 0, NULL);
+    return fatAllocate(dir, name, directory, 0, NULL);
 }
 
 

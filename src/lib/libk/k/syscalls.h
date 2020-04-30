@@ -31,7 +31,8 @@ extern int terminate();
 
 // --- IO --- //
 // Opens a file
-extern fd_t open(const char *path);
+// * Modes are described in k/io.h
+extern fd_t open(const char *path, u8 mode);
 
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read

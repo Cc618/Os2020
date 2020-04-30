@@ -2,13 +2,16 @@
 
 #include "drivers/hdd.h"
 
-File *FSFile_new(const char *path)
+File *FSFile_new(const char *path, u8 mode)
 {
     FSEntry *file = getEntry(path);
 
     // Not found
     if (!file)
+    {
+        // TMP Create it
         return NULL;
+    }
     
     FSFileData *data = malloc(sizeof(FSFileData));
     data->file = file;

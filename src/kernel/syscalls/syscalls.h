@@ -25,7 +25,7 @@ extern void sys_terminate();
 
 // --- IO --- //
 // Opens a file at the absolute path 'path'
-fd_t sys_open(const char *path);
+fd_t sys_open(const char *path, u8 mode);
 
 // Reads count bytes of the file associated to fd in buffer
 // * Returns how many bytes read

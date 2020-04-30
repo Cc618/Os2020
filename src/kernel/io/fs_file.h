@@ -18,7 +18,8 @@ typedef struct FSFileData_t
 
 // Opens a file at this location
 // * path is absolute
-File *FSFile_new(const char *path);
+// * mode flags are described in k/io.h
+File *FSFile_new(const char *path, u8 mode);
 
 FileOps *FSFile_ops();
 

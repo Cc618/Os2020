@@ -370,12 +370,11 @@ static void userAct()
 
     // FSEntry_write(f, "Os2020 written this data...", 27);
 
-    FILE *f = fopen("/dir/second", "w");
+    FILE *f = fopen("/dir/new", "w");
 
-    // fputs("Wow, this data comes from Os2020 !", f);
+    fputs("Wow, this data comes from Os2020 !\n", f);
 
-    write(f->_fileno, "Wow, this data comes from Os2020 !", 34);
-    write(f->_fileno, "\nWow, this data comes from Os2020 !", 35);
+    fprintf(f, "printf(0x42, 618, -68, A) = printf(0x%X, %u, %d, %c)", 0x42, 618, -68, 'A');
 
     fclose(f);
 

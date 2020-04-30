@@ -111,7 +111,7 @@ DEF_SYSC_3 enter,       SYS_ENTER
 DEF_SYSC_3 terminate,   SYS_TERMINATE
 
 ; Io
-DEF_SYSC_1 open,    SYS_OPEN
+DEF_SYSC_2 open,    SYS_OPEN
 DEF_SYSC_3 read,    SYS_READ
 DEF_SYSC_3 write,   SYS_WRITE
 DEF_SYSC_1 close,   SYS_CLOSE
