@@ -48,10 +48,25 @@ File *FSFile_new(const char *path, u8 mode)
         else
             return NULL;
     }
-    
+
     FSFileData *data = malloc(sizeof(FSFileData));
     data->file = file;
-    data->buf = Buffer_new(4 * HDD_SECTOR_SIZE);
+
+    // TODO : r+ / w+
+    if ((mode & F_APPEND) != 0)
+    {
+        void *buffer = malloc(file->size);
+        FSEntry_read(file, buffer, file->size);
+
+        data->buf = Buffer_newFromBuffer(4 * HDD_SECTOR_SIZE, buffer, file->size);
+
+        printf("READ %s\n", buffer);
+
+        free(buffer);
+    }
+    else
+        // Empty buffer
+        data->buf = Buffer_new(4 * HDD_SECTOR_SIZE);
 
     return File_new(data, FSFile_ops());
 }

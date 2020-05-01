@@ -17,6 +17,8 @@ typedef struct Buffer_t
 
 Buffer *Buffer_new(size_t chunkSize);
 
+Buffer *Buffer_newFromBuffer(size_t chunkSize, void *buffer, size_t count);
+
 void Buffer_del(Buffer *buf);
 
 // Returns how many bytes written

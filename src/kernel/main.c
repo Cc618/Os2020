@@ -371,28 +371,38 @@ static void userAct()
 
 
     // Write tests
-    int f = open("/dir/new3", F_READ);
+    // int f = open("/dir/new3", F_READ);
 
-    if (f == -1)
-    {
-        puts("ERROR");
-    }
+    // if (f == -1)
+    //     fputs("ERROR", stderr);
+    // else
+    // {
+    //     write(f, "ABCDEF", 6);
+
+    //     close(f);
+    // }
+
+    FILE *f = fopen("/dir/new", "w");
+
+    if (f == NULL)
+        fputs("ERROR\n", stderr);
     else
     {
-        write(f, "ABCDEF", 6);
-
-        close(f);
+        fputs("New content", f);
+        fclose(f);
     }
 
-    // FILE *f = fopen("/dir/new2", "w");
-
-    // fputs("Wow, this data comes from Os2020 !\n", f);
-
-    // fprintf(f, "printf(0x42, 618, -68, A) = printf(0x%X, %u, %d, %c)", 0x42, 618, -68, 'A');
-
-    // fclose(f);
 
 
+    FILE *fApp = fopen("/dir/new", "a");
+
+    if (fApp == NULL)
+        fputs("ERROR\n", stderr);
+    else
+    {
+        fputs("+++ content", fApp);
+        fclose(fApp);
+    }
 
 
 
@@ -418,7 +428,6 @@ static void userAct()
 
 
 
-    // TODO : Append mode
     // TODO : Touch directory
     // TODO : Relative paths from apps
     // TODO : cat

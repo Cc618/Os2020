@@ -17,6 +17,24 @@ Buffer *Buffer_new(size_t chunkSize)
     return b;
 }
 
+Buffer *Buffer_newFromBuffer(size_t chunkSize, void *buffer, size_t count)
+{
+    Buffer *b = malloc(sizeof(Buffer));
+
+    size_t capacity = count / chunkSize + 1;
+
+    *b = (Buffer) {
+        .size = count,
+        .capacity = capacity,
+        .chunkSize = chunkSize,
+        .data = malloc(capacity * chunkSize)
+    };
+
+    memcpy(b->data, buffer, count);
+
+    return b;
+}
+
 void Buffer_del(Buffer *buf)
 {
     free(buf->data);
