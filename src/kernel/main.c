@@ -382,39 +382,39 @@ static void userAct()
     //     close(f);
     // }
 
-    FILE *f = fopen("/dir/new", "w");
 
-    if (f == NULL)
-        fputs("ERROR\n", stderr);
-    else
-    {
-        fputs("New", f);
-        fputs(" content", f);
-        fclose(f);
-    }
+    // FILE *f = fopen("/dir/new", "w");
+
+    // if (f == NULL)
+    //     fputs("ERROR\n", stderr);
+    // else
+    // {
+    //     fputs("New", f);
+    //     fputs(" content", f);
+    //     fclose(f);
+    // }
 
 
+    // FILE *fApp = fopen("/dir/new", "r+");
 
-    FILE *fApp = fopen("/dir/new", "r+");
+    // if (fApp == NULL)
+    //     fputs("ERROR\n", stderr);
+    // else
+    // {
+    //     char *s = malloc(32);
 
-    if (fApp == NULL)
-        fputs("ERROR\n", stderr);
-    else
-    {
-        char *s = malloc(32);
+    //     fgets(s, 50, fApp);
+    //     printf("s = %s\n", s);
 
-        fgets(s, 50, fApp);
-        printf("s = %s\n", s);
+    //     // fputs("!!", fApp);
 
-        // fputs("!!", fApp);
+    //     // fgets(s, 5, fApp);
+    //     // printf("s = %s\n", s);
 
-        // fgets(s, 5, fApp);
-        // printf("s = %s\n", s);
+    //     free(s);
 
-        free(s);
-
-        fclose(fApp);
-    }
+    //     fclose(fApp);
+    // }
 
 
 
@@ -440,8 +440,8 @@ static void userAct()
 
 
 
-    // TODO : Touch directory
     // TODO : Relative paths from apps
+    // TODO : Touch directory
     // TODO : cat
     // TODO : Clean code
     // TODO : v0.2 !
