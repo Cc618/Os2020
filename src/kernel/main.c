@@ -60,28 +60,6 @@ static void p(void *item)
 }
 
 
-// Generates the absolute path to p considering
-// the context c (usually the current app context)
-// * p can be a file, a directory, empty or ./..
-// * p can also be absolute, a duplicate is returned
-char *absPath(Context *c, const char *p)
-{
-    // This is an absolute path, duplicate it
-    if (p[0] == '/')
-        return strdup(p);
-
-    // Length of cwd/p\0
-    size_t cwdLen = strlen(c->cwd);
-    char *path = malloc(cwdLen + 1 + strlen(p) + 1);
-
-    // Combine paths
-    memcpy(path, c->cwd, cwdLen);
-    path[cwdLen] = '/';
-    strcpy(path + cwdLen + 1, p);
-
-    return path;
-}
-
 
 
 
@@ -97,15 +75,11 @@ int myApp(int argc, char **argv)
     puts("myApp()");
 
     Context *c = currentContext();
+    printf("cwd = %s\n", c->cwd);
 
-    printf("Absolute path for ../myfile : %s\n", absPath(c, "../myfile"));
-    printf("Absolute path for dir : %s\n", absPath(c, "dir"));
-    printf("Absolute path for . : %s\n", absPath(c, "."));
-    printf("Absolute path for /root : %s\n", absPath(c, "/root"));
-
-    // printf("Context => %s\n", currentContext()->cwd);
-
-    // sys_enter(Context_new("/path/to2"), child, 0, NULL);
+    FILE *f = fopen("file", "r");
+    puts(f ? "File exists" : "File not found");
+    fclose(f);
 
     return 42;
 }
@@ -126,8 +100,8 @@ static void userAct()
 
 
 
-    Context *ctxt = Context_new("/path/to");
-    const char *argv = "/path/to";
+    Context *ctxt = Context_new("/dir");
+    const char *argv = "/dir";
 
     enter(ctxt, myApp, 1, &argv);
 
