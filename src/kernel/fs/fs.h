@@ -91,8 +91,9 @@ void delEntries(FSEntry **entries);
 // Returns NULL if not found
 FSEntry *findEntry(FSEntry **entries, const char *name);
 
-// Retrieve an entry at this absolute path
+// Retrieve an entry
 // We can use \ or /
+// Handle relative / absolute paths
 // Returns NULL if not found
 FSEntry *getEntry(const char *path);
 

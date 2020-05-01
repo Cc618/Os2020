@@ -77,7 +77,10 @@ int myApp(int argc, char **argv)
     Context *c = currentContext();
     printf("cwd = %s\n", c->cwd);
 
-    FILE *f = fopen("file", "r");
+    // FSEntry *f = getEntry("first");
+    // puts(f ? "File exists" : "File not found");
+
+    FILE *f = fopen("first", "r");
     puts(f ? "File exists" : "File not found");
     fclose(f);
 
@@ -90,9 +93,10 @@ int myApp(int argc, char **argv)
 static void userAct()
 {
     // TODO : Relative paths from apps (syscall to get context, k path functions)
+    // TODO : Kernel context = at root
     // TODO : Touch directory
     // TODO : cat
-    // TODO : Clean code
+    // TODO : Clean code (fs.c:16) + TMP
     // TODO : v0.2 !
 
 

@@ -1,6 +1,8 @@
 #include "fs.h"
 
 #include "drivers/fat32.h"
+#include "syscalls/syscalls.h"
+#include <k/io.h>
 
 FSEntry *root;
 
@@ -11,7 +13,7 @@ void fsInit()
 
 void fsTerminate()
 {
-    // TODO : Call delete method (free name...)
+    // TMP : Call delete method (free name...)
     free(root);
 }
 
@@ -91,8 +93,11 @@ FSEntry *findEntry(FSEntry **entries, const char *name)
     return NULL;
 }
 
-FSEntry *getEntry(const char *path)
+FSEntry *getEntry(const char *rPath)
 {
+    // Absolute path (or rPath if rPath already absolute)
+    char *path = absPath(currentContext(), rPath);
+
     // Don't parse root
     if (path[0] == '/' || path[0] == '\\')
         ++path;
@@ -130,6 +135,7 @@ FSEntry *getEntry(const char *path)
     } while ((part = strtok(NULL, delim)));
 
     free(p);
+    free(path);
 
     return current;
 }
