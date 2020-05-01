@@ -388,19 +388,28 @@ static void userAct()
         fputs("ERROR\n", stderr);
     else
     {
-        fputs("New content", f);
+        fputs("New", f);
+        fputs(" content", f);
         fclose(f);
     }
 
 
 
-    FILE *fApp = fopen("/dir/new", "a");
+    FILE *fApp = fopen("/dir/new", "r");
 
     if (fApp == NULL)
         fputs("ERROR\n", stderr);
     else
     {
-        fputs("+++ content", fApp);
+        char *s = malloc(32);
+
+        fgets(s, 5, fApp);
+        fgets(s + 4, 10, fApp);
+
+        printf("s = %s\n", s);
+
+        free(s);
+
         fclose(fApp);
     }
 

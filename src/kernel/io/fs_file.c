@@ -52,15 +52,17 @@ File *FSFile_new(const char *path, u8 mode)
     FSFileData *data = malloc(sizeof(FSFileData));
     data->file = file;
 
-    // TODO : r+ / w+
-    if ((mode & F_APPEND) != 0)
+    if ((mode & F_APPEND) != 0 || (mode & F_READ) != 0)
     {
+        // Read the file into the buffer
         void *buffer = malloc(file->size);
         FSEntry_read(file, buffer, file->size);
 
         data->buf = Buffer_newFromBuffer(4 * HDD_SECTOR_SIZE, buffer, file->size);
 
-        printf("READ %s\n", buffer);
+        // Set the head to the end to append
+        if ((mode & F_APPEND) != 0)
+            data->buf->head = file->size;
 
         free(buffer);
     }
@@ -86,13 +88,21 @@ FileOps *FSFile_ops()
 
 ssize_t FSFile_read(File *f, void *buffer, size_t count)
 {
-    // Read directly from the file
-    return FSEntry_read(((FSFileData*) f->data)->file, buffer, count);
+    size_t result = Buffer_read(((FSFileData*) f->data)->buf, buffer, count);
+
+    // Don't wait
+    return result == 0 ? -1 : result;
 }
 
 ssize_t FSFile_write(File *f, void *buffer, size_t count)
 {
-    return Buffer_write(((FSFileData*) f->data)->buf, buffer, count);
+    if (count == 0)
+        return -1;
+
+    size_t result = Buffer_write(((FSFileData*) f->data)->buf, buffer, count);
+
+    // Don't wait
+    return result == 0 ? -1 : result;
 }
 
 void FSFile_close(File *f)
