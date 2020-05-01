@@ -15,10 +15,16 @@
 
 void terminateKernel();
 
+// Defined in handler.asm
+extern int sys_enterProcess(int (*entry)(int argc, char **argv), int argc, char **argv);
+
 // --- System --- //
 // Gathers the stack state to terminate a process
 // when pressing Ctrl + C or sending termination signal
 Vector *stackStates;
+
+// Like stackStates but for app contexts
+Vector *appContexts = NULL;
 
 void sys_fatal(const char *msg)
 {
@@ -46,6 +52,22 @@ void sys_fatal(const char *msg)
 
     // Disable computer
     terminateKernel();
+}
+
+int sys_enter(Context *c, int (*entry)(int argc, char **argv), int argc, char **argv)
+{
+    if (appContexts == NULL)
+        appContexts = Vector_new();
+
+    // Push context
+    Vector_add(appContexts, c);
+
+    int ret = sys_enterProcess(entry, argc, argv);
+
+    // Pop and free context
+    free(Vector_pop(appContexts));
+
+    return ret;
 }
 
 // --- IO --- //

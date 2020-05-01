@@ -3,6 +3,7 @@
 // All syscalls (user)
 
 #include "types.h"
+#include "context.h"
 
 // --- Id --- //
 // !!! These definitions should be the same as syscalls.inc's definitions
@@ -24,7 +25,8 @@
 extern void fatal(const char *msg);
 
 // Calls the entry of an application
-extern int enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+// The context is auto freed
+extern int enter(Context *c, int (*entry)(int argc, char **argv), int argc, char **argv);
 
 // Terminates the current program
 extern int terminate();

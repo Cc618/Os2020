@@ -107,7 +107,7 @@ global %1
 
 ; Sys
 DEF_SYSC_1 fatal,       SYS_FATAL
-DEF_SYSC_3 enter,       SYS_ENTER
+DEF_SYSC_4 enter,       SYS_ENTER
 DEF_SYSC_3 terminate,   SYS_TERMINATE
 
 ; Io

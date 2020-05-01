@@ -59,24 +59,25 @@ static void p(void *item)
 }
 
 
+// TMP :
+extern Vector *appContexts;
+
 int child(int argc, char **argv)
 {
     puts("child");
-
-    terminate();
+    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
 
     return 43;
 }
 
 int myApp(int argc, char **argv)
 {
-    printf("myApp: %d args, 1st = %s\n", argc, argv[0]);
+    puts("myApp");
 
-    sys_enter(child, 0, NULL);
+    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
 
-    // sys_terminate();
-
-    puts("Exit with code 42");
+    sys_enter(Context_new("/path/to2"), child, 0, NULL);
+    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
 
     return 42;
 }
@@ -86,6 +87,43 @@ int myApp(int argc, char **argv)
 // After init, the user can access the kernel
 static void userAct()
 {
+    // TODO : Relative paths from apps
+    // TODO : Touch directory
+    // TODO : cat
+    // TODO : Clean code
+    // TODO : v0.2 !
+
+
+
+
+
+
+    Context *ctxt = Context_new("/path/to");
+    const char *argv = "/path/to";
+
+    enter(ctxt, myApp, 1, &argv);
+
+
+
+
+
+
+
+    // TMP
+    return;
+
+
+
+
+
+
+
+
+
+
+
+
+
     // --- DS --- //
     // Vector //
     // Vector *v = Vector_new();
@@ -440,22 +478,6 @@ static void userAct()
 
 
 
-    // TODO : Relative paths from apps
-    // TODO : Touch directory
-    // TODO : cat
-    // TODO : Clean code
-    // TODO : v0.2 !
-
-
-
-
-
-
-
-    // TMP
-    return;
-
-
 
 
     // TODO : remove execApp files
@@ -468,7 +490,8 @@ static void userAct()
     shellArgv[0] = a;
     shellArgv[1] = b;
 
-    sys_enter(shellMain, 2, shellArgv);
+    // TMP : Context
+    sys_enter(NULL, shellMain, 2, shellArgv);
 
     consoleNewLine();
     puts("No process running");

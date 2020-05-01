@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <k/types.h>
+#include <k/context.h>
 
 // --- Interrupts --- //
 // When we do int 0x80 or syscall this interrupt handler is called
@@ -16,8 +17,7 @@ void sys_fatal(const char *msg);
 
 // Executes an application by executing entry (main)
 // Exec without loading and preparing the program in ram
-// Defined in handlers.asm
-extern int sys_enter(int (*entry)(int argc, char **argv), int argc, char **argv);
+int sys_enter(Context *c, int (*entry)(int argc, char **argv), int argc, char **argv);
 
 // Terminates the current process
 // Defined in handlers.asm

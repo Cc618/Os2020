@@ -6,8 +6,8 @@ extern Vector_add
 extern Vector_pop
 
 
-global sys_enter
-sys_enter:
+global sys_enterProcess
+sys_enterProcess:
     push ebp
 	mov ebp, esp
     sub esp, 0x40
@@ -55,7 +55,7 @@ sys_enter:
     mov eax, [ebp - 4]
 
     ; Normal exit, eax is the return
-    jmp sys_enter.onExit
+    jmp sys_enterProcess.onExit
 
 ; When we raise the termination signal, we jmp to this label
 terminationReturn:
@@ -74,7 +74,7 @@ terminationReturn:
     ; When termination, return value = -2
     mov eax, -2
 
-sys_enter.onExit:
+sys_enterProcess.onExit:
     leave
     ret
 
