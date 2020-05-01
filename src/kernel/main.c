@@ -60,6 +60,10 @@ static void p(void *item)
 }
 
 
+// Generates the absolute path to p considering
+// the context c (usually the current app context)
+// * p can be a file, a directory, empty or ./..
+// * p can also be absolute, a duplicate is returned
 char *absPath(Context *c, const char *p)
 {
     // This is an absolute path, duplicate it
