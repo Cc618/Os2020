@@ -32,8 +32,11 @@ static void initKernel()
     // File system init
     fatInit();
     fsInit();
-
     filesInit();
+
+    // Push system context
+    appContexts = Vector_new();
+    Vector_add(appContexts, Context_new(""));
 
     // Inputs init
     keyboardInit();
@@ -77,9 +80,6 @@ int myApp(int argc, char **argv)
     Context *c = currentContext();
     printf("cwd = %s\n", c->cwd);
 
-    // FSEntry *f = getEntry("first");
-    // puts(f ? "File exists" : "File not found");
-
     FILE *f = fopen("first", "r");
     puts(f ? "File exists" : "File not found");
     fclose(f);
@@ -92,8 +92,6 @@ int myApp(int argc, char **argv)
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Relative paths from apps (syscall to get context, k path functions)
-    // TODO : Kernel context = at root
     // TODO : Touch directory
     // TODO : cat
     // TODO : Clean code (fs.c:16) + TMP
@@ -101,13 +99,13 @@ static void userAct()
 
 
 
+    puts(getEntry("dir") ? "Dir exists" : "Dir not found");
 
 
+    // Context *ctxt = Context_new("/dir");
+    // const char *argv = "/dir";
 
-    Context *ctxt = Context_new("/dir");
-    const char *argv = "/dir";
-
-    enter(ctxt, myApp, 1, &argv);
+    // enter(ctxt, myApp, 1, &argv);
 
 
 
@@ -510,6 +508,9 @@ static void userAct()
 // !!! This function doesn't return
 void terminateKernel()
 {
+    // Terminate system context
+    Vector_del(appContexts);
+
     keyboardTerminate();
     filesTerminate();
     fatTerminate();

@@ -14,7 +14,6 @@ int fclose(FILE *f)
         return -1;
 
     close(f->_fileno);
-
     free(f);
 
     return 0;

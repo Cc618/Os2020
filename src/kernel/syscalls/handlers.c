@@ -56,9 +56,6 @@ void sys_fatal(const char *msg)
 
 int sys_enter(Context *c, int (*entry)(int argc, char **argv), int argc, char **argv)
 {
-    if (appContexts == NULL)
-        appContexts = Vector_new();
-
     // Push context
     Vector_add(appContexts, c);
 
