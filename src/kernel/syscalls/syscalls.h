@@ -6,6 +6,13 @@
 #include <stddef.h>
 #include <k/types.h>
 #include <k/context.h>
+#include <k/vector.h>
+
+// Returns the current context (last pushed context)
+#define currentContext() ((Context*) appContexts->data[appContexts->size - 1])
+
+// Defined in handlers.c
+extern Vector *appContexts;
 
 // --- Interrupts --- //
 // When we do int 0x80 or syscall this interrupt handler is called

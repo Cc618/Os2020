@@ -51,6 +51,7 @@ static void initKernel()
 #include "k/vector.h"
 #include "k/queue.h"
 #include "k/io.h"
+#include "syscalls/syscalls.h"
 
 
 static void p(void *item)
@@ -59,25 +60,48 @@ static void p(void *item)
 }
 
 
-// TMP :
-extern Vector *appContexts;
+char *absPath(Context *c, const char *p)
+{
+    // This is an absolute path, duplicate it
+    if (p[0] == '/')
+        return strdup(p);
+
+    // Length of cwd/p\0
+    size_t cwdLen = strlen(c->cwd);
+    char *path = malloc(cwdLen + 1 + strlen(p) + 1);
+
+    // Combine paths
+    memcpy(path, c->cwd, cwdLen);
+    path[cwdLen] = '/';
+    strcpy(path + cwdLen + 1, p);
+
+    return path;
+}
+
+
+
 
 int child(int argc, char **argv)
 {
     puts("child");
-    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
 
     return 43;
 }
 
 int myApp(int argc, char **argv)
 {
-    puts("myApp");
+    puts("myApp()");
 
-    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
+    Context *c = currentContext();
 
-    sys_enter(Context_new("/path/to2"), child, 0, NULL);
-    printf("Context => %s\n", ((Context*) appContexts->data[appContexts->size - 1])->cwd);
+    printf("Absolute path for ../myfile : %s\n", absPath(c, "../myfile"));
+    printf("Absolute path for dir : %s\n", absPath(c, "dir"));
+    printf("Absolute path for . : %s\n", absPath(c, "."));
+    printf("Absolute path for /root : %s\n", absPath(c, "/root"));
+
+    // printf("Context => %s\n", currentContext()->cwd);
+
+    // sys_enter(Context_new("/path/to2"), child, 0, NULL);
 
     return 42;
 }
@@ -87,7 +111,7 @@ int myApp(int argc, char **argv)
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Relative paths from apps
+    // TODO : Relative paths from apps (syscall to get context, k path functions)
     // TODO : Touch directory
     // TODO : cat
     // TODO : Clean code

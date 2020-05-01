@@ -4,7 +4,7 @@
 
 typedef struct Context_t
 {
-    // Working directory
+    // Working directory (no / at the end)
     const char *cwd;
 } Context;
 
