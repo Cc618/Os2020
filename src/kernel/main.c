@@ -395,7 +395,7 @@ static void userAct()
 
 
 
-    FILE *fApp = fopen("/dir/new", "r");
+    FILE *fApp = fopen("/dir/new", "r+");
 
     if (fApp == NULL)
         fputs("ERROR\n", stderr);
@@ -403,10 +403,13 @@ static void userAct()
     {
         char *s = malloc(32);
 
-        fgets(s, 5, fApp);
-        fgets(s + 4, 10, fApp);
-
+        fgets(s, 50, fApp);
         printf("s = %s\n", s);
+
+        // fputs("!!", fApp);
+
+        // fgets(s, 5, fApp);
+        // printf("s = %s\n", s);
 
         free(s);
 
