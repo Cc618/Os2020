@@ -92,14 +92,16 @@ int myApp(int argc, char **argv)
 // After init, the user can access the kernel
 static void userAct()
 {
+    // TODO : IO syscalls
     // TODO : Touch directory
     // TODO : cat
-    // TODO : Clean code (fs.c:16) + TMP
+    // TODO : shell update (see / only at root)
+    // TODO : Clean code (fs.c:16, app.c) + TMP
     // TODO : v0.2 !
 
 
 
-    puts(getEntry("dir") ? "Dir exists" : "Dir not found");
+    // puts(getEntry("dir") ? "Dir exists" : "Dir not found");
 
 
     // Context *ctxt = Context_new("/dir");
@@ -108,8 +110,18 @@ static void userAct()
     // enter(ctxt, myApp, 1, &argv);
 
 
+    size_t n;
+    char **children = sys_ls("/dir", false, &n);
 
+    for (size_t i = 0; i < n; i++)
+    {
+        printf("- %s\n", children[i]);
+        free(children[i]);
+    }
 
+    free(children);
+
+    
 
 
 
@@ -488,14 +500,13 @@ static void userAct()
     // TODO : add shell as app
 
     // Launch the shell
-    const char *a = "/";
-    const char *b = "/";
+    const char *a = "";
+    const char *b = ".";
     char *shellArgv[2];
     shellArgv[0] = a;
     shellArgv[1] = b;
 
-    // TMP : Context
-    sys_enter(NULL, shellMain, 2, shellArgv);
+    sys_enter(Context_new(""), shellMain, 2, shellArgv);
 
     consoleNewLine();
     puts("No process running");

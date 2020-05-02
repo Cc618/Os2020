@@ -33,7 +33,7 @@ size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count);
 
 size_t fatFSEntry_write(FSEntry *file, void *buffer, size_t count);
 
-FSEntry **fatFSEntry_list(FSEntry *dir);
+FSEntry **fatFSEntry_list(FSEntry *dir, size_t *outCount);
 
 FSEntry *fatFSEntry_touch(FSEntry *dir, const char *name, u8 flags);
 

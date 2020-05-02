@@ -42,7 +42,7 @@ typedef struct FSEntryOps_t
 
     // See FSEntry_list for details
     // * The entry is always a directory
-    FSEntry **(*list)(FSEntry *entry);
+    FSEntry **(*list)(FSEntry *entry, size_t *outCount);
 
     // See FSEntry_touch for details
     // * The entry is always a directory
@@ -75,7 +75,8 @@ size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count);
 // array of entries within this
 // directory, returns NULL if
 // not a directory
-FSEntry **FSEntry_list(FSEntry *dir);
+// - outCount is set to the number of items
+FSEntry **FSEntry_list(FSEntry *dir, size_t *outCount);
 
 // Creates a new file / directory
 // Returns NULL if not a directory

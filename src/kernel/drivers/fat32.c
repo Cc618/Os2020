@@ -899,7 +899,7 @@ size_t fatFSEntry_write(FSEntry *f, void *buffer, size_t n)
 
 // Returns an array of entry
 // The array is NULL terminated
-FSEntry **fatFSEntry_list(FSEntry *dir)
+FSEntry **fatFSEntry_list(FSEntry *dir, size_t *outCount)
 {
     size_t dirCluster = ((FatFSEntryData*) dir->data)->cluster;
 
@@ -911,12 +911,12 @@ FSEntry **fatFSEntry_list(FSEntry *dir)
     FSEntry **entries = malloc(sizeof(FSEntry*) * (maxCount + 1));
 
     size_t entryIndex = 0;
-    for (size_t i = 0; i < maxCount; ++i)
+    for (*outCount = 0; *outCount < maxCount; ++*outCount)
     {
         // May be NULL to terminate the buffer (end of listing)
-        entries[i] = genEntry(dirCluster, &entryIndex);
+        entries[*outCount] = genEntry(dirCluster, &entryIndex);
 
-        if (entries[i] == NULL)
+        if (entries[*outCount] == NULL)
             break;
     }
 

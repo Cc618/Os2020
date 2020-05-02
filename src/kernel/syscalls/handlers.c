@@ -115,3 +115,24 @@ fd_t sys_pipe()
 
     return f->fd;
 }
+
+// --- Files --- //
+char **sys_ls(const char *dir, bool absPath, size_t *outCount)
+{
+    FSEntry *f = getEntry(dir);
+
+    // Not found
+    if (!f)
+        return NULL;
+
+    FSEntry **files = FSEntry_list(f);
+
+    free(f);
+
+    // Not a directory
+    if (!files)
+        return NULL;
+    
+    
+}
+

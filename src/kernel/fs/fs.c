@@ -51,13 +51,13 @@ size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count)
     return entry->ops->write(entry, buffer, count);
 }
 
-FSEntry **FSEntry_list(FSEntry *dir)
+FSEntry **FSEntry_list(FSEntry *dir, size_t *outCount)
 {
     // Not a directory
     if (!(dir->flags & FS_DIRECTORY))
         return NULL;
     
-    return dir->ops->list(dir);
+    return dir->ops->list(dir, outCount);
 }
 
 FSEntry *FSEntry_touch(FSEntry *dir, const char *name, u8 flags)

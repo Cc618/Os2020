@@ -49,3 +49,6 @@ void sys_close(fd_t fd);
 // Creates a pipe
 // * Returns the file descriptor of the pipe
 fd_t sys_pipe();
+
+// --- Files --- //
+char **sys_ls(const char *dir, bool absPath, size_t *outCount);
