@@ -16,6 +16,12 @@ u32 (*syscalls[256])() = {
     [SYS_WRITE] = sys_write,
     [SYS_CLOSE] = sys_close,
     [SYS_PIPE] = sys_pipe,
+
+    // Files //
+    [SYS_LS] = sys_ls,
+    [SYS_CONTEXT] = sys_context,
+    [SYS_TOUCH] = sys_touch,
+    [SYS_FINFO] = sys_finfo,
 };
 
 u32 onSyscall()

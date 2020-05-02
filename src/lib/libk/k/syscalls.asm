@@ -116,3 +116,9 @@ DEF_SYSC_3 read,    SYS_READ
 DEF_SYSC_3 write,   SYS_WRITE
 DEF_SYSC_1 close,   SYS_CLOSE
 DEF_SYSC_1 pipe,    SYS_PIPE
+
+; Files
+DEF_SYSC_2 ls,      SYS_LS
+DEF_SYSC_2 context, SYS_CONTEXT
+DEF_SYSC_2 touch,   SYS_TOUCH
+DEF_SYSC_2 finfo,   SYS_FINFO

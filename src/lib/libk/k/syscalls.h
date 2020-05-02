@@ -19,6 +19,11 @@
 #define SYS_CLOSE       0x13
 #define SYS_PIPE        0x14
 
+#define SYS_LS          0x20
+#define SYS_CONTEXT     0x21
+#define SYS_TOUCH       0x22
+#define SYS_FINFO       0x23
+
 
 // --- System --- //
 // Fatal error
@@ -51,3 +56,25 @@ extern void close(fd_t fd);
 // Creates a pipe
 // * Returns its file descriptor
 extern fd_t pipe();
+
+// --- Files --- //
+// List all files within dir
+// - outCount : Number of items
+// * Returns NULL if dir invalid
+// * Retrieve only the names, not paths
+extern char **ls(const char *dir, size_t *outCount);
+
+// Returns a soft copy of the current context
+// * Use currentContext() in kernel mode instead
+// * Only free the context, don't use Context_del since the copy is soft
+extern Context *context();
+
+// Creates a new file / directory
+// * Returns whether the file has been created
+// * The file must have a parent directory
+// * If the file already exists, nothing is done
+extern void touch(const char *path, bool directory);
+
+// Returns properties of the file
+// * Returns NULL if path doesn't exist
+extern FInfo *finfo(const char *path);
