@@ -95,6 +95,10 @@ FSEntry *findEntry(FSEntry **entries, const char *name, size_t count)
 
 FSEntry *getEntry(const char *rPath)
 {
+    // Root case
+    if (strcmp(rPath, "/") == 0 || rPath[0] == '\0')
+        return root;
+
     // Absolute path (or rPath if rPath already absolute)
     char *path = absPath(currentContext(), rPath);
 

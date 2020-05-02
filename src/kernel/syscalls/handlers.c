@@ -150,10 +150,14 @@ Context *sys_context()
     return c;
 }
 
-void sys_touch(const char *name, bool directory)
+void sys_touch(const char *p, bool directory)
 {
-    char *path = absPath(currentContext(), name);
-    char *dir = dirPath(path);
+    char *path = absPath(currentContext(), p);
+    char *dir;
+    char *name;
+    
+    cutPath(path, &dir, &name);
+
     FSEntry *f = getEntry(dir);
 
     if (f == NULL)
@@ -165,5 +169,6 @@ void sys_touch(const char *name, bool directory)
 
 end:;
     free(dir);
+    free(name);
     free(path);
 }
