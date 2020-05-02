@@ -111,8 +111,13 @@ static void userAct()
 
 
 
+    // // Touch
+    // sys_touch("/dir/touched", false);
+    // // sys_touch("touched2", false);
+    // // sys_touch("/touched3", false);
 
-    // ls
+
+    // // ls
     // size_t n;
     // char **children = sys_ls("/dir", &n);
 
@@ -127,6 +132,7 @@ static void userAct()
     // free(children);
 
 
+    // // context
     // printf("Context cwd : %d\n", sys_context()->cwd);
 
 

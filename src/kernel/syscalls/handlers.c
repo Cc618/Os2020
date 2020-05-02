@@ -149,3 +149,21 @@ Context *sys_context()
 
     return c;
 }
+
+void sys_touch(const char *name, bool directory)
+{
+    char *path = absPath(currentContext(), name);
+    char *dir = dirPath(path);
+    FSEntry *f = getEntry(dir);
+
+    if (f == NULL)
+        goto end;
+
+    FSEntry_touch(f, name, directory ? FS_DIRECTORY : 0);
+
+    FSEntry_del(f);
+
+end:;
+    free(dir);
+    free(path);
+}

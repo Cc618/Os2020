@@ -4,21 +4,6 @@
 #include <string.h>
 #include "drivers/hdd.h"
 
-// Modifies s such as it describes the parent directory
-// * Returns the file name
-char *cutPath(char *s)
-{
-    size_t lastSlash = 0;
-    for (size_t i = 0; s[i] != 0; ++i)
-        if (s[i] == '/')
-            lastSlash = i;
-    
-    // Cut here
-    s[lastSlash] = '\0';
-
-    return &s[lastSlash + 1];
-}
-
 File *FSFile_new(const char *path, u8 mode)
 {
     FSEntry *file = getEntry(path);
@@ -29,7 +14,7 @@ File *FSFile_new(const char *path, u8 mode)
         if ((mode & F_WRITE) != 0 || (mode & F_APPEND) != 0)
         {
             char *parent = strdup(path);
-            char *name = cutPath(parent);
+            char *name = inplaceCutPath(parent);
 
             FSEntry *dir = getEntry(parent);
 

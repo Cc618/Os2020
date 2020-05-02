@@ -58,5 +58,12 @@ fd_t sys_pipe();
 char **sys_ls(const char *dir, size_t *outCount);
 
 // Returns a soft copy of the current context
+// * Use currentContext() in kernel mode instead
 // * Only free the context, don't use Context_del since the copy is soft
 Context *sys_context();
+
+// Creates a new file / directory
+// * Returns whether the file has been created
+// * The file must have a parent directory
+// * If the file already exists, nothing is done
+void sys_touch(const char *path, bool directory);
