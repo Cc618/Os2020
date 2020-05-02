@@ -5,8 +5,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <k/types.h>
-#include <k/context.h>
 #include <k/vector.h>
+#include <k/context.h>
+#include <k/finfo.h>
 
 // Returns the current context (last pushed context)
 #define currentContext() ((Context*) appContexts->data[appContexts->size - 1])
@@ -67,3 +68,7 @@ Context *sys_context();
 // * The file must have a parent directory
 // * If the file already exists, nothing is done
 void sys_touch(const char *path, bool directory);
+
+// Returns properties of the file
+// * Returns NULL if path doesn't exist
+FInfo *sys_finfo(const char *path);

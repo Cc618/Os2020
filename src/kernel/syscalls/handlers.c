@@ -172,3 +172,24 @@ end:;
     free(name);
     free(path);
 }
+
+FInfo *sys_finfo(const char *path)
+{
+    FInfo *info = malloc(sizeof(FInfo));
+
+    FSEntry *f = getEntry(path);
+
+    if (!f)
+    {
+        free(info);
+        info = NULL;
+    }
+    else
+    {
+        info->directory = f->flags & FS_DIRECTORY;
+        info->size = f->size;
+        FSEntry_del(f);
+    }
+
+    return info;
+}

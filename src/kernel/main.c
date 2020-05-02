@@ -54,6 +54,7 @@ static void initKernel()
 #include "k/vector.h"
 #include "k/queue.h"
 #include "k/io.h"
+#include "k/finfo.h"
 #include "syscalls/syscalls.h"
 
 
@@ -110,26 +111,30 @@ static void userAct()
     // enter(ctxt, myApp, 1, &argv);
 
 
+    FInfo *info = sys_finfo("/dir");
+    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    free(info);
 
-    // Touch
-    sys_touch("/dir/touched", false);
-    sys_touch("touched2", false);
-    sys_touch("/touched3", false);
+    
+    // // Touch
+    // sys_touch("/dir/touched", false);
+    // sys_touch("touched2", false);
+    // sys_touch("/touched3", false);
 
 
-    // ls
-    size_t n;
-    char **children = sys_ls("/", &n);
+    // // ls
+    // size_t n;
+    // char **children = sys_ls("/", &n);
 
-    printf("> %d\n", n);
+    // printf("> %d\n", n);
 
-    for (size_t i = 0; i < n; i++)
-    {
-        printf("- %s\n", children[i]);
-        free(children[i]);
-    }
+    // for (size_t i = 0; i < n; i++)
+    // {
+    //     printf("- %s\n", children[i]);
+    //     free(children[i]);
+    // }
 
-    free(children);
+    // free(children);
 
 
     // // context
