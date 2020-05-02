@@ -76,17 +76,17 @@ void FSEntry_del(FSEntry *entry)
     free(entry);
 }
 
-void delEntries(FSEntry **entries)
+void delEntries(FSEntry **entries, size_t count)
 {
-    for (size_t i = 0; entries[i]; ++i)
+    for (size_t i = 0; i < count; ++i)
         FSEntry_del(entries[i]);
     
     free(entries);
 }
 
-FSEntry *findEntry(FSEntry **entries, const char *name)
+FSEntry *findEntry(FSEntry **entries, const char *name, size_t count)
 {
-    for (size_t i = 0; entries[i]; ++i)
+    for (size_t i = 0; i < count; ++i)
         if (strcmp(name, entries[i]->name) == 0)
             return entries[i];
 
@@ -112,7 +112,8 @@ FSEntry *getEntry(const char *rPath)
     do
     {
         // ls
-        FSEntry **entries = FSEntry_list(current);
+        size_t count;
+        FSEntry **entries = FSEntry_list(current, &count);
 
         if (current != root)
             FSEntry_del(current);
@@ -120,10 +121,10 @@ FSEntry *getEntry(const char *rPath)
         if (entries == NULL)
             return NULL;
 
-        current = findEntry(entries, part);
+        current = findEntry(entries, part, count);
 
         // Free all entries excluding current
-        for (size_t i = 0; entries[i]; ++i)
+        for (size_t i = 0; i < count; ++i)
             // Don't delete the first directory
             if (current == root || entries[i] != current)
                 FSEntry_del(entries[i]);

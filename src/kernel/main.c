@@ -110,16 +110,31 @@ static void userAct()
     // enter(ctxt, myApp, 1, &argv);
 
 
-    size_t n;
-    char **children = sys_ls("/dir", false, &n);
 
-    for (size_t i = 0; i < n; i++)
-    {
-        printf("- %s\n", children[i]);
-        free(children[i]);
-    }
 
-    free(children);
+    // ls
+    // size_t n;
+    // char **children = sys_ls("/dir", &n);
+
+    // printf("> %d\n", n);
+
+    // for (size_t i = 0; i < n; i++)
+    // {
+    //     printf("- %s\n", children[i]);
+    //     free(children[i]);
+    // }
+
+    // free(children);
+
+
+    // printf("Context cwd : %d\n", sys_context()->cwd);
+
+
+
+
+
+
+
 
     
 

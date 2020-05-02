@@ -51,4 +51,12 @@ void sys_close(fd_t fd);
 fd_t sys_pipe();
 
 // --- Files --- //
-char **sys_ls(const char *dir, bool absPath, size_t *outCount);
+// List all files within dir
+// - outCount : Number of items
+// * Returns NULL if dir invalid
+// * Retrieve only the names, not paths
+char **sys_ls(const char *dir, size_t *outCount);
+
+// Returns a soft copy of the current context
+// * Only free the context, don't use Context_del since the copy is soft
+Context *sys_context();

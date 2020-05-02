@@ -908,7 +908,7 @@ FSEntry **fatFSEntry_list(FSEntry *dir, size_t *outCount)
 
     // TODO : Multiple clusters
     size_t maxCount = FAT_CLUSTER_SIZE / sizeof(FatEntry);
-    FSEntry **entries = malloc(sizeof(FSEntry*) * (maxCount + 1));
+    FSEntry **entries = malloc(sizeof(FSEntry*) * maxCount);
 
     size_t entryIndex = 0;
     for (*outCount = 0; *outCount < maxCount; ++*outCount)
@@ -919,8 +919,6 @@ FSEntry **fatFSEntry_list(FSEntry *dir, size_t *outCount)
         if (entries[*outCount] == NULL)
             break;
     }
-
-    entries[maxCount] = NULL;
 
     return entries;
 }

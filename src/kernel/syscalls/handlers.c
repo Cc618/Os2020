@@ -117,7 +117,7 @@ fd_t sys_pipe()
 }
 
 // --- Files --- //
-char **sys_ls(const char *dir, bool absPath, size_t *outCount)
+char **sys_ls(const char *dir, size_t *outCount)
 {
     FSEntry *f = getEntry(dir);
 
@@ -125,14 +125,27 @@ char **sys_ls(const char *dir, bool absPath, size_t *outCount)
     if (!f)
         return NULL;
 
-    FSEntry **files = FSEntry_list(f);
+    FSEntry **files = FSEntry_list(f, outCount);
 
     free(f);
 
     // Not a directory
     if (!files)
         return NULL;
-    
-    
+
+    char **children = malloc(sizeof(char*) * *outCount);
+
+    for (size_t i = 0; i < *outCount; ++i)
+        children[i] = strdup(files[i]->name);
+
+    return children;
 }
 
+Context *sys_context()
+{
+    Context *c = malloc(sizeof(Context));
+
+    memcpy(c, currentContext(), sizeof(Context));
+
+    return c;
+}

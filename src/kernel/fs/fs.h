@@ -71,7 +71,7 @@ size_t FSEntry_read(FSEntry *entry, void *buffer, size_t count);
 // * If entry is a directory, returns 0 
 size_t FSEntry_write(FSEntry *entry, void *buffer, size_t count);
 
-// Returns a null terminated
+// Returns an
 // array of entries within this
 // directory, returns NULL if
 // not a directory
@@ -86,11 +86,11 @@ FSEntry *FSEntry_touch(FSEntry *entry, const char *name, u8 flags);
 void FSEntry_del(FSEntry *entry);
 
 // Deletes / frees all entries and also the array entries
-void delEntries(FSEntry **entries);
+void delEntries(FSEntry **entries, size_t count);
 
 // Finds an entry in the entry list with its name
 // Returns NULL if not found
-FSEntry *findEntry(FSEntry **entries, const char *name);
+FSEntry *findEntry(FSEntry **entries, const char *name, size_t count);
 
 // Retrieve an entry
 // We can use \ or /
