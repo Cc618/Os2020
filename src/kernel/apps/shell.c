@@ -20,6 +20,7 @@ static unsigned int userInputBegin;
 static bool shellRunning;
 static int shellExitCode;
 
+// !!! Root is represented by an empty string, not /
 static char *shellCwd;
 
 // Moves the begining of user input
@@ -55,7 +56,7 @@ static int shellCd(int argc, char **argv)
     else if (argc == 1)
     {
         free(shellCwd);
-        shellCwd = strdup("/");     
+        shellCwd = strdup("");     
     }
     else // argc == 2
     {
@@ -63,7 +64,8 @@ static int shellCd(int argc, char **argv)
 
         if (strcmp(argv[1], "..") == 0)
         {
-            if (strcmp(shellCwd, "/") == 0)
+            // Root case
+            if (shellCwd[0] == '\0')
                 return 0;
 
             // Retrieve the last name
@@ -156,7 +158,7 @@ int shellMain(int argc, char **argv)
         // TODO : absPath + Verify valid
         shellCwd = strdup(argv[1]);
     else
-        shellCwd = strdup("/");
+        shellCwd = strdup("");
 
     shellRunning = true;
     shellExitCode = 0;
@@ -187,7 +189,8 @@ int shellMain(int argc, char **argv)
 void shellPS1()
 {
     // TODO : Push / pop format to have console format
-    printf("@ %s > ", shellCwd);
+
+    printf("@ %s > ", shellCwd[0] == '\0' ? "/" : shellCwd);
 
     resetUserInput();
 }

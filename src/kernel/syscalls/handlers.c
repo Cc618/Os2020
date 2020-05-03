@@ -119,7 +119,9 @@ fd_t sys_pipe()
 // --- Files --- //
 char **sys_ls(const char *dir, size_t *outCount)
 {
-    FSEntry *f = getEntry(dir);
+    char *path = absPath(currentContext(), dir);
+    FSEntry *f = getEntry(path);
+    free(path);
 
     // Not found
     if (!f)
