@@ -2,7 +2,6 @@
 
 #include "drivers/screen.h"
 #include "drivers/console.h"
-#include "app.h"
 #include "cat.h"
 #include "echo.h"
 #include "color.h"
@@ -10,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <k/syscalls.h>
 
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
 #define CMD_MAX_ARGS 32
@@ -35,6 +35,9 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
 {
     shellRunning = false;
 
+    // TMP : Use this ?
+    // terminate();
+
     // if (argc == 2)
     // {
     //     // TODO : atoi to return code
@@ -48,23 +51,29 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
 // or BUILTIN_NOT_FOUND if no builtin found
 static int tryExecBuiltin(const char *app, int argc, char **argv)
 {
+    Context *ctxt = Context_new(shellCwd);
+
     if (strcmp(app, "echo") == 0)
-        return execApp(echo, argc, argv);
+        return enter(ctxt, echo, argc, argv);
     
     if (strcmp(app, "cat") == 0)
-        return execApp(cat, argc, argv);
+        return enter(ctxt, cat, argc, argv);
     
     if (strcmp(app, "color") == 0)
-        return execApp(colorMain, argc, argv);
+        return enter(ctxt, colorMain, argc, argv);
     
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
     
+    Context_del(ctxt);
+
     return BUILTIN_NOT_FOUND;
 }
 
 int shellMain(int argc, char **argv)
 {
+    // TODO : shellCwd = . to display
+
     // TODO : cd to cwd
     if (argc == 2)
         shellCwd = argv[1];
@@ -137,13 +146,14 @@ void shellEval(const char *CMD)
     // Execute command
     int ret = tryExecBuiltin(appName, argc, argv);
 
-    if (ret == BUILTIN_NOT_FOUND)
-    {
-        ret = exec(appName, argc, argv);
+    // TODO : Exec
+    // if (ret == BUILTIN_NOT_FOUND)
+    // {
+    //     ret = exec(appName, argc, argv);
 
-        if (ret != 0)
-            printf("App exits with code %d\n", ret);
-    }
+    //     if (ret != 0)
+    //         printf("App exits with code %d\n", ret);
+    // }
 
     free(cmd);
     for (size_t i = 0; i < (size_t)argc; ++i)

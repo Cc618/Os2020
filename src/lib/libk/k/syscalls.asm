@@ -88,17 +88,19 @@ global %1
 	mov ebp, esp
 
     push ebx
+    push edi
 
     ; Move args from stack to registers
     mov eax, %2
     mov ebx, [ebp + 8]
     mov ecx, [ebp + 12]
     mov edx, [ebp + 16]
-    mov edx, [ebp + 16]
+    mov edi, [ebp + 20]
 
     ; Syscall
     int 0x80
 
+    pop edi
     pop ebx
 
     leave

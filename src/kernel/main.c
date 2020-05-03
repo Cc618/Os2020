@@ -4,7 +4,6 @@
 #include "drivers/fat32.h"
 #include "fs/fs.h"
 #include "apps/shell.h"
-#include "apps/app.h"
 #include "syscalls/syscalls.h"
 
 #include "_libc.h"
@@ -99,441 +98,51 @@ static void userAct()
     // TODO : v0.2 !
 
 
+    // // Touch
+    // touch("/dir/touched", false);
+    // touch("touched2", false);
+    // touch("/dir/newsubdir", true);
+    // touch("alajdadjad/touched3", false);
 
-    // puts(getEntry("dir") ? "Dir exists" : "Dir not found");
-
-
-    // Context *ctxt = Context_new("/dir");
-    // const char *argv = "/dir";
-
-    // enter(ctxt, myApp, 1, &argv);
-
-
-
-    // Touch
-    touch("/dir/touched", false);
-    touch("touched2", false);
-    touch("/dir/newsubdir", true);
-    touch("alajdadjad/touched3", false);
-
-    // Info
-    FInfo *info = finfo("/dir/newsubdir");
-    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    free(info);
-    info = finfo("/dir/second");
-    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    free(info);
+    // // Info
+    // FInfo *info = finfo("/dir/newsubdir");
+    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    // free(info);
+    // info = finfo("/dir/second");
+    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    // free(info);
 
 
-    // ls
-    size_t n;
-    char **children = ls("/dir/newsubdir", &n);
-
-    printf("> %d\n", n);
-
-    for (size_t i = 0; i < n; i++)
-    {
-        printf("- %s\n", children[i]);
-        free(children[i]);
-    }
-
-    free(children);
-
-
-    // context
-    printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
-
-
-
-
-
-
-
-
-    
-
-
-
-    // TMP
-    return;
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // --- DS --- //
-    // Vector //
-    // Vector *v = Vector_new();
-
-    // int *_1 = malloc(4),
-    //     *_2 = malloc(4),
-    //     *_3 = malloc(4);
-
-    // *_1 = 1;
-    // *_2 = 2;
-    // *_3 = 3;
-
-    // Vector_add(v, _1);
-    // Vector_add(v, _2);
-    // Vector_add(v, _3);
-    // p(Vector_pop(v));
-    // puts("---");
-
-    // Vector_iter(v, p);
-
-    // Vector_del(v);
-
-
-    // Queue //
-    // Queue *v = Queue_new(512);
-
-    // int *_1 = malloc(4),
-    //     *_2 = malloc(4),
-    //     *_3 = malloc(4);
-
-    // *_1 = 1;
-    // *_2 = 2;
-    // *_3 = 3;
-
-    // Queue_add(v, _1);
-    // Queue_add(v, _2);
-    // Queue_add(v, _3);
-    // p(Queue_pop(v));
-    // puts("---");
-
-    // Queue_iter(v, p);
-
-    // Queue_del(v);
-
-
-    // Pipe //
-    // File *p = Pipe_new(42);
-
-    // u8 buf[] = { 1, 2, 3, 4, 5 };
-
-    // printf("Written %d bytes\n", Pipe_write(p, buf, 5));
+    // // ls
     // size_t n;
-    // printf("Read %d bytes\n", n = Pipe_read(p, buf, 10));
+    // char **children = ls("/dir/newsubdir", &n);
+
+    // printf("> %d\n", n);
 
     // for (size_t i = 0; i < n; i++)
     // {
-    //     printf("%d ", buf[i]);
+    //     printf("- %s\n", children[i]);
+    //     free(children[i]);
     // }
 
-    // Pipe_del(p);
+    // free(children);
 
 
+    // // context
+    // printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
 
 
+    // // TMP
+    // return;
 
 
 
 
-
-
-
-
-
-
-
-
-    // --- INT --- //
-    // printf("%d\n", sysc1(1));
-    // printf("%d\n", sysc2(2, 3));
-    // printf("%d\n", sysc3(4, 5, 6));
-
-    // // eax = syscall id / return
-    // // ebx = 1st arg
-    // // ecx = 2nd arg
-    // // edx = 3rd arg
-    // // edi = 4th arg
-    // int eax,
-    //     ebx,
-    //     ecx,
-    //     edx,
-    //     edi;
-
-    // // Retrieve registers
-    // __asm__ volatile("movl %%eax, %0" : "=g" (eax));
-    // __asm__ volatile("movl %%ebx, %0" : "=g" (ebx));
-    // __asm__ volatile("movl %%ecx, %0" : "=g" (ecx));
-    // __asm__ volatile("movl %%edx, %0" : "=g" (edx));
-    // __asm__ volatile("movl %%edi, %0" : "=g" (edi));
-
-    // printf("eax %x ebx %x ecx %x edx %x edi %x\n", eax, ebx, ecx, edx, edi);
-
-    // syscallArg1 = '?';
-    // syscallArg2 = 1;
-    // sys_putc();
-    // putc('?', stdout);
-
-    // putc('!', stdout);
-
-    // printf("OK 0x%X", 0x42);
-    // fatal("This works !");
-
-    // // Test : terminate
-    // char *argv[2];
-    // argv[0] = "ABC";
-    // argv[1] = "DEF";
-
-    // printf("Exited with code %d\n", enter(myApp, 2, argv));
-
-
-    // // --- FS --- //
-    // // Example : ls directories //
-    // puts("* ls root :");
-    // FSEntry **rootEntries = root->ops->list(root);
-    // printEntries(rootEntries);
-
-    // FSEntry dir = *findEntry(rootEntries, "dir");
-
-    // delEntries(rootEntries);
-
-    // puts("* ls dir :");
-    // FSEntry **dirEntries = dir.ops->list(&dir);
-    // printEntries(dirEntries);
-
-    // puts("* ls .. :");
-    // FSEntry *parent = findEntry(dirEntries, "..");
-    // FSEntry **parentEntries = parent->ops->list(parent);
-    // printEntries(parentEntries);
-    // delEntries(parentEntries);
-
-    // delEntries(dirEntries);
-
-
-    // // Example : cat file //
-    // // TODO : frees
-    // // puts("* cat /file :");
-    // FSEntry **rootEntries2 = root->ops->list(root);
-    // FSEntry *dir2 = findEntry(rootEntries2, "dir");
-    // FSEntry **dirEntries2 = dir2->ops->list(dir2);
-    // FSEntry *file = findEntry(dirEntries2, "second");
-
-    // // Read
-    // char buf[4096];
-    // size_t n = FSEntry_read(file, buf, 2000);
-    // buf[n] = '\0';
-    // printf("%s\n", buf + 500);
-    // printf("Read %d bytes\n", n);
-
-    // delEntries(dirEntries2);
-    // delEntries(rootEntries2);
-
-
-    // // Example : Follow path //
-    // FSEntry *f = getEntry("/dir/../dir/second");
-
-    // if (f == NULL)
-    //     puts("NULL");
-    // else
-    //     printf("File : %s\n", f->name);
-
-
-
-
-    // Kernel pipe
-    // File *p = Pipe_new();
-
-    // fd_t pFd = p->fd;
-
-    // char inData[4];
-    // inData[0] = 'H';
-    // inData[1] = 'E';
-    // inData[2] = 'L';
-    // inData[3] = 'O';
-
-    // // write(pFd, inData, 4);
-    // File_write(getFile(pFd), inData, 4);
-
-    // char outData[5];
-
-    // // read(pFd, outData, 4);
-    // File_read(getFile(pFd), outData, 4);
-    // outData[4] = '\0';
-
-    // printf("Data in pipe : %s\n", outData);
-
-    // Pipe_del(p);
-
-
-    // // User pipe
-    // fd_t pFd = pipe();
-
-    // printf("Pipe no %d\n", pFd);
-
-    // char inData[4];
-    // inData[0] = 'H';
-    // inData[1] = 'E';
-    // inData[2] = 'L';
-    // inData[3] = 'O';
-
-    // printf("%d bytes written\n", write(pFd, inData, 4));
-
-    // char outData[5];
-
-    // read(pFd, outData, 4);
-    // outData[4] = '\0';
-
-    // printf("Data in pipe : %s\n", outData);
-
-    // close(pFd);
-
-
-    // // User write to std streams with syscalls
-    // char stdinBuf[] = "Stdin data !";
-    // size_t written = write(0, stdinBuf, sizeof(stdinBuf));
-
-    // write(1, "Written in stdin : ", 19);
-    // char buf[written];
-    // read(0, buf, written);
-    // write(1, buf, written);
-
-    // write(2, "\nI am an error", 14);
-
-
-    // // stdio test
-    // fprintf(stderr, "Hello world ! 0x%X %d %s %p\n", 0x46454443, 42, "Hey world !", 0);
-
-    // fputs("This is an error\n", stderr);
-    // puts("This is NOT an error");
-
-
-
-
-
-    // // TMP : Syscall fstat to have file size
-
-    // // Cat file using syscalls
-    // // FSEntry *f = getEntry("/dir/../dir/second");
-    // // printf("File size : %d\n", f->size);
-    // fd_t *f = open("/dir/../dir/second");
-
-
-    // char buf[4096];
-    // size_t n = read(f, buf, 4096);
-
-    // printf("Read %d bytes\n", n);
-    // buf[n] = '\0';
-    // printf("Content :\n%s\n", buf);
-
-    // close(f);
-
-
-    // FILE *f = fopen("/dir/second", 0);
-
-    // char buf[4096];
-    // fgets(buf, 4096, f);
-
-    // printf("Content : %s\n", buf);
-
-    // fclose(f);
-
-
-
-
-
-
-
-
-
-    // FSEntry *f = getEntry("/dir");
-
-    // // FSEntry_write(f, "Os2020 written this data...", 27);
-
-    // FSEntry_touch(f, "newfile", 0);
-
-
-    // Write tests
-    // int f = open("/dir/new3", F_READ);
-
-    // if (f == -1)
-    //     fputs("ERROR", stderr);
-    // else
-    // {
-    //     write(f, "ABCDEF", 6);
-
-    //     close(f);
-    // }
-
-
-    // FILE *f = fopen("/dir/new", "w");
-
-    // if (f == NULL)
-    //     fputs("ERROR\n", stderr);
-    // else
-    // {
-    //     fputs("New", f);
-    //     fputs(" content", f);
-    //     fclose(f);
-    // }
-
-
-    // FILE *fApp = fopen("/dir/new", "r+");
-
-    // if (fApp == NULL)
-    //     fputs("ERROR\n", stderr);
-    // else
-    // {
-    //     char *s = malloc(32);
-
-    //     fgets(s, 50, fApp);
-    //     printf("s = %s\n", s);
-
-    //     // fputs("!!", fApp);
-
-    //     // fgets(s, 5, fApp);
-    //     // printf("s = %s\n", s);
-
-    //     free(s);
-
-    //     fclose(fApp);
-    // }
-
-
-
-
-
-
-    // // Buffer tests
-    // Buffer *buf = Buffer_new(4);
-
-    // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
-
-    // Buffer_write(buf, "123456789", 9);
-    // Buffer_write(buf, "ABCDEFG", 6);
-
-    // printf("Capacity = %d, Size = %d\n", buf->capacity, buf->size);
-
-    // for (int i = 0; i < buf->size; ++i)
-    //     printf("%c, ", buf->data[i]);
-
-    // Buffer_del(buf);
-
-
-
-
-
-
-
-    // TODO : remove execApp files
-    // TODO : add shell as app
 
     // Launch the shell
-    const char *a = "";
-    const char *b = ".";
     char *shellArgv[2];
-    shellArgv[0] = a;
-    shellArgv[1] = b;
+    shellArgv[0] = "";
+    shellArgv[1] = "/dir";
 
     sys_enter(Context_new(""), shellMain, 2, shellArgv);
 

@@ -4,6 +4,7 @@
 
 #include "types.h"
 #include "context.h"
+#include "finfo.h"
 
 // --- Id --- //
 // !!! These definitions should be the same as syscalls.inc's definitions

@@ -4,7 +4,6 @@
 #include "drivers/console.h"
 #include "io/stdstream.h"
 #include "apps/shell.h"
-#include "apps/app.h"
 #include "syscalls/syscalls.h"
 #include <k/io.h>
 #include <stdio.h>
