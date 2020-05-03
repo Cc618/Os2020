@@ -8,6 +8,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include <k/syscalls.h>
+#include <k/io.h>
+#include <k/finfo.h>
 
 #define CMD_MAX_SIZE (SCREEN_WIDTH * 3)
 #define CMD_MAX_ARGS 32
@@ -18,8 +20,7 @@ static unsigned int userInputBegin;
 static bool shellRunning;
 static int shellExitCode;
 
-// Root by default
-static const char *shellCwd = "/";
+static char *shellCwd;
 
 // Moves the begining of user input
 static void resetUserInput()
@@ -44,6 +45,76 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
     return 0;
 }
 
+static int shellCd(int argc, char **argv)
+{
+    if (argc > 2)
+    {
+        fprintf(stderr, "cd: Too many args\n");
+        return -1;
+    }
+    else if (argc == 1)
+    {
+        free(shellCwd);
+        shellCwd = strdup("/");     
+    }
+    else // argc == 2
+    {
+        char *newCwd;
+
+        if (strcmp(argv[1], "..") == 0)
+        {
+            if (strcmp(shellCwd, "/") == 0)
+                return 0;
+
+            // Retrieve the last name
+            newCwd = dirPath(shellCwd);
+            free(shellCwd);
+            shellCwd = newCwd;
+
+            return 0;
+        }
+
+        // Absolute path
+        if (argv[1][0] == '/')
+            newCwd = strdup(argv[1]);
+        else
+        {
+            size_t len = strlen(argv[1]);
+            size_t cwdLen = strlen(shellCwd);
+
+            // cwd/dir\0
+            newCwd = malloc(cwdLen + 1 + len + 1);
+
+            memcpy(newCwd, shellCwd, cwdLen);
+            newCwd[cwdLen] = '/';
+            memcpy(newCwd + cwdLen + 1, argv[1], len + 1);
+        }
+
+        FInfo *info = finfo(newCwd);
+        if (info == NULL)
+        {
+
+            fprintf(stderr, "cd: '%s' not found\n", newCwd);
+            return -1;
+        }
+
+        if (info->directory)
+        {
+            free(shellCwd);
+            shellCwd = newCwd;
+            free(info);
+        }
+        else
+        {
+            fprintf(stderr, "cd: '%s' is not a directory\n", newCwd);
+            free(info);
+            return -1;
+        }
+    }
+
+    return 0;
+}
+
 // Tries to executes a builtin command
 // Returns the exit code of the command
 // or BUILTIN_NOT_FOUND if no builtin found
@@ -51,6 +122,14 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
 {
     Context *ctxt = Context_new(shellCwd);
 
+    // Static builtins
+    if (strcmp(app, "exit") == 0)
+        return shellExit(argc, argv);
+    
+    if (strcmp(app, "cd") == 0)
+        return shellCd(argc, argv);
+
+    // Builtins
     if (strcmp(app, "cat") == 0)
         return enter(ctxt, cat, argc, argv);
 
@@ -59,9 +138,6 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
 
     if (strcmp(app, "echo") == 0)
         return enter(ctxt, echo, argc, argv);
-
-    if (strcmp(app, "exit") == 0)
-        return shellExit(argc, argv);
 
     if (strcmp(app, "ls") == 0)
         return enter(ctxt, lsMain, argc, argv);
@@ -77,9 +153,10 @@ int shellMain(int argc, char **argv)
 
     // TODO : cd to cwd
     if (argc == 2)
-        shellCwd = argv[1];
+        // TODO : absPath + Verify valid
+        shellCwd = strdup(argv[1]);
     else
-        shellCwd = "/";
+        shellCwd = strdup("/");
 
     shellRunning = true;
     shellExitCode = 0;
