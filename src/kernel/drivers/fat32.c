@@ -614,17 +614,50 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength, siz
     free(clusterContent);
 }
 
+// Creates the content of an empty directory
+// * Allocates a new cluster in the partition
+void emptyDir(u32 *outCluster, u32 parentCluster)
+{
+    void *content = malloc(FAT_CLUSTER_SIZE);
+    *outCluster = allocateCluster();
+
+    // Null terminate the cluster
+    memset(content, 0, FAT_CLUSTER_SIZE);
+
+    // . directory
+    // Fill name + ext
+    memset(((FatEntry*) content)[0].name, 0x20, 11);
+    ((FatEntry*) content)[0].name[0] = '.';
+    ((FatEntry*) content)[0].firstClusterHigh = ((0xFF00 & *outCluster) >> 16);
+    ((FatEntry*) content)[0].firstClusterLow = 0xFF & *outCluster;
+    ((FatEntry*) content)[0].flags = FAT_DIR;
+
+    // .. directory
+    // Fill name + ext
+    memset(((FatEntry*) content)[1].name, 0x20, 11);
+    ((FatEntry*) content)[1].name[0] = '.';
+    ((FatEntry*) content)[1].name[1] = '..';
+    ((FatEntry*) content)[1].firstClusterHigh = ((0xFF00 & parentCluster) >> 16);
+    ((FatEntry*) content)[1].firstClusterLow = 0xFF & parentCluster;
+    ((FatEntry*) content)[1].flags = FAT_DIR;
+
+    // Write content
+    hddWrite(content, dataSector + *outCluster, 1);
+
+    free(content);
+}
+
 // Creates a file to the directory
 // * name is assumed valid (valid chars and non zero length)
 // * dir is assumed to be a directory
+// * If directory and null content, creates an empty directory
 static FSEntry *fatAllocate(FSEntry *dir, const char *name, bool directory, u32 size, void *content)
 {
     // Write the content
     size_t contentCluster;
 
     if (directory && size == 0)
-        // TODO : Dummy, directory with . and ..
-    {}
+        emptyDir(&contentCluster, ((FatFSEntryData*)dir->data)->cluster);
     else if (size != 0)
         contentCluster = writeContent(content, size);
     else

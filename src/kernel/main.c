@@ -111,38 +111,39 @@ static void userAct()
     // enter(ctxt, myApp, 1, &argv);
 
 
-    FInfo *info = finfo("/dir");
-    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    free(info);
-    info = finfo("/dir/second");
-    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    free(info);
-
 
     // Touch
-    touch("/dir/touched", false);
-    touch("touched2", false);
-    touch("/touched3", false);
-    touch("alajdadjad/touched3", false);
+    // touch("/dir/touched", false);
+    // touch("touched2", false);
+    touch("/dir/newsubdir", true);
+    // touch("alajdadjad/touched3", false);
+
+    // // Info
+    // FInfo *info = finfo("/dir/newsubdir");
+    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    // free(info);
+    // // info = finfo("/dir/second");
+    // // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    // // free(info);
 
 
-    // ls
-    size_t n;
-    char **children = ls("/", &n);
+    // // ls
+    // size_t n;
+    // char **children = ls("/dir/newsubdir", &n);
 
-    printf("> %d\n", n);
+    // printf("> %d\n", n);
 
-    for (size_t i = 0; i < n; i++)
-    {
-        printf("- %s\n", children[i]);
-        free(children[i]);
-    }
+    // for (size_t i = 0; i < n; i++)
+    // {
+    //     printf("- %s\n", children[i]);
+    //     free(children[i]);
+    // }
 
-    free(children);
+    // free(children);
 
 
-    // context
-    printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
+    // // context
+    // printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
 
 
 
