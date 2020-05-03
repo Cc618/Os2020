@@ -132,7 +132,7 @@ void shellEval(const char *CMD)
     char *argv[CMD_MAX_ARGS];
     argv[0] = strdup(shellCwd);
 
-    const char *delim = " ";
+    const char *delim = " \n";
 
     // App name
     char *token = strtok(cmd, delim);
@@ -142,6 +142,10 @@ void shellEval(const char *CMD)
     int argc = 1;
     for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
+
+    // // Remove \n at the 
+    // size_t lastLength = strlen(argv[argc - 1]);
+    // argv[argc - 1][lastLength - 1] = '\0';
 
     // Execute command
     int ret = tryExecBuiltin(appName, argc, argv);
