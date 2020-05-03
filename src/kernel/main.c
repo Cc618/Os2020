@@ -93,10 +93,8 @@ int myApp(int argc, char **argv)
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : IO syscalls
-    // TODO : Touch directory
-    // TODO : cat
     // TODO : shell update (see / only at root)
+    // TODO : cat
     // TODO : Clean code (fs.c:16, app.c) + TMP
     // TODO : v0.2 !
 
@@ -113,37 +111,37 @@ static void userAct()
 
 
     // Touch
-    // touch("/dir/touched", false);
-    // touch("touched2", false);
+    touch("/dir/touched", false);
+    touch("touched2", false);
     touch("/dir/newsubdir", true);
-    // touch("alajdadjad/touched3", false);
+    touch("alajdadjad/touched3", false);
 
-    // // Info
-    // FInfo *info = finfo("/dir/newsubdir");
-    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    // free(info);
-    // // info = finfo("/dir/second");
-    // // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    // // free(info);
-
-
-    // // ls
-    // size_t n;
-    // char **children = ls("/dir/newsubdir", &n);
-
-    // printf("> %d\n", n);
-
-    // for (size_t i = 0; i < n; i++)
-    // {
-    //     printf("- %s\n", children[i]);
-    //     free(children[i]);
-    // }
-
-    // free(children);
+    // Info
+    FInfo *info = finfo("/dir/newsubdir");
+    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    free(info);
+    info = finfo("/dir/second");
+    printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
+    free(info);
 
 
-    // // context
-    // printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
+    // ls
+    size_t n;
+    char **children = ls("/dir/newsubdir", &n);
+
+    printf("> %d\n", n);
+
+    for (size_t i = 0; i < n; i++)
+    {
+        printf("- %s\n", children[i]);
+        free(children[i]);
+    }
+
+    free(children);
+
+
+    // context
+    printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
 
 
 

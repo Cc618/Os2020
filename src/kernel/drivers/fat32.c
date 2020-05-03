@@ -709,90 +709,6 @@ static void replaceContent(FSEntry *f, u32 firstCluster, u32 size)
     hddWrite(cluster, dataSector + data->entryCluster, 1);
 }
 
-
-
-
-
-
-
-
-// TMP : rm
-void writeTest()
-{
-    FSEntry *dir = getEntry("/dir");
-    
-
-
-    // fatTouch(dir, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", false);
-
-
-    FSEntry *f = getEntry("/dir/second");
-
-    char *content = malloc(32);
-    memset(content, '!', 32);
-
-    size_t newContent = writeContent(content, 32);
-    replaceContent(f, newContent, 32);
-
-    free(content);
-
-
-
-
-    // replaceContent();
-
-
-
-    // FatFSEntryData *data = f->data;
-
-
-    // // Update size & cluster
-    // hddRead(dataSector + data->entryCluster, cluster, 1);
-    // ((FatEntry*) cluster)[data->entryI].fileSize = 0;
-    // ((FatEntry*) cluster)[data->entryI].firstClusterHigh = 0;
-    // ((FatEntry*) cluster)[data->entryI].firstClusterLow = 0;
-    // hddWrite(cluster, dataSector + data->entryCluster, 1);
-
-    // // Remove content
-    // unallocateClusters(data->cluster);
-
-    // printf("Content cluster : %d, Entry cluster : %d, Entry I : %d\n",
-    //     data->cluster, data->entryCluster, data->entryI);
-
-
-
-
-
-
-
-
-    // TODO :
-    // fatTouch(dir, "New_dir", true);
-
-
-
-    // // ClusterIter
-    // void *fat = NULL;
-    // u32 clusterId = 5;
-    // char *clusterContent = malloc(FAT_CLUSTER_SIZE);
-
-    // for (int i = 0; i < 5 && clusterIter(&fat, &clusterId, clusterContent); ++i)
-    // {
-    //     printf("Cluster %d : %c%c%c%c\n", clusterId, clusterContent[0], clusterContent[1], clusterContent[2], clusterContent[3]);
-    // }
-
-    // free(clusterContent);
-}
-
-
-
-
-
-
-
-
-
-
 // --- Methods --- //
 void fatInit()
 {
@@ -832,7 +748,6 @@ FSEntry *fatFSEntry_new(const char *name, u8 flags, size_t size, FatFSEntryData 
     return FSEntry_new(name, flags, size, data, fatGenFSEntryOps());
 }
 
-// TMP : rm when use FSEntryOps ?
 void fatFSEntry_del(FSEntry *entry)
 {
     // Free data
