@@ -2,9 +2,7 @@
 
 #include "drivers/screen.h"
 #include "drivers/console.h"
-#include "cat.h"
-#include "echo.h"
-#include "color.h"
+#include "builtins.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,18 +51,21 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
 {
     Context *ctxt = Context_new(shellCwd);
 
-    if (strcmp(app, "echo") == 0)
-        return enter(ctxt, echo, argc, argv);
-    
     if (strcmp(app, "cat") == 0)
         return enter(ctxt, cat, argc, argv);
-    
+
     if (strcmp(app, "color") == 0)
         return enter(ctxt, colorMain, argc, argv);
-    
+
+    if (strcmp(app, "echo") == 0)
+        return enter(ctxt, echo, argc, argv);
+
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
-    
+
+    if (strcmp(app, "ls") == 0)
+        return enter(ctxt, lsMain, argc, argv);
+
     Context_del(ctxt);
 
     return BUILTIN_NOT_FOUND;
@@ -143,15 +144,13 @@ void shellEval(const char *CMD)
     for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
 
-    // // Remove \n at the 
-    // size_t lastLength = strlen(argv[argc - 1]);
-    // argv[argc - 1][lastLength - 1] = '\0';
-
     // Execute command
     int ret = tryExecBuiltin(appName, argc, argv);
 
+    if (ret == BUILTIN_NOT_FOUND)
+        puts("No app found");
+
     // TODO : Exec
-    // if (ret == BUILTIN_NOT_FOUND)
     // {
     //     ret = exec(appName, argc, argv);
 

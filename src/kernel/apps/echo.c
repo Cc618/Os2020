@@ -1,5 +1,3 @@
-#include "echo.h"
-
 #include <stdio.h>
 
 int echo(int argc, char **argv)

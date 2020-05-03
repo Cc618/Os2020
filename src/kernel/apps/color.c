@@ -1,5 +1,3 @@
-#include "color.h"
-
 #include "drivers/screen.h"
 #include "drivers/console.h"
 #include <stdio.h>

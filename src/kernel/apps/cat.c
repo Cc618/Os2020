@@ -1,5 +1,3 @@
-#include "cat.h"
-
 #include <stdio.h>
 #include <string.h>
 
@@ -7,6 +5,7 @@
 
 int cat(int argc, __attribute__((unused)) char **argv)
 {
+    // TODO : rm q exit
     if (argc == 1)
     {
         char buf[CAT_STDIN_BUFFER_SIZE];
