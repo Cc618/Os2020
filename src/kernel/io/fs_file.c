@@ -34,6 +34,14 @@ File *FSFile_new(const char *path, u8 mode)
             return NULL;
     }
 
+    // Can't open a directory
+    if (file->flags & FS_DIRECTORY)
+    {
+        FSEntry_del(file);
+
+        return NULL;
+    }
+
     FSFileData *data = malloc(sizeof(FSFileData));
     data->file = file;
 
