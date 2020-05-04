@@ -5,15 +5,6 @@
 
 int cat(int argc, char **argv)
 {
-    char buf[CAT_STDIN_BUFFER_SIZE];
-
-    gets(buf);
-
-    puts(buf);
-
-    return 0;
-
-    // TODO : rm q exit
     if (argc == 1)
     {
         char buf[CAT_STDIN_BUFFER_SIZE];
@@ -22,10 +13,7 @@ int cat(int argc, char **argv)
         {
             gets(buf);
 
-            if (strcmp(buf, "q") == 0)
-                break;
-
-            puts(buf);
+            printf("%s", buf);
         }
 
         return 0;
