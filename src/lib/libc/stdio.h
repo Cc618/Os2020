@@ -31,6 +31,10 @@ int fputc(int c, FILE *stream);
 
 int fputs(const char *s, FILE *f);
 
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *f);
+
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *f);
+
 char *gets(char *s);
 
 int getchar();

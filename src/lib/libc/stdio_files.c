@@ -43,3 +43,23 @@ FILE *fopen(const char *path, __attribute__((unused)) const char *mode)
 
     return f;
 }
+
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *f)
+{
+    if (size == 0)
+        return 0;
+
+    size_t count = size * nmemb;
+
+    return read(f->_fileno, ptr, count) / size;
+}
+
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *f)
+{
+    if (size == 0)
+        return 0;
+
+    size_t count = size * nmemb;
+
+    return write(f->_fileno, ptr, count) / size;
+}
