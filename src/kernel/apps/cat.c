@@ -3,8 +3,16 @@
 
 #define CAT_STDIN_BUFFER_SIZE 512
 
-int cat(int argc, __attribute__((unused)) char **argv)
+int cat(int argc, char **argv)
 {
+    char buf[CAT_STDIN_BUFFER_SIZE];
+
+    gets(buf);
+
+    puts(buf);
+
+    return 0;
+
     // TODO : rm q exit
     if (argc == 1)
     {

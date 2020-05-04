@@ -87,7 +87,39 @@ int myApp(int argc, char **argv)
     return 42;
 }
 
-#include <k/buffer.h>
+int tstCat(int argc, char **argv)
+{
+    puts("tstCat:");
+
+    char buf[50];
+    gets(buf);
+
+    printf("Cat <%s>\n", buf);
+
+    return 0;
+}
+
+int tstShell(int argc, char **argv)
+{
+    printf("tst > ");
+
+    if (argc == 42)
+    {
+        puts("tstShell : 42");
+        enter(Context_new(""), tstCat, 0, NULL);
+
+        return 0;
+    }
+
+    char buf[50];
+    gets(buf);
+
+    printf("Received <%s>\n", buf);
+
+    enter(Context_new(""), tstShell, 42, NULL);
+
+    return 0;
+}
 
 // After init, the user can access the kernel
 static void userAct()
@@ -131,8 +163,10 @@ static void userAct()
     // // context
     // printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
 
-
     // // TMP
+    // sys_enter(Context_new(""), tstShell, 0, NULL);
+
+    // while (1);
     // return;
 
 

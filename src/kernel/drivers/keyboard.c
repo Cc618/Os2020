@@ -128,7 +128,7 @@ static key_t DISPLAYABLE_PRESSED_MAP[KEY_MAP_SIZE] = {
     // 0x10
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i',
     // 0x18
-    'o', 'p', '[', ']', 0, 0, 'a', 's', 
+    'o', 'p', '[', ']', 0, 0, 'a', 's',
     // 0x20
     'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',
     // 0x28
@@ -164,7 +164,7 @@ static key_t DISPLAYABLE_PRESSED_MAP_UPPER[KEY_MAP_SIZE] = {
     // 0x10
     'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I',
     // 0x18
-    'O', 'P', '{', '}', 0, 0, 'A', 'S', 
+    'O', 'P', '{', '}', 0, 0, 'A', 'S',
     // 0x20
     'D', 'F', 'G', 'H', 'J', 'K', 'L', ':',
     // 0x28
@@ -266,7 +266,7 @@ void onKeyPressed()
             --lineBufferI;
 
         return;
-    
+
     case KEY_PRESSED_ENTER:
         pushChar('\n');
         flushBuffer();
@@ -278,16 +278,16 @@ void onKeyPressed()
     case KEY_PRESSED_RSHIFT:
         shiftPressed = true;
         return;
-    
+
     case KEY_RELEASED_LSHIFT:
     case KEY_RELEASED_RSHIFT:
         shiftPressed = false;
         return;
-    
+
     case KEY_PRESSED_LCTRL:
         ctrlPressed = true;
         return;
-    
+
     case KEY_RELEASED_LCTRL:
         ctrlPressed = false;
         return;

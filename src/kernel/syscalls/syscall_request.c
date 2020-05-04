@@ -44,6 +44,7 @@ u32 onSyscall()
     // Interrupt end
     outb(0xA0, 0x20);
     outb(0x20, 0x20);
+    __asm__ volatile("sti");
 
     // Invalid syscall id
     if (sysc == NULL)

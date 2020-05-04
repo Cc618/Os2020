@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stddef.h>
 
-// TODO : In drivers ?
 // PIC ports
 #define PIC_MASTER      0x20
 #define PIC_MASTER_CMD  0x20
