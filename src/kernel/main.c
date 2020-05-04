@@ -5,22 +5,7 @@
 #include "fs/fs.h"
 #include "apps/shell.h"
 #include "syscalls/syscalls.h"
-
 #include "_libc.h"
-
-// TODO :
-#include <stdint.h>
-#include <string.h>
-#include <stdio.h>
-
-
-// TODO : rm
-void printEntries(FSEntry **entries)
-{
-    for (size_t i = 0; entries[i]; ++i)
-        printf("%s ", entries[i]->name);
-    puts("");
-}
 
 
 // Inits all modules
@@ -43,9 +28,7 @@ static void initKernel()
     __libc_init();
 }
 
-
-
-// TODO : rm
+// TMP : rm
 #include "io/pipe.h"
 #include "io/file.h"
 #include "io/fs_file.h"
@@ -56,127 +39,17 @@ static void initKernel()
 #include "k/finfo.h"
 #include "syscalls/syscalls.h"
 
-
-static void p(void *item)
-{
-    printf("- %d\n", *(int*)item);
-}
-
-
-
-
-
-int child(int argc, char **argv)
-{
-    puts("child");
-
-    return 43;
-}
-
-int myApp(int argc, char **argv)
-{
-    puts("myApp()");
-
-    Context *c = currentContext();
-    printf("cwd = %s\n", c->cwd);
-
-    FILE *f = fopen("first", "r");
-    puts(f ? "File exists" : "File not found");
-    fclose(f);
-
-    return 42;
-}
-
-int tstCat(int argc, char **argv)
-{
-    puts("tstCat:");
-
-    char buf[50];
-    gets(buf);
-
-    printf("Cat <%s>\n", buf);
-
-    return 0;
-}
-
-int tstShell(int argc, char **argv)
-{
-    printf("tst > ");
-
-    if (argc == 42)
-    {
-        puts("tstShell : 42");
-        enter(Context_new(""), tstCat, 0, NULL);
-
-        return 0;
-    }
-
-    char buf[50];
-    gets(buf);
-
-    printf("Received <%s>\n", buf);
-
-    enter(Context_new(""), tstShell, 42, NULL);
-
-    return 0;
-}
-
 // After init, the user can access the kernel
 static void userAct()
 {
     // TODO : shell update (see / only at root)
-    // TODO : cat
     // TODO : Clean code (fs.c:16, app.c) + TMP
     // TODO : v0.2 !
-
-
-    // // Touch
-    // touch("/dir/touched", false);
-    // touch("touched2", false);
-    // touch("/dir/newsubdir", true);
-    // touch("alajdadjad/touched3", false);
-
-    // // Info
-    // FInfo *info = finfo("/dir/newsubdir");
-    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    // free(info);
-    // info = finfo("/dir/second");
-    // printf("Size = %d, dir = %s\n", info->size, info->directory ? "true" : "false");
-    // free(info);
-
-
-    // // ls
-    // size_t n;
-    // char **children = ls("/dir/newsubdir", &n);
-
-    // printf("> %d\n", n);
-
-    // for (size_t i = 0; i < n; i++)
-    // {
-    //     printf("- %s\n", children[i]);
-    //     free(children[i]);
-    // }
-
-    // free(children);
-
-
-    // // context
-    // printf("Context cwd : '%s' (%p)\n", context()->cwd, context()->cwd);
-
-    // // TMP
-    // sys_enter(Context_new(""), tstShell, 0, NULL);
-
-    // while (1);
-    // return;
-
-
-
-
 
     // Launch the shell
     char *shellArgv[2];
     shellArgv[0] = "";
-    shellArgv[1] = "/dir";
+    shellArgv[1] = "";
 
     sys_enter(Context_new(""), shellMain, 2, shellArgv);
 
@@ -184,7 +57,6 @@ static void userAct()
     puts("No process running");
 
     puts("Exiting");
-
 }
 
 // Terminates all modules
