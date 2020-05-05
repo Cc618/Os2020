@@ -42,8 +42,8 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : shell update (see / only at root)
     // TODO : Clean code (fs.c:16, app.c) + TMP
+    // TODO : Redirections ? (in Context for stdout + stderr [+ stdin])
     // TODO : v0.2 !
 
     // Launch the shell

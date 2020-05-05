@@ -38,11 +38,6 @@ static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) c
     // TMP : Use this ?
     // terminate();
 
-    // if (argc == 2)
-    // {
-    //     // TODO : atoi to return code
-    // }
-
     return 0;
 }
 
@@ -56,7 +51,7 @@ static int shellCd(int argc, char **argv)
     else if (argc == 1)
     {
         free(shellCwd);
-        shellCwd = strdup("");     
+        shellCwd = strdup("");
     }
     else // argc == 2
     {
@@ -127,7 +122,7 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
     // Static builtins
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
-    
+
     if (strcmp(app, "cd") == 0)
         return shellCd(argc, argv);
 
@@ -151,17 +146,35 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
 
 int shellMain(int argc, char **argv)
 {
-    // TODO : shellCwd = . to display
+    shellExitCode = 0;
 
-    // TODO : cd to cwd
     if (argc == 2)
-        // TODO : absPath + Verify valid
-        shellCwd = strdup(argv[1]);
+    {
+        shellCwd = absPath(context(), argv[1]);
+
+        // Verify validity
+        FInfo *info = finfo(shellCwd);
+
+        if (info == NULL)
+        {
+            shellExitCode = -1;
+            goto shellExit;
+        }
+
+        if (!info->directory)
+        {
+            shellExitCode = -1;
+            free(info);
+            goto shellExit;
+        }
+
+        free(info);
+    }
     else
+        // Root
         shellCwd = strdup("");
 
     shellRunning = true;
-    shellExitCode = 0;
 
     // Init display
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
@@ -182,6 +195,9 @@ int shellMain(int argc, char **argv)
         // Evaluate command
         shellEval(cmd);
     }
+
+shellExit:;
+    free(shellCwd);
 
     return shellExitCode;
 }
@@ -230,7 +246,7 @@ void shellEval(const char *CMD)
     if (ret == BUILTIN_NOT_FOUND)
         puts("No app found");
 
-    // TODO : Exec
+    // TODO : When apps : Exec
     // {
     //     ret = exec(appName, argc, argv);
 
