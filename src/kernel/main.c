@@ -28,21 +28,10 @@ static void initKernel()
     __libc_init();
 }
 
-// TMP : rm
-#include "io/pipe.h"
-#include "io/file.h"
-#include "io/fs_file.h"
-#include "k/syscalls.h"
-#include "k/vector.h"
-#include "k/queue.h"
-#include "k/io.h"
-#include "k/finfo.h"
-#include "syscalls/syscalls.h"
-
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Clean code (fs.c:16, app.c) + TMP
+    // TODO : Clean code (fs.c:16) + TMP
     // TODO : Redirections ? (in Context for stdout + stderr [+ stdin])
     // TODO : v0.2 !
 
