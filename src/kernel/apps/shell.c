@@ -150,6 +150,13 @@ int shellMain(int argc, char **argv)
 
     if (argc == 2)
     {
+        // Display help
+        if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0)
+        {
+            puts("Usage : shell [<dir>='']");
+            return 0;
+        }
+
         shellCwd = absPath(context(), argv[1]);
 
         // Verify validity

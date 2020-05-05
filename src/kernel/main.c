@@ -46,7 +46,7 @@ static void userAct()
     // TODO : Redirections ? (in Context for stdout + stderr [+ stdin])
     // TODO : v0.2 !
 
-    // Launch the shell
+    // Launch the shell from root
     char *shellArgv[2];
     shellArgv[0] = "";
     shellArgv[1] = "";
