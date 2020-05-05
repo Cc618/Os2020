@@ -3,7 +3,6 @@
 
 int lsMain(int argc, char **argv)
 {
-    // TODO : Parse args
     const char *dir = argc == 1 ? "." : argv[1];
 
     // ls

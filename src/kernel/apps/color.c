@@ -65,8 +65,7 @@ int colorMain(int argc, char **argv)
 
             if (colId == nColors)
             {
-                // TODO : stderr
-                printf("Color <%s> not found, use color list to show available colors\n", argv[0]);
+                fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[0]);
                 return -1;
             }
             
@@ -83,8 +82,7 @@ int colorMain(int argc, char **argv)
 
         if (colId == nColors)
         {
-            // TODO : stderr
-            printf("Color <%s> not found, use color list to show available colors\n", argv[0]);
+            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[0]);
             return -1;
         }
         
@@ -95,8 +93,7 @@ int colorMain(int argc, char **argv)
 
         if (colId == nColors)
         {
-            // TODO : stderr
-            printf("Color <%s> not found, use color list to show available colors\n", argv[1]);
+            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[1]);
             return -1;
         }
         
@@ -110,8 +107,7 @@ int colorMain(int argc, char **argv)
     }
     else
     {
-        // TODO : stderr printf
-        printf("Invalid arguments, use color --help to see the usage\n");   
+        fprintf(stderr, "Invalid arguments, use color --help to see the usage\n");   
         return -1;
     }
 

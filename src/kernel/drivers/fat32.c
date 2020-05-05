@@ -719,8 +719,6 @@ void fatInit()
     bpb = malloc(sizeof(FatBPB));
     hddRead(FS_SECTOR, bpb, 1);
 
-    // TODO : Verify version + sector / cluster
-
     // Load FSInfo
     fsInfo = malloc(sizeof(FSInfo));
     hddRead(FS_SECTOR + bpb->fsInfoCluster, fsInfo, 1);

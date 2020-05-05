@@ -27,16 +27,11 @@ static char *shellCwd;
 static void resetUserInput()
 {
     userInputBegin = getCaret();
-
-    // TODO : stdin flush
 }
 
 static int shellExit(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
 {
     shellRunning = false;
-
-    // TMP : Use this ?
-    // terminate();
 
     return 0;
 }

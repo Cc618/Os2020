@@ -16,8 +16,6 @@ static void updateCaret()
 
 void consolePut(char c)
 {
-    // TODO : FMT
-    
     if (c == '\n')
     {
         consoleNewLine();

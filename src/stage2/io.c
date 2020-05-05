@@ -61,8 +61,6 @@ void newLine()
     // Align
     cursorPos -= cursorPos % TTY_WIDTH;
 
-    // TODO : puts end of screen
-
     updateCursor();
 }
 

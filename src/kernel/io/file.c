@@ -83,7 +83,7 @@ void filesTerminate()
 
 void registerFile(File *f)
 {
-    // TODO : Find NULL entry
+    // TMP : Find NULL entry
 
     f->fd = files->size;
 

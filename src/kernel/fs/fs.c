@@ -13,8 +13,7 @@ void fsInit()
 
 void fsTerminate()
 {
-    // TMP : Call delete method (free name...)
-    free(root);
+    FSEntry_del(root);
 }
 
 // FSEntry methods //
