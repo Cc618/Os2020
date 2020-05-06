@@ -243,6 +243,7 @@ void shellEval(const char *CMD)
     for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
 
+    // Detect redirections
     bool stdoutRedirected = false;
     if (argc > 2 && strcmp(argv[argc - 2], ">") == 0)
         stdoutRedirected = true;
@@ -253,6 +254,7 @@ void shellEval(const char *CMD)
 
     Context *ctxt = Context_new(shellCwd);
 
+    // Open file for redirections
     if (stdoutRedirected)
     {
         char *path = absPathFrom(shellCwd, argv[argc - 1]);
@@ -278,12 +280,6 @@ void shellEval(const char *CMD)
     // Execute command
     int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected || stdinRedirected ? argc - 2 : argc, argv);
 
-    if (stdoutRedirected)
-        close(ctxt->stdout);
-    
-    if (stdinRedirected)
-        close(ctxt->stdin);
-
     if (ret == BUILTIN_NOT_FOUND)
         puts("No app found");
 
@@ -294,6 +290,13 @@ void shellEval(const char *CMD)
     //     if (ret != 0)
     //         printf("App exits with code %d\n", ret);
     // }
+
+    // Close redirections
+    if (stdoutRedirected)
+        close(ctxt->stdout);
+    
+    if (stdinRedirected)
+        close(ctxt->stdin);
 
     Context_del(ctxt);
 

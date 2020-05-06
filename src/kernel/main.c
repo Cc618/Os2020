@@ -31,7 +31,6 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Redirections ? (in Context for stdout + stderr [+ stdin]) / Write
     // TODO : TMP
     // TODO : Doc (+ gif)
     // TODO : v0.2 !
