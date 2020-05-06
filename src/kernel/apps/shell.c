@@ -148,7 +148,7 @@ int shellMain(int argc, char **argv)
             return 0;
         }
 
-        shellCwd = absPath(context(), argv[1]);
+        shellCwd = absPath(argv[1]);
 
         // If last char is /, remove it
         size_t len = strlen(shellCwd);
@@ -313,7 +313,6 @@ void shellEval(const char *CMD)
         close(ctxt->stderr);
     else if (stdinRedirected)
         close(ctxt->stdin);
-
 
 end:;
     Context_del(ctxt);

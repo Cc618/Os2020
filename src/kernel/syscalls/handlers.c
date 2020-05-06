@@ -147,7 +147,7 @@ fd_t sys_pipe()
 // --- Files --- //
 char **sys_ls(const char *dir, size_t *outCount)
 {
-    char *path = absPath(currentContext(), dir);
+    char *path = absPathFrom(currentContext()->cwd, dir);
     FSEntry *f = getEntry(path);
     free(path);
 
@@ -182,7 +182,7 @@ Context *sys_context()
 
 void sys_touch(const char *p, bool directory)
 {
-    char *path = absPath(currentContext(), p);
+    char *path = absPathFrom(currentContext()->cwd, p);
     char *dir;
     char *name;
     

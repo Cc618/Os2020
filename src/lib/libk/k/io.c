@@ -1,7 +1,19 @@
 #include "io.h"
 
 #include "types.h"
+#include "syscalls.h"
 #include <string.h>
+
+char *absPath(const char *p)
+{
+    Context *c = context();
+
+    char *ret = absPathFrom(c->cwd, p);
+
+    Context_del(c);
+
+    return ret;
+}
 
 char *absPathFrom(const char *cwd, const char *p)
 {

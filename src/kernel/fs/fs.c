@@ -99,7 +99,7 @@ FSEntry *getEntry(const char *rPath)
         return root;
 
     // Absolute path (or rPath if rPath already absolute)
-    char *path = absPath(currentContext(), rPath);
+    char *path = absPathFrom(currentContext()->cwd, rPath);
 
     // Don't parse root
     if (path[0] == '/' || path[0] == '\\')
