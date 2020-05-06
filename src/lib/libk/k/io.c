@@ -3,14 +3,14 @@
 #include "types.h"
 #include <string.h>
 
-char *absPath(Context *c, const char *p)
+char *absPathFrom(const char *cwd, const char *p)
 {
     // This is an absolute path, duplicate it
     if (p[0] == '/')
         return strdup(p);
 
     // Root case
-    if (strcmp(c->cwd, "/") == 0)
+    if (strcmp(cwd, "/") == 0)
     {
         char *path = malloc(2 + strlen(p));
         path[0] = '/';
@@ -20,11 +20,11 @@ char *absPath(Context *c, const char *p)
     }
 
     // Length of cwd/p\0
-    size_t cwdLen = strlen(c->cwd);
+    size_t cwdLen = strlen(cwd);
     char *path = malloc(cwdLen + 1 + strlen(p) + 1);
 
     // Combine paths
-    memcpy(path, c->cwd, cwdLen);
+    memcpy(path, cwd, cwdLen);
     path[cwdLen] = '/';
     strcpy(path + cwdLen + 1, p);
 

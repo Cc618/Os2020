@@ -16,7 +16,10 @@
 // the context c (usually the current app context)
 // * p can be a file, a directory, empty or ./..
 // * p can also be absolute, a duplicate is returned
-char *absPath(Context *c, const char *p);
+// TMP : Update doc + absPath remove context
+#define absPath(c, p) absPathFrom((c)->cwd, p);
+// char *absPath(Context *c, const char *p);
+char *absPathFrom(const char *cwd, const char *p);
 
 // Returns the parent directory (without / at the end)
 // * p is absolute or already has a parent directory (contains /)

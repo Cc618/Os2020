@@ -110,10 +110,8 @@ static int shellCd(int argc, char **argv)
 // Tries to executes a builtin command
 // Returns the exit code of the command
 // or BUILTIN_NOT_FOUND if no builtin found
-static int tryExecBuiltin(const char *app, int argc, char **argv)
+static int tryExecBuiltin(Context *ctxt, const char *app, int argc, char **argv)
 {
-    Context *ctxt = Context_new(shellCwd);
-
     // Static builtins
     if (strcmp(app, "exit") == 0)
         return shellExit(argc, argv);
@@ -129,21 +127,10 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
         return enter(ctxt, colorMain, argc, argv);
 
     if (strcmp(app, "echo") == 0)
-    {
-        // TMP
-        ctxt->stdout = open("/dir/out", F_WRITE);
-
-        int ret = enter(ctxt, echo, argc, argv);
-
-        close(ctxt->stdout);
-
-        return ret;
-    }
+        return enter(ctxt, echo, argc, argv);
 
     if (strcmp(app, "ls") == 0)
         return enter(ctxt, lsMain, argc, argv);
-
-    Context_del(ctxt);
 
     return BUILTIN_NOT_FOUND;
 }
@@ -222,7 +209,7 @@ void shellPS1()
 {
     // TODO : Push / pop format to have console format
 
-    printf("@ %s > ", shellCwd[0] == '\0' ? "/" : shellCwd);
+    printf("@ %s -> ", shellCwd[0] == '\0' ? "/" : shellCwd);
 
     resetUserInput();
 }
@@ -256,8 +243,29 @@ void shellEval(const char *CMD)
     for ( ; (token = strtok(NULL, delim)); ++argc)
         argv[argc] = token;
 
+    bool stdoutRedirected = false;
+    if (argc - 2 > 0 && strcmp(argv[argc - 2], ">") == 0)
+        stdoutRedirected = true;
+
+    Context *ctxt = Context_new(shellCwd);
+
+    if (stdoutRedirected)
+    {
+        char *path = absPathFrom(shellCwd, argv[argc - 1]);
+        ctxt->stdout = open(path, F_WRITE);
+        if (ctxt->stdout < 0)
+        {
+            fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
+            return;
+        }
+    }
+
     // Execute command
-    int ret = tryExecBuiltin(appName, argc, argv);
+    int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected ? argc - 2 : argc, argv);
+
+    if (stdoutRedirected)
+        close(ctxt->stdout);
+
 
     if (ret == BUILTIN_NOT_FOUND)
         puts("No app found");
@@ -269,6 +277,8 @@ void shellEval(const char *CMD)
     //     if (ret != 0)
     //         printf("App exits with code %d\n", ret);
     // }
+
+    Context_del(ctxt);
 
     free(cmd);
     for (size_t i = 0; i < (size_t)argc; ++i)
