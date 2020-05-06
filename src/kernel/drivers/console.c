@@ -54,8 +54,14 @@ void consoleDel()
 
 void consoleNewLine()
 {
+    unsigned int oldCaret = caret;
+
     caret += SCREEN_WIDTH;
     caret -= caret % SCREEN_WIDTH;
+
+    // Fill with empty
+    for (size_t i = oldCaret; i < caret; ++i)
+        setCharOffset(i, '\0', consoleFmt);
 
     // Scroll if necessary
     if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
@@ -66,17 +72,17 @@ void consoleNewLine()
 
 void consoleTab()
 {
-    // Tab length is 4
     unsigned int oldCaret = caret;
 
+    // Tab length is 4
     caret += 4;
     caret /= 4;
     caret *= 4;
 
     // Fill with empty
     for (size_t i = oldCaret; i < caret; ++i)
-        setCharOffset(oldCaret, '\0', consoleFmt);
-    
+        setCharOffset(i, '\0', consoleFmt);
+
     // Scroll if necessary
     if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
         consoleScroll();
