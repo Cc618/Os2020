@@ -129,7 +129,16 @@ static int tryExecBuiltin(const char *app, int argc, char **argv)
         return enter(ctxt, colorMain, argc, argv);
 
     if (strcmp(app, "echo") == 0)
-        return enter(ctxt, echo, argc, argv);
+    {
+        // TMP
+        ctxt->stdout = open("/dir/out", F_WRITE);
+
+        int ret = enter(ctxt, echo, argc, argv);
+
+        close(ctxt->stdout);
+
+        return ret;
+    }
 
     if (strcmp(app, "ls") == 0)
         return enter(ctxt, lsMain, argc, argv);

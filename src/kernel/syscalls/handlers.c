@@ -81,6 +81,20 @@ fd_t sys_open(const char *path, u8 mode)
 
 ssize_t sys_read(fd_t fd, void *buffer, size_t count)
 {
+    // Context redirections
+    switch (fd)
+    {
+    case STDIN_FD:
+        fd = currentContext()->stdin;
+        break;
+    case STDOUT_FD:
+        fd = currentContext()->stdout;
+        break;
+    case STDERR_FD:
+        fd = currentContext()->stderr;
+        break;
+    }
+
     File *f = getFile(fd);
 
     // Not found
@@ -92,6 +106,20 @@ ssize_t sys_read(fd_t fd, void *buffer, size_t count)
 
 ssize_t sys_write(fd_t fd, void *buffer, size_t count)
 {
+    // Context redirections
+    switch (fd)
+    {
+    case STDIN_FD:
+        fd = currentContext()->stdin;
+        break;
+    case STDOUT_FD:
+        fd = currentContext()->stdout;
+        break;
+    case STDERR_FD:
+        fd = currentContext()->stderr;
+        break;
+    }
+    
     File *f = getFile(fd);
 
     // Not found
