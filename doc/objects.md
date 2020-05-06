@@ -22,3 +22,11 @@ ObjectName_del(ObjectName*)
 
 This collection gathers linearly a sequence of data (stored as pointers).
 All items are freed when removed.
+
+## Buffer
+
+A buffer is a vector but gathers raw memory, not objects.
+
+## Queue
+
+A queue is a FIFO structure gathering objects.
