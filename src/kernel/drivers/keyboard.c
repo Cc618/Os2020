@@ -2,7 +2,6 @@
 
 #include "drivers/ports.h"
 #include "drivers/console.h"
-#include "io/stdstream.h"
 #include "apps/shell.h"
 #include "syscalls/syscalls.h"
 #include <k/io.h>
