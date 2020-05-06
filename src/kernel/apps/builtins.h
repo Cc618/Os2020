@@ -9,3 +9,5 @@ int colorMain(int argc, char **argv);
 int cat(int argc, char **argv);
 
 int lsMain(int argc, char **argv);
+
+int mkdir(int argc, char **argv);

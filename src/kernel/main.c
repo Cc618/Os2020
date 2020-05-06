@@ -32,6 +32,7 @@ static void initKernel()
 static void userAct()
 {
     // TODO : Doc (+ gif)
+    // TODO : Warnings
     // TODO : v0.2 !
 
     // Launch the shell from root

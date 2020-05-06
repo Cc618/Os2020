@@ -132,6 +132,9 @@ static int tryExecBuiltin(Context *ctxt, const char *app, int argc, char **argv)
     if (strcmp(app, "ls") == 0)
         return enter(ctxt, lsMain, argc, argv);
 
+    if (strcmp(app, "mkdir") == 0)
+        return enter(ctxt, mkdir, argc, argv);
+
     return BUILTIN_NOT_FOUND;
 }
 
