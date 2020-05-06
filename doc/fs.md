@@ -7,7 +7,7 @@ Os 2020 handles the FAT 32 file system, here is how to retrieve / modify files f
 To modify the file system, just modify the file fs/fs and build the os.
 This file is created at the building of this os and you can also sync Os 2020's files (see next section for details).
 
-Here are steps to modify files from your os :
+Here are steps to modify files from your os (after a first build) :
 
 1. Go to fs and create the modification directory :
 
@@ -41,13 +41,12 @@ cd .. && make run
 
 ## Retrieve files from Os 2020
 
-There is a script scripts/getfs.sh that can be runned from the root of this repo which copies the file system from bin/os to fs/fs.
+There is a script **scripts/getfs.sh** that can be runned from the root of this repo which copies the file system from bin/os to fs/fs.
 
 ## Notes
 
 The file system is 64MiB wide but this size is the minimal size, you can change the size in the makefile or just create another image of different size in fs/fs.
-
-Files modes are ignored.
+Be carefull, set clusters of size 512.
 
 ## Specs of the driver
 

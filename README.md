@@ -18,23 +18,22 @@ Written in C and assembly (NASM), it provides a custom bootloader and a libc.
 
 This OS aims to improve an older OS I made named '[OctOs](https://github.com/Cc618/OctOs)'.
 
-Os 2020 contains a second stage bootloader.
-
 Here is the list of improvements :
 
-- Boot system : There are 2 bootloaders, the OS is dynamically loaded. It will detects the end of the chunks at run time
-- libc : OctOs was written in C++ and had a custom standard library. Os 2020 will have a libc (not fully implemented, see [this file](doc/libc.md) for details)
-- syscalls : To implement the libc, we will use syscalls to interact with the kernel
-- Linker, architecture... : The goal is to write everything from scratch to have a clean code. OctOs was inspired by many websites / repos, Os 2020 will have a refactored code
-- File IO : This OS will implements file IO functions
-- _No mistakes_ : OctOs suffered from memory leaks because of C++ constructors / destructors. Os 2020 will implements constructors sections if necessary and uses C
+- Boot system : A second stage bootloader is implemented so there are 2 bootloaders, the OS is dynamically loaded. It will detects the end of the chunks at run time
+- Libraries : OctOs was written in C++ and had a custom standard library. Os 2020 will have a libc (not fully implemented, see [this file](doc/lib.md) for details) and also a libk, the libc gathers main IO / string functions and libk handles system related functions such as syscalls and utils such as data structures or path functions
+- syscalls : The main goal is not to make a user mode but to provide syscalls for apps
+- File IO : This OS provides a Fat32 driver with scripts to retrieve or replace the file system of the Os (see [this file](doc/fs.md) for details)
+- Apps : Os 2020 contains several processes (called apps) inspired from linux like ls, cat, echo and also a shell with input redirection, go [here](doc/shell.md) to see shell functions
+- Memory : OctOs suffered from memory leaks because of C++ constructors / destructors. Os 2020 won't use constructors and uses C.
 
 ## Architecture
 
 - doc : Documentation
-- src/boot : Boot / Loader chunks implementation (full Asm)
+- src/stage1 : First bootloader chunk (full Asm)
+- src/stage2 : Second bootloader chunk
 - src/kernel : Core chunk
-- src/libc : The libc implementation
+- src/lib : Libc and libk
 
 ## Depedencies
 
