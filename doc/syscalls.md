@@ -65,6 +65,31 @@ void close(fd_t fd);
 fd_t pipe();
 ```
 
+### Files
+#### ls
+- List all files within dir
+```c
+char **ls(const char *dir, size_t *outCount);
+```
+
+#### context
+- Returns a soft copy of the current context
+```c
+Context *context();
+```
+
+#### touch
+- Creates a new file / directory
+```c
+void touch(const char *path, bool directory);
+```
+
+#### finfo
+- Returns properties of the file
+```c
+FInfo *finfo(const char *path);
+```
+
 ## How to add a syscall
 
 Here is what to update to add a new syscall named **ID** with **NARG** arguments :
