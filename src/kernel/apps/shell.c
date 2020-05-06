@@ -43,7 +43,7 @@ static int shellCd(int argc, char **argv)
         fprintf(stderr, "cd: Too many args\n");
         return -1;
     }
-    else if (argc == 1)
+    else if (argc == 1 || strcmp(argv[2], "/") == 0)
     {
         free(shellCwd);
         shellCwd = strdup("");
