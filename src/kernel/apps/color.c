@@ -65,7 +65,7 @@ int colorMain(int argc, char **argv)
 
             if (colId == nColors)
             {
-                fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[0]);
+                fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[1]);
                 return -1;
             }
             
@@ -82,7 +82,7 @@ int colorMain(int argc, char **argv)
 
         if (colId == nColors)
         {
-            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[0]);
+            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[1]);
             return -1;
         }
         
@@ -93,17 +93,14 @@ int colorMain(int argc, char **argv)
 
         if (colId == nColors)
         {
-            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[1]);
+            fprintf(stderr, "Color <%s> not found, use color list to show available colors\n", argv[2]);
             return -1;
         }
         
         uint8_t bg = colFmt[colId];
 
-        // TODO : LIGHT
-
         // Set format
         consoleFmt = (bg << 4) | fg;
-
     }
     else
     {
