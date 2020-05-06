@@ -6,11 +6,11 @@ Written in C and assembly (NASM), it provides a custom bootloader and a libc.
 
 ## Some screenshots
 
-<!--- TODO : rm --->
-![Os 2020 0.1](res/v0_1.gif "Os 2020 v0.1 example")
+![Os 2020 0.2](res/video.gif "Os 2020 example")
+
+![Welcome !](res/welcome.png "Welcome !")
 
 ![Os 2020](res/os2020.png "Small example")
-
 
 ## Features
 
