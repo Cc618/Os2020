@@ -14,8 +14,9 @@ Here is a list of usefull commands :
 - cd
 - color : Sets the color of the background / foreground of the console
 - echo
-- ls
 - exit
+- ls
+- mkdir
 
 ## Redirections
 
