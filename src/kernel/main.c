@@ -31,7 +31,7 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : TMP
+    // TODO : Console \n bug
     // TODO : Doc (+ gif)
     // TODO : v0.2 !
 

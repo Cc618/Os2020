@@ -15,9 +15,10 @@ void consoleDel();
 // consolePut('\n')
 void consoleNewLine();
 
+// consolePut('\t')
+void consoleTab();
+
 // Scrolls one line
 void consoleScroll();
 
 unsigned int getCaret();
-
-// TMP : TABS

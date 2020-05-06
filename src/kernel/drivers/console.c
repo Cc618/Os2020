@@ -22,6 +22,12 @@ void consolePut(char c)
         return;
     }
 
+    if (c == '\t')
+    {
+        consoleTab();
+        return;
+    }
+
     // Scroll if necessary
     if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
         consoleScroll();
@@ -51,6 +57,26 @@ void consoleNewLine()
     caret += SCREEN_WIDTH;
     caret -= caret % SCREEN_WIDTH;
 
+    // Scroll if necessary
+    if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
+        consoleScroll();
+    else
+        updateCaret();
+}
+
+void consoleTab()
+{
+    // Tab length is 4
+    unsigned int oldCaret = caret;
+
+    caret += 4;
+    caret /= 4;
+    caret *= 4;
+
+    // Fill with empty
+    for (size_t i = oldCaret; i < caret; ++i)
+        setCharOffset(oldCaret, '\0', consoleFmt);
+    
     // Scroll if necessary
     if (caret >= SCREEN_WIDTH * SCREEN_HEIGHT)
         consoleScroll();
