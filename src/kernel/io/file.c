@@ -83,11 +83,23 @@ void filesTerminate()
 
 void registerFile(File *f)
 {
-    // TMP : Find NULL entry
+    f->fd = -1;
 
-    f->fd = files->size;
+    // Try to find NULL entry
+    for (size_t i = 3; i < files->size; ++i)
+        if (files->data[i] == NULL)
+        {
+            f->fd = i;
+            files->data[i] = f;
+            break;
+        }
 
-    Vector_add(files, f);
+    if (f->fd == -1)
+    {
+        f->fd = files->size;
+
+        Vector_add(files, f);
+    }
 }
 
 void deregisterFile(File *f)
