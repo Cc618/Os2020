@@ -244,8 +244,12 @@ void shellEval(const char *CMD)
         argv[argc] = token;
 
     bool stdoutRedirected = false;
-    if (argc - 2 > 0 && strcmp(argv[argc - 2], ">") == 0)
+    if (argc > 2 && strcmp(argv[argc - 2], ">") == 0)
         stdoutRedirected = true;
+    
+    bool stdinRedirected = false;
+    if (argc > 2 && strcmp(argv[argc - 2], "<") == 0)
+        stdinRedirected = true;
 
     Context *ctxt = Context_new(shellCwd);
 
@@ -260,12 +264,25 @@ void shellEval(const char *CMD)
         }
     }
 
+    if (stdinRedirected)
+    {
+        char *path = absPathFrom(shellCwd, argv[argc - 1]);
+        ctxt->stdin = open(path, F_READ);
+        if (ctxt->stdin < 0)
+        {
+            fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
+            return;
+        }
+    }
+
     // Execute command
-    int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected ? argc - 2 : argc, argv);
+    int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected || stdinRedirected ? argc - 2 : argc, argv);
 
     if (stdoutRedirected)
         close(ctxt->stdout);
-
+    
+    if (stdinRedirected)
+        close(ctxt->stdin);
 
     if (ret == BUILTIN_NOT_FOUND)
         puts("No app found");
