@@ -9,6 +9,16 @@ char *absPath(Context *c, const char *p)
     if (p[0] == '/')
         return strdup(p);
 
+    // Root case
+    if (strcmp(c->cwd, "/") == 0)
+    {
+        char *path = malloc(2 + strlen(p));
+        path[0] = '/';
+        strcpy(&path[1], p);
+
+        return path;
+    }
+
     // Length of cwd/p\0
     size_t cwdLen = strlen(c->cwd);
     char *path = malloc(cwdLen + 1 + strlen(p) + 1);

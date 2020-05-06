@@ -154,6 +154,11 @@ int shellMain(int argc, char **argv)
 
         shellCwd = absPath(context(), argv[1]);
 
+        // If last char is /, remove it
+        size_t len = strlen(shellCwd);
+        if (shellCwd[len - 1] == '/')
+            shellCwd[len - 1] = '\0';
+
         // Verify validity
         FInfo *info = finfo(shellCwd);
 
