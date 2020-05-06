@@ -248,6 +248,10 @@ void shellEval(const char *CMD)
     if (argc > 2 && strcmp(argv[argc - 2], ">") == 0)
         stdoutRedirected = true;
     
+    bool stderrRedirected = false;
+    if (argc > 2 && strcmp(argv[argc - 2], "2>") == 0)
+        stderrRedirected = true;
+    
     bool stdinRedirected = false;
     if (argc > 2 && strcmp(argv[argc - 2], "<") == 0)
         stdinRedirected = true;
@@ -262,7 +266,18 @@ void shellEval(const char *CMD)
         if (ctxt->stdout < 0)
         {
             fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
-            return;
+            goto end;
+        }
+    }
+
+    if (stderrRedirected)
+    {
+        char *path = absPathFrom(shellCwd, argv[argc - 1]);
+        ctxt->stderr = open(path, F_WRITE);
+        if (ctxt->stderr < 0)
+        {
+            fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
+            goto end;
         }
     }
 
@@ -273,12 +288,12 @@ void shellEval(const char *CMD)
         if (ctxt->stdin < 0)
         {
             fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
-            return;
+            goto end;
         }
     }
 
     // Execute command
-    int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected || stdinRedirected ? argc - 2 : argc, argv);
+    int ret = tryExecBuiltin(ctxt, appName, stdoutRedirected || stderrRedirected || stdinRedirected ? argc - 2 : argc, argv);
 
     if (ret == BUILTIN_NOT_FOUND)
         puts("No app found");
@@ -294,10 +309,13 @@ void shellEval(const char *CMD)
     // Close redirections
     if (stdoutRedirected)
         close(ctxt->stdout);
-    
-    if (stdinRedirected)
+    else if (stderrRedirected)
+        close(ctxt->stderr);
+    else if (stdinRedirected)
         close(ctxt->stdin);
 
+
+end:;
     Context_del(ctxt);
 
     free(cmd);
