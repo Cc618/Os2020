@@ -31,7 +31,7 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Doc (+ gif)
+    // TODO : Doc (+ gif, rm outdated res)
     // TODO : Warnings
     // TODO : v0.2 !
 
