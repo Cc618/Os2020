@@ -37,6 +37,7 @@ static size_t findColor(const char *name)
     return n;
 }
 
+// TODO : Use syscalls
 int colorMain(int argc, char **argv)
 {
     size_t nColors = sizeof(colNames) / sizeof(const char*);

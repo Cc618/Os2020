@@ -180,6 +180,7 @@ int shellMain(int argc, char **argv)
     shellRunning = true;
 
     // Init display
+    // TODO : Use syscalls
     fillScreen('\0', (FMT_BLACK << 4) | FMT_GRAY);
     setCaret(0, 0);
 
