@@ -5,7 +5,7 @@ All files are located in src/lib.
 
 ## Libk
 
-To include libk files use k/*.c, libk provides system related functions like syscalls and also data structures.
+To include libk files use k/*.c, libk provides system related functions like syscalls, system structures and also data structures.
 
 ## Libc
 
@@ -40,6 +40,8 @@ In addition, there is some definitions / structs like NULL, stdint.h and stdarg.
 - fprintf
 - fputc
 - fputs
+- fread
+- fwrite
 - gets
 - getchar
 - putc
