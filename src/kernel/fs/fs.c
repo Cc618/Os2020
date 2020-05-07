@@ -3,6 +3,7 @@
 #include "drivers/fat32.h"
 #include "syscalls/syscalls.h"
 #include <k/io.h>
+#include <string.h>
 
 FSEntry *root;
 

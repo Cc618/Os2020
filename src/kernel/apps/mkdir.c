@@ -1,5 +1,7 @@
 #include <k/syscalls.h>
+#include <k/io.h>
 #include <string.h>
+#include <stdio.h>
 
 int mkdir(int argc, char **argv)
 {
@@ -9,7 +11,7 @@ int mkdir(int argc, char **argv)
         return 0;
     }
 
-    for (size_t i = 1; i < argc; ++i)
+    for (int i = 1; i < argc; ++i)
         touch(absPath(argv[i]), true);
 
     return 0;

@@ -269,7 +269,7 @@ static size_t allocateCluster()
     size_t nextFree = fsInfo->nextFree;
 
     // Default value
-    if (nextFree == -1)
+    if (nextFree == (size_t)-1)
         nextFree = 2;
 
     // Index of nextFree in fatEntries
@@ -537,7 +537,7 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength, siz
 {
     // We have to find a string of 'entryLength' entries in dirCluster
 
-    void *fat = NULL;
+    u32 *fat = NULL;
     FatEntry *clusterContent = malloc(FAT_CLUSTER_SIZE);
     *outEntryCluster = dirCluster;
 
@@ -556,7 +556,7 @@ static void addDirEntry(u32 dirCluster, FatEntry *entry, size_t entryLength, siz
             for ( ; j < entryLength; ++j)
                 // If this string is not empty
                 if (!(clusterContent[*outEntryI + j].name[0] == 0 ||
-                    clusterContent[*outEntryI + j].name[0] == 0xE5))
+                    (u8)clusterContent[*outEntryI + j].name[0] == 0xE5))
                     goto notEmpty;
 
             // This string is suitable
@@ -636,7 +636,7 @@ void emptyDir(u32 *outCluster, u32 parentCluster)
     // Fill name + ext
     memset(((FatEntry*) content)[1].name, 0x20, 11);
     ((FatEntry*) content)[1].name[0] = '.';
-    ((FatEntry*) content)[1].name[1] = '..';
+    ((FatEntry*) content)[1].name[1] = '.';
     ((FatEntry*) content)[1].firstClusterHigh = ((0xFF00 & parentCluster) >> 16);
     ((FatEntry*) content)[1].firstClusterLow = 0xFF & parentCluster;
     ((FatEntry*) content)[1].flags = FAT_DIR;
@@ -773,7 +773,7 @@ void readCluster(size_t clusterNb, void *buffer, size_t bytesToLoad)
 size_t fatFSEntry_read(FSEntry *file, void *buffer, size_t count)
 {
     if (count == 0)
-        return;
+        return 0;
 
     if (count > file->size)
         count = file->size;

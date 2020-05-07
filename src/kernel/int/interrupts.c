@@ -69,7 +69,7 @@ IDTEntry IDT[256];
 uint32_t idtDescriptor[2];
 
 // All IRQs
-void (*IRQ_TABLE[256])() = {
+u32 (*IRQ_TABLE[256])() = {
     irq0,
     irq1,
     irq2,

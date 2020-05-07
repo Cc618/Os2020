@@ -205,7 +205,7 @@ static void flushBuffer()
 }
 
 // Pushes a char to lineBuffer, can send to stdin if the buffer is full
-static bool pushChar(char c)
+static void pushChar(char c)
 {
     lineBuffer[lineBufferI] = c;
     ++lineBufferI;

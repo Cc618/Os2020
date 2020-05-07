@@ -14,8 +14,8 @@ static bool printFile(const char *path)
 
     if (!f || !info)
     {
-        if (finfo)
-            free(finfo);
+        if (info != NULL)
+            free(info);
 
         fprintf(stderr, "File '%s' can't be opened\n", path);
         return false;
@@ -48,7 +48,7 @@ int cat(int argc, char **argv)
     }
     else
     {
-        size_t i = 1;
+        int i = 1;
         for ( ; i < argc && printFile(argv[i]); ++i);
 
         return i == argc ? 0 : -1;

@@ -83,7 +83,7 @@ void filesTerminate()
 
 void registerFile(File *f)
 {
-    f->fd = -1;
+    f->fd = (fd_t)-1;
 
     // Try to find NULL entry
     for (size_t i = 3; i < files->size; ++i)
@@ -94,7 +94,7 @@ void registerFile(File *f)
             break;
         }
 
-    if (f->fd == -1)
+    if (f->fd == (fd_t)-1)
     {
         f->fd = files->size;
 

@@ -6,4 +6,4 @@
 
 void Stderr_init();
 
-size_t Stderr_write(File *f, void *buffer, size_t count);
+ssize_t Stderr_write(File *f, void *buffer, size_t count);

@@ -2,10 +2,12 @@
 #include "drivers/console.h"
 #include "drivers/keyboard.h"
 #include "drivers/fat32.h"
+#include "io/file.h"
 #include "fs/fs.h"
 #include "apps/shell.h"
 #include "syscalls/syscalls.h"
 #include "_libc.h"
+#include <stdio.h>
 
 
 // Inits all modules
@@ -31,7 +33,6 @@ static void initKernel()
 // After init, the user can access the kernel
 static void userAct()
 {
-    // TODO : Doc (+ gif, rm outdated res)
     // TODO : Warnings
     // TODO : v0.2 !
 

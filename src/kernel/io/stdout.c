@@ -13,7 +13,7 @@ void Stdout_init()
     File_new(NULL, ops);
 }
 
-size_t Stdout_write(File *f, void *buffer, size_t count)
+ssize_t Stdout_write(__attribute__((unused)) File *f, void *buffer, size_t count)
 {
     for (size_t i = 0; i < count; ++i)
         consolePut(((char*) buffer)[i]);
