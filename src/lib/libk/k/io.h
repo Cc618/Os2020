@@ -2,7 +2,7 @@
 
 #include "context.h"
 
-#define INVALID_FD  (-1)
+#define INVALID_FD  ((fd_t)-1)
 #define STDIN_FD    0
 #define STDOUT_FD   1
 #define STDERR_FD   2

@@ -18,6 +18,8 @@ Queue *Queue_new(size_t capacity)
     q->capacity = capacity;
     q->data = malloc(capacity * sizeof(void*));
     q->start = q->end = 0;
+
+    return q;
 }
 
 void Queue_del(Queue *q)
@@ -49,14 +51,14 @@ void *Queue_pop(Queue *q)
     return ret;
 }
 
-void *Queue_clear(Queue *q)
+void Queue_clear(Queue *q)
 {
     Queue_iter(q, free);
 
     q->start = q->end = 0;
 }
 
-void *Queue_iter(Queue *q, void (*functor)(void *item))
+void Queue_iter(Queue *q, void (*functor)(void *item))
 {
     for (size_t i = q->start; i != q->end; i = (i + 1) % q->capacity)
         functor(q->data[i]);

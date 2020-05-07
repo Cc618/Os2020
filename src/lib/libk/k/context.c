@@ -18,6 +18,6 @@ Context *Context_new(const char *cwd)
 
 void Context_del(Context *c)
 {
-    free(c->cwd);
+    free((char*)c->cwd);
     free(c);
 }

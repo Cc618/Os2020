@@ -1,27 +1,32 @@
 #include "syscalls.h"
 
+#include "drivers/ports.h"
 #include <k/syscalls.h>
 #include <k/types.h>
 
+typedef u32 (*SyscallHandler)(u32, ...);
+
+#define HANDLER(f) ((SyscallHandler)(void*)(f))
+
 // The table that gathers syscalls
-u32 (*syscalls[256])() = {
+SyscallHandler syscalls[256] = {
     // Sys //
-    [SYS_FATAL] = sys_fatal,
-    [SYS_ENTER] = sys_enter,
-    [SYS_TERMINATE] = sys_terminate,
+    [SYS_FATAL]         = HANDLER(sys_fatal),
+    [SYS_ENTER]         = HANDLER(sys_enter),
+    [SYS_TERMINATE]     = HANDLER(sys_terminate),
 
     // Io //
-    [SYS_OPEN] = sys_open,
-    [SYS_READ] = sys_read,
-    [SYS_WRITE] = sys_write,
-    [SYS_CLOSE] = sys_close,
-    [SYS_PIPE] = sys_pipe,
+    [SYS_OPEN]          = HANDLER(sys_open),
+    [SYS_READ]          = HANDLER(sys_read),
+    [SYS_WRITE]         = HANDLER(sys_write),
+    [SYS_CLOSE]         = HANDLER(sys_close),
+    [SYS_PIPE]          = HANDLER(sys_pipe),
 
     // Files //
-    [SYS_LS] = sys_ls,
-    [SYS_CONTEXT] = sys_context,
-    [SYS_TOUCH] = sys_touch,
-    [SYS_FINFO] = sys_finfo,
+    [SYS_LS]            = HANDLER(sys_ls),
+    [SYS_CONTEXT]       = HANDLER(sys_context),
+    [SYS_TOUCH]         = HANDLER(sys_touch),
+    [SYS_FINFO]         = HANDLER(sys_finfo),
 };
 
 u32 onSyscall()
@@ -39,7 +44,7 @@ u32 onSyscall()
     __asm__ volatile("movl %%edx, %0" : "=g" (edx));
     __asm__ volatile("movl %%edi, %0" : "=g" (edi));
 
-    u32 (*sysc)(u32, ...) = syscalls[eax];
+    SyscallHandler sysc = syscalls[eax];
 
     // Interrupt end
     outb(0xA0, 0x20);

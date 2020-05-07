@@ -267,7 +267,7 @@ void shellEval(const char *CMD)
     {
         char *path = absPathFrom(shellCwd, argv[argc - 1]);
         ctxt->stdout = open(path, F_WRITE);
-        if (ctxt->stdout == (fd_t)-1)
+        if (ctxt->stdout == INVALID_FD)
         {
             fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
             goto end;
@@ -278,7 +278,7 @@ void shellEval(const char *CMD)
     {
         char *path = absPathFrom(shellCwd, argv[argc - 1]);
         ctxt->stderr = open(path, F_WRITE);
-        if (ctxt->stderr == (fd_t)-1)
+        if (ctxt->stderr == INVALID_FD)
         {
             fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
             goto end;
@@ -289,7 +289,7 @@ void shellEval(const char *CMD)
     {
         char *path = absPathFrom(shellCwd, argv[argc - 1]);
         ctxt->stdin = open(path, F_READ);
-        if (ctxt->stdin == (fd_t)-1)
+        if (ctxt->stdin == INVALID_FD)
         {
             fprintf(stderr, "File '%s' can't be opened\n", argv[argc - 1]);
             goto end;

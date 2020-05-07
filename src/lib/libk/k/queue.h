@@ -29,10 +29,10 @@ void Queue_add(Queue *q, void *item);
 void *Queue_pop(Queue *q);
 
 // Deletes all items
-void *Queue_clear(Queue *q);
+void Queue_clear(Queue *q);
 
 // For each
-void *Queue_iter(Queue *q, void (*functor)(void *item));
+void Queue_iter(Queue *q, void (*functor)(void *item));
 
 // When full, the queue is considered as empty
 #define Queue_full Queue_empty

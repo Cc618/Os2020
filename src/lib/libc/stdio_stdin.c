@@ -69,7 +69,7 @@ char *fgets(char *s, int n, FILE *f)
             goto ret;
 
         // Test end
-        for (size_t i = 0; i < result; ++i)
+        for (ssize_t i = 0; i < result; ++i)
         {
             if (s[i] == '\n')
             {
@@ -81,7 +81,7 @@ char *fgets(char *s, int n, FILE *f)
         totalRead += result;
         s += result;
     }
-    while (totalRead < n - 1);
+    while (totalRead < (size_t)(n - 1));
 
 ret:;
     oldS[totalRead] = '\0';

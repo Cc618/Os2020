@@ -38,7 +38,7 @@ FILE *fopen(const char *path, __attribute__((unused)) const char *mode)
     f->_fileno = open(path, modeFlags);
 
     // Error
-    if (f->_fileno == -1)
+    if (f->_fileno == INVALID_FD)
         return NULL;
 
     return f;
@@ -61,5 +61,5 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *f)
 
     size_t count = size * nmemb;
 
-    return write(f->_fileno, ptr, count) / size;
+    return write(f->_fileno, (void*)ptr, count) / size;
 }

@@ -84,7 +84,7 @@ ssize_t FSFile_read(File *f, void *buffer, size_t count)
     size_t result = Buffer_read(((FSFileData*) f->data)->buf, buffer, count);
 
     // Don't wait
-    return result == 0 ? (fd_t)-1 : result;
+    return result == 0 ? INVALID_FD : result;
 }
 
 ssize_t FSFile_write(File *f, void *buffer, size_t count)
@@ -95,7 +95,7 @@ ssize_t FSFile_write(File *f, void *buffer, size_t count)
     size_t result = Buffer_write(((FSFileData*) f->data)->buf, buffer, count);
 
     // Don't wait
-    return result == 0 ? (fd_t)-1 : result;
+    return result == 0 ? INVALID_FD : result;
 }
 
 void FSFile_close(File *f)

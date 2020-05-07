@@ -4,6 +4,7 @@
 #include "stdout.h"
 #include "stderr.h"
 #include <k/vector.h>
+#include <k/io.h>
 #include <stdlib.h>
 
 // --- File --- //
@@ -83,7 +84,7 @@ void filesTerminate()
 
 void registerFile(File *f)
 {
-    f->fd = (fd_t)-1;
+    f->fd = INVALID_FD;
 
     // Try to find NULL entry
     for (size_t i = 3; i < files->size; ++i)
@@ -94,7 +95,7 @@ void registerFile(File *f)
             break;
         }
 
-    if (f->fd == (fd_t)-1)
+    if (f->fd == INVALID_FD)
     {
         f->fd = files->size;
 

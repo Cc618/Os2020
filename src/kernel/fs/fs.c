@@ -111,7 +111,7 @@ FSEntry *getEntry(const char *rPath)
     char *part = strtok(p, delim);
     
     // Current directory we parse
-    const FSEntry *current = root;
+    FSEntry *current = root;
 
     do
     {
