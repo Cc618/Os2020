@@ -11,3 +11,5 @@ int cat(int argc, char **argv);
 int lsMain(int argc, char **argv);
 
 int mkdir(int argc, char **argv);
+
+int help(int argc, char **argv);

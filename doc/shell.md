@@ -15,6 +15,7 @@ Here is a list of usefull commands :
 - color : Sets the color of the background / foreground of the console
 - echo
 - exit
+- help : Display all commands
 - ls
 - mkdir
 
