@@ -2,7 +2,7 @@
 
 Os 2020 is a 32 bits OS.
 
-Written in C and assembly (NASM), it provides a custom bootloader and a libc.
+Written in C and assembly (NASM), it provides a custom bootloader, a libc and a Fat32 file system.
 
 ## Some screenshots
 
